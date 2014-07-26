@@ -1,0 +1,13 @@
+/**
+ * Description:
+ *	mpio error injection
+ * 
+ * Author: Inspur OS Team
+ *	
+ */
+
+ereport.io.mpio.fail, N=3
+
+ereport.io.mpio.reinstated, N=3
+
+ereport.io.mpio.unknown, N=3

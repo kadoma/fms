@@ -1,0 +1,24 @@
+/**
+ * Description:
+ *	nic error injection
+ * 
+ * Author: Inspur OS Team
+ *
+ */
+ 
+/**
+ * the following occures 3 times 
+ *
+ */
+ereport.io.network.linkdown
+ereport.io.network.rxerr
+ereport.io.network.txerr
+ereport.io.network.unknown
+ereport.io.network.rxerr, N=2
+ereport.io.network.linkdown
+ereport.io.network.ipconflict, N=2
+ereport.io.network.rt-error, N=2
+ereport.io.network.dns-error, N=2
+
+ereport.io.network.rxerr, N=5
+ereport.io.network.txerr, N=5

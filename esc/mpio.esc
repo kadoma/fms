@@ -1,0 +1,32 @@
+/**
+ * ereport
+ *
+ */
+event ereport.io.mpio.fail
+event ereport.io.mpio.reinstated
+event ereport.io.mpio.unknown
+
+
+/**
+ * fault
+ *
+ */
+event fault.io.mpio.fail
+event fault.io.mpio.reinstated
+event fault.io.mpio.unknown
+
+
+/**
+ * serd
+ *
+ */
+engine serd.io.mpio {N=3, T=72hours}
+
+
+/**
+ * rendezvous
+ *
+ */
+ereport.io.mpio.fail rend fault.io.mpio.fail
+ereport.io.mpio.reinstated rend fault.io.mpio.reinstated
+ereport.io.mpio.unknown rend fault.io.mpio.unknown

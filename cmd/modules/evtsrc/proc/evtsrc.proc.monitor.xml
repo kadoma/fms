@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<proc_list>
+<proc>
+	<name>sshd</name>		
+	<op>restart</op>		
+	<interval>5000</interval>	
+	<cmd>/etc/init.d/httpd</cmd>	
+	<args>start</args>		
+</proc>
+
+</proc_list>

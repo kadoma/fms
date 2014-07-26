@@ -1,0 +1,159 @@
+EventIdx: IPMI-CPU-01
+Event Category: System CPU
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.cpu.temp-warn
+
+Description: A level 0 cache on this cpu is faulty. Refer to
+	http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+	service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+	'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-CPU-02
+Event Category: System CPU
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.cpu.temp-fatal
+
+Description: A level 1 cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-CPU-03
+Event Category: System CPU
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.cpu.internal-err
+
+Description: A level 0 data cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use 
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-MEM-01
+Event Category: System Memory
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.mem.temp
+
+Description: A level 1 data cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-IOH-01
+Event Category: System IO Hub
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.ioh.temp
+
+Description: A level 0 instruction cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-IOH-02
+Event Category: System IO Hub
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.ioh.internal-err
+
+Description: A level 0 instruction cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use 
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-POWER-01
+Event Category: System Power
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.power.
+
+Description: A level 0 instruction cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-POWER-02
+Event Category: System Power
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.power.
+
+Description: A level 0 instruction cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-FAN-01
+Event Category: System Fan
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.fan.
+
+Description: A level 0 instruction cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+
+
+EventIdx: IPMI-FAN-02
+Event Category: System Fan
+Severity: Major
+
+Summary: A CPU has failed.
+Event class: ereport.ipmi.fan.
+
+Description: A level 0 instruction cache on this cpu is faulty. Refer to
+        http://sun.com/msg/GMCA-8000-47 for more information.
+Response: The system will attempt to offline this cpu to remove it from
+        service.
+Impact: Performance of this system may be affected.
+Action: Schedule a repair procedure to replace the affected CPU. Use
+        'fmadm faulty' to identify the module.
+

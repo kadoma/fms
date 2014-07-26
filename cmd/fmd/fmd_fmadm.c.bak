@@ -1,0 +1,218 @@
+/*
+ * fmd_fmadm.c
+ *
+ *  Created on: Oct 18, 2010
+ *      Author: Inspur OS Team
+ *
+ *  Descriptions:
+ *      fmd_fmadm.c
+ */
+
+#include <fm/fmd.h>
+#include <fm/fmd_fmadm.h>
+
+/* global reference */
+extern fmd_t fmd;
+
+typedef struct fmd_acl {
+	uint8_t *acl_buf;	/* message buffer base address */
+	faf_hdr_t *acl_hdr;	/* message header pointer */
+	uint64_t acl_size;	/* message buffer size */
+	uint8_t acl_secs;	/* number of sections */
+} fmd_acl_t;
+
+/**
+ * fmd_resv_caselist
+ *
+ * @param
+ * @return
+ */
+static void
+fmd_resv_caselist(fmd_acl_t *acl)
+{
+	struct list_head *pos = NULL;
+	fmd_case_t *cp = NULL;
+
+	int case_num = 0;
+
+	list_for_each(pos, &fmd.list_case) {
+		cp = list_entry(pos, fmd_case_t, cs_list);
+		case_num++;
+	}
+
+	acl->acl_secs = case_num;		/* number of sections */
+	acl->acl_size = case_num * sizeof(faf_case_t) + sizeof(faf_hdr_t);
+}
+
+
+/**
+ * fmd_get_caselist
+ *
+ * @param
+ * @return
+ */
+static void *
+fmd_get_caselist(int *size)
+{
+	struct list_head *pos = NULL;
+	struct fmd_hash *phash = &fmd.fmd_esc.hash_clsname;
+	faf_case_t *fafc = NULL;
+	fmd_case_t *cp = NULL;
+	int cnt = 0;
+	
+	fmd_acl_t *acl = malloc(sizeof (fmd_acl_t));
+	assert(acl != NULL);
+	memset(acl, 0, sizeof(fmd_acl_t));
+
+	fmd_resv_caselist(acl);
+
+	/*
+	 * Allocate memory for FAF.
+	 */
+	acl->acl_buf = malloc(acl->acl_size);
+	assert(acl->acl_buf != NULL);
+	memset(acl->acl_buf, 0, acl->acl_size);
+
+	if (acl->acl_buf == NULL)
+		return NULL; /* errno is set for us */
+
+	acl->acl_hdr = (void *)acl->acl_buf;
+	acl->acl_hdr->fafh_hdrsize = sizeof (faf_hdr_t);
+	acl->acl_hdr->fafh_secnum = acl->acl_secs;
+	acl->acl_hdr->fafh_msgsz = acl->acl_size;
+	snprintf(acl->acl_hdr->fafh_cmd, 20, "GET CASELIST");
+
+	fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize);
+
+	list_for_each(pos, &fmd.list_case) {
+		cp = list_entry(pos, fmd_case_t, cs_list);
+
+		fafc->fafc_uuid = cp->cs_uuid;
+		fafc->fafc_rscid = cp->cs_rscid;
+		fafc->fafc_count = cp->cs_count;
+		fafc->fafc_create = (uint64_t)cp->cs_create;
+		fafc->fafc_fire = (uint64_t)cp->cs_fire;
+		fafc->fafc_close = (uint64_t)cp->cs_close;
+		snprintf(fafc->fafc_fault, 20, "%s", hash_get_key(phash, cp->cs_type->fault));
+
+		if (cp->cs_flag == CASE_CREATE)
+			fafc->fafc_state = FAF_CASE_CREATE;
+		else if (cp->cs_flag == CASE_FIRED)
+			fafc->fafc_state = FAF_CASE_FIRED;
+		else if (cp->cs_flag == CASE_CLOSED)
+			fafc->fafc_state = FAF_CASE_CLOSED;
+		else {
+			printf("FMD: case %p (%d) has invalid state %u\n",
+				(void *)cp, cp->cs_uuid, cp->cs_flag);
+			return NULL;
+		}
+		cnt++;
+		fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize + cnt * sizeof (faf_case_t));
+	}
+	*size = acl->acl_size;
+	return (void *)acl->acl_hdr;
+}
+
+
+/**
+ * fmd_adm_run
+ *
+ * @param
+ * @return
+ */
+static void *
+fmd_adm_run(void *arg)
+{
+	mqd_t mqd;
+	struct mq_attr attr;
+	void *buf = NULL;
+	void *sendbuf = NULL;
+	int size = 0;
+
+	/* mqueue */
+	mqd = mq_open("/fmadm", O_RDWR | O_CREAT | O_NONBLOCK, 0644, NULL);
+//	mqd = mq_open("/fmadm", O_RDWR | O_CREAT, 0644, NULL);
+	if (mqd == -1) {
+		perror("fmadm mq_open");
+		return NULL;
+	}
+
+	buf = malloc(128 * 1024);
+	if (buf == NULL) {
+		perror("fmadm malloc");
+		return NULL;
+	}
+
+	do {
+		/* Determine max. msg size; initial buffer to receive msg */
+		if (mq_getattr(mqd, &attr) == -1) {
+			perror("fmadm mq_getattr");
+			free(buf);
+			return NULL;
+		}
+
+		memset(buf, 0, 128 * 1024);
+
+printf("fmd_adm_module: before mq_receive()\n");
+int a = 0;
+		if ((a = mq_receive(mqd, buf, attr.mq_msgsize, NULL)) < 0) {
+//			perror("msgrcv");
+			perror("fmd_adm_module:");
+			free(buf);
+			return NULL;
+		}
+
+printf("fmd_adm_module: after mq_receive() size=%d\n", a);
+//FIXME:	if (strncmp(buf, FAF_GET_CASELIST, 12))
+		sendbuf = fmd_get_caselist(&size);
+
+		printf("FMD: send the caselist message to fmd through message queue.\n");
+
+		if ((mq_send(mqd, sendbuf, size, 0)) < 0) {
+			perror("fmadm message posted");
+			free(buf);
+			return NULL;
+		}
+
+		free(sendbuf);
+	} while(1);
+
+	mq_close(mqd);
+	free(buf);
+
+	return NULL;
+}
+
+
+/**
+ * load fmd adm module.
+ *      
+ */
+void
+fmd_adm_init(void)
+{
+	pthread_t tid;
+	int ret;
+	pthread_attr_t attr;
+
+	/* Initialize with default attribute */
+	ret = pthread_attr_init(&attr);
+	if(ret < 0) {
+		printf("FMD: failed to initialize fmd adm thread.\n");
+		syslog(LOG_ERR, "%s\n", strerror(errno));
+		return NULL;
+	}
+
+	/* create new thread */
+	ret = pthread_create(&tid, &attr, fmd_adm_run, NULL);
+	if(ret < 0) {
+		printf("FMD: failed to create fmd adm thread.\n");
+		syslog(LOG_ERR, "pthread_create");
+		return NULL;
+	}
+
+	pthread_attr_destroy(&attr);
+
+	return;
+}
+

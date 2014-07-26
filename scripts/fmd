@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+# fmd        Starts fmd.
+#
+#
+# chkconfig: 2345 12 88
+# description: Syslog is the facility by which many daemons use to log \
+# messages to various system log files.  It is a good idea to always \
+# run syslog.
+### BEGIN INIT INFO
+# Provides: $syslog
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+[ -f /usr/lib/fm/fmd/fmd ] || exit 0
+[ -f /var/log/fm/fmd.log ] || exit 0
+
+RETVAL=0
+
+start() {
+ 	echo -n $"Starting Fault Management Daemon(FMD):"
+ 	echo
+	/usr/lib/fm/fmd/fmd
+	RETVAL=$?
+	echo -n $"FMD Started Successfully."
+	echo
+	return $RETVAL
+}
+stop() {
+	echo -n $"Shutting down FMD:"
+	echo
+	killproc fmd
+	RETVAL=$?
+	echo -n $"FMD Stopped Successfully."
+	echo
+	return $RETVAL
+}
+restart() {
+	stop
+	start
+}
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  status)
+  	status /usr/lib/fm/fmd/fmd
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart}"
+	exit 1
+esac
+
+exit $?

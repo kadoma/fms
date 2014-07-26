@@ -1,0 +1,29 @@
+# Makefile
+#
+# Created on: Mar 1, 2010
+#     Author: Inspur OS Team
+#
+#
+
+LDFLAGS += -shared -fpic
+SRCS = $(wildcard *.c)
+OBJS = $(SRCS:%.c=%.o)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $<
+
+all: $(OBJS)
+	$(CC) -o $(LIBNAME) $(LDFLAGS) $(OBJS)
+#	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
+#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
+
+clean:
+	$(RM) $(OBJS) $(LIBNAME)
+
+install:
+	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
+	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
+
+uninstall:
+	$(RM) $(ROOTLIB)/$(LIBNAME)
+	$(RM) $(ROOTLIB)/$(LIBNAME).$(LIBVER)

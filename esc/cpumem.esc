@@ -1,0 +1,568 @@
+/**
+ * ereport
+ *
+ */
+
+/* misc */
+event ereport.cpu.intel.unknown
+event ereport.cpu.intel.external
+event ereport.cpu.intel.microcode_rom_parity
+event ereport.cpu.intel.internal_timer
+event ereport.cpu.intel.unclassified
+event ereport.cpu.intel.internal_unclassified
+event ereport.cpu.intel.frc
+
+/* cache */
+event ereport.cpu.intel.l0cache
+event ereport.cpu.intel.l1cache
+event ereport.cpu.intel.l0dcache
+event ereport.cpu.intel.l1dcache
+event ereport.cpu.intel.l0icache
+event ereport.cpu.intel.l1icache
+event ereport.cpu.intel.dcache
+event ereport.cpu.intel.icache
+event ereport.cpu.intel.cache
+event ereport.cpu.intel.l2cache
+event ereport.cpu.intel.l2dcache
+event ereport.cpu.intel.l2icache
+event ereport.cpu.intel.l0cache_rc
+event ereport.cpu.intel.l1cache_rc
+event ereport.cpu.intel.l0dcache_rc
+event ereport.cpu.intel.l1dcache_rc
+event ereport.cpu.intel.l0icache_rc
+event ereport.cpu.intel.l1icache_rc
+event ereport.cpu.intel.dcache_rc
+event ereport.cpu.intel.icache_rc
+event ereport.cpu.intel.cache_rc
+event ereport.cpu.intel.l2cache_rc
+event ereport.cpu.intel.l2dcache_rc
+event ereport.cpu.intel.l2icache_rc
+event ereport.cpu.intel.l0cache_uc
+event ereport.cpu.intel.l1cache_uc
+event ereport.cpu.intel.l0dcache_uc
+event ereport.cpu.intel.l1dcache_uc
+event ereport.cpu.intel.l0icache_uc
+event ereport.cpu.intel.l1icache_uc
+event ereport.cpu.intel.dcache_uc
+event ereport.cpu.intel.icache_uc
+event ereport.cpu.intel.cache_uc
+event ereport.cpu.intel.l2cache_uc
+event ereport.cpu.intel.l2dcache_uc
+event ereport.cpu.intel.l2icache_uc
+
+/* tlb */
+event ereport.cpu.intel.l0dtlb
+event ereport.cpu.intel.l1dtlb
+event ereport.cpu.intel.l2dtlb
+event ereport.cpu.intel.l0itlb
+event ereport.cpu.intel.l1itlb
+event ereport.cpu.intel.l2itlb
+event ereport.cpu.intel.l0tlb
+event ereport.cpu.intel.l1tlb
+event ereport.cpu.intel.l2tlb
+event ereport.cpu.intel.dtlb
+event ereport.cpu.intel.itlb
+event ereport.cpu.intel.tlb
+event ereport.cpu.intel.l0dtlb_rc
+event ereport.cpu.intel.l1dtlb_rc
+event ereport.cpu.intel.l2dtlb_rc
+event ereport.cpu.intel.l0itlb_rc
+event ereport.cpu.intel.l1itlb_rc
+event ereport.cpu.intel.l2itlb_rc
+event ereport.cpu.intel.l0tlb_rc
+event ereport.cpu.intel.l1tlb_rc
+event ereport.cpu.intel.l2tlb_rc
+event ereport.cpu.intel.dtlb_rc
+event ereport.cpu.intel.itlb_rc
+event ereport.cpu.intel.tlb_rc
+event ereport.cpu.intel.l0dtlb_uc
+event ereport.cpu.intel.l1dtlb_uc
+event ereport.cpu.intel.l2dtlb_uc
+event ereport.cpu.intel.l0itlb_uc
+event ereport.cpu.intel.l1itlb_uc
+event ereport.cpu.intel.l2itlb_uc
+event ereport.cpu.intel.l0tlb_uc
+event ereport.cpu.intel.l1tlb_uc
+event ereport.cpu.intel.l2tlb_uc
+event ereport.cpu.intel.dtlb_uc
+event ereport.cpu.intel.itlb_uc
+event ereport.cpu.intel.tlb_uc
+
+/* bus */
+event ereport.cpu.intel.bus_interconnect
+event ereport.cpu.intel.bus_interconnect_memory
+event ereport.cpu.intel.bus_interconnect_io
+event ereport.cpu.intel.bus_external_memory_rc
+event ereport.cpu.intel.bus_external_io_rc
+event ereport.cpu.intel.bus_internal_uc
+event ereport.cpu.intel.bus_internal_memory_uc
+event ereport.cpu.intel.bus_internal_io_uc
+event ereport.cpu.intel.bus_external_uc
+event ereport.cpu.intel.bus_external_memory_uc
+event ereport.cpu.intel.bus_external_io_uc
+
+/* register */
+event ereport.cpu.intel.gr
+event ereport.cpu.intel.fr
+event ereport.cpu.intel.gr_rc
+event ereport.cpu.intel.fr_rc
+event ereport.cpu.intel.gr_uc
+event ereport.cpu.intel.fr_uc
+
+/* memory */
+event ereport.cpu.intel.quickpath.mem_page_ce
+event ereport.cpu.intel.quickpath.mem_page_uc
+event ereport.cpu.intel.mem_dev
+
+/**
+ * fault
+ *
+ */
+
+/* misc */
+event fault.cpu.intel.internal
+
+/* cache */
+event fault.cpu.intel.l0cache
+event fault.cpu.intel.l1cache
+event fault.cpu.intel.l0dcache
+event fault.cpu.intel.l1dcache
+event fault.cpu.intel.l0icache
+event fault.cpu.intel.l1icache
+event fault.cpu.intel.dcache
+event fault.cpu.intel.icache
+event fault.cpu.intel.cache
+event fault.cpu.intel.l2cache
+event fault.cpu.intel.l2dcache
+event fault.cpu.intel.l2icache
+event fault.cpu.intel.l0cache_uc
+event fault.cpu.intel.l1cache_uc
+event fault.cpu.intel.l0dcache_uc
+event fault.cpu.intel.l1dcache_uc
+event fault.cpu.intel.l0icache_uc
+event fault.cpu.intel.l1icache_uc
+event fault.cpu.intel.dcache_uc
+event fault.cpu.intel.icache_uc
+event fault.cpu.intel.cache_uc
+event fault.cpu.intel.l2cache_uc
+event fault.cpu.intel.l2dcache_uc
+event fault.cpu.intel.l2icache_uc
+
+/* tlb */
+event fault.cpu.intel.l0dtlb
+event fault.cpu.intel.l1dtlb
+event fault.cpu.intel.l2dtlb
+event fault.cpu.intel.l0itlb
+event fault.cpu.intel.l1itlb
+event fault.cpu.intel.l2itlb
+event fault.cpu.intel.l0tlb
+event fault.cpu.intel.l1tlb
+event fault.cpu.intel.l2tlb
+event fault.cpu.intel.dtlb
+event fault.cpu.intel.itlb
+event fault.cpu.intel.tlb
+event fault.cpu.intel.l0dtlb_uc
+event fault.cpu.intel.l1dtlb_uc
+event fault.cpu.intel.l2dtlb_uc
+event fault.cpu.intel.l0itlb_uc
+event fault.cpu.intel.l1itlb_uc
+event fault.cpu.intel.l2itlb_uc
+event fault.cpu.intel.l0tlb_uc
+event fault.cpu.intel.l1tlb_uc
+event fault.cpu.intel.l2tlb_uc
+event fault.cpu.intel.dtlb_uc
+event fault.cpu.intel.itlb_uc
+event fault.cpu.intel.tlb_uc
+
+/* bus */
+event fault.cpu.intel.bus_interconnect
+event fault.cpu.intel.bus_interconnect_memory
+event fault.cpu.intel.bus_interconnect_io
+event fault.cpu.intel.bus_external_memory
+event fault.cpu.intel.bus_external_io
+event fault.cpu.intel.bus_internal_uc
+event fault.cpu.intel.bus_internal_memory_uc
+event fault.cpu.intel.bus_internal_io_uc
+event fault.cpu.intel.bus_external_uc
+event fault.cpu.intel.bus_external_memory_uc
+event fault.cpu.intel.bus_external_io_uc
+
+/* register */
+event fault.cpu.intel.gr
+event fault.cpu.intel.fr
+event fault.cpu.intel.gr_uc
+event fault.cpu.intel.fr_uc
+
+/* memory */
+event fault.cpu.intel.quickpath.mem_page_ce
+event fault.cpu.intel.quickpath.mem_page_uc
+event fault.cpu.intel.mem_dev
+
+/* special fault event */
+event fault.cpu.intel.discard
+
+/**
+ * serd
+ *
+ */
+engine serd.cpu.cache-l {N=3, T=72hours}
+engine serd.cpu.cache-b {N=24, T=72hours}
+engine serd.cpu.tlb-l {N=3, T=72hours}
+engine serd.cpu.tlb-b {N=24, T=72hours}
+engine serd.cpu.bus {N=3, T=72hours}
+engine serd.cpu.reg {N=3, T=72hours}
+engine serd.cpu.mem {N=3, T=24hours}
+
+
+/**
+ * rendezvous
+ *
+ */
+ereport.cpu.intel.unknown rend fault.cpu.intel.discard
+
+ereport.cpu.intel.external rend fault.cpu.intel.discard
+
+ereport.cpu.intel.microcode_rom_parity, \
+ereport.cpu.intel.internal_timer, \
+ereport.cpu.intel.unclassified, \
+ereport.cpu.intel.internal_unclassified, \
+ereport.cpu.intel.frc rend fault.cpu.intel.internal
+
+/*	cache	*/
+ereport.cpu.intel.l0cache \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l0cache
+
+ereport.cpu.intel.l1cache \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l1cache
+
+ereport.cpu.intel.l0dcache \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l0dcache
+
+ereport.cpu.intel.l1dcache \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l1dcache
+
+ereport.cpu.intel.l0icache \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l0icache
+
+ereport.cpu.intel.l1icache \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l1icache
+
+ereport.cpu.intel.dcache \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.dcache
+
+ereport.cpu.intel.icache \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.icache
+
+ereport.cpu.intel.cache \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.cache
+
+ereport.cpu.intel.l2cache \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.l2cache
+
+ereport.cpu.intel.l2dcache \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.l2dcache
+
+ereport.cpu.intel.l2icache \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.l2icache
+
+ereport.cpu.intel.l0cache_rc \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l0cache
+
+ereport.cpu.intel.l1cache_rc \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l1cache
+
+ereport.cpu.intel.l0dcache_rc \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l0dcache
+
+ereport.cpu.intel.l1dcache_rc \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l1dcache
+
+ereport.cpu.intel.l0icache_rc \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l0icache
+
+ereport.cpu.intel.l1icache_rc \
+@serd.cpu.cache-l rend \
+fault.cpu.intel.l1icache
+
+ereport.cpu.intel.dcache_rc \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.dcache
+
+ereport.cpu.intel.icache_rc \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.icache
+
+ereport.cpu.intel.cache_rc \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.cache
+
+ereport.cpu.intel.l2cache_rc \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.l2cache
+
+ereport.cpu.intel.l2dcache_rc \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.l2dcache
+
+ereport.cpu.intel.l2icache_rc \
+@serd.cpu.cache-b rend \
+fault.cpu.intel.l2icache
+
+ereport.cpu.intel.l0cache_uc rend \
+fault.cpu.intel.l0cache_uc
+
+ereport.cpu.intel.l1cache_uc rend \
+fault.cpu.intel.l1cache_uc
+
+ereport.cpu.intel.l0dcache_uc rend \
+fault.cpu.intel.l0dcache_uc
+
+ereport.cpu.intel.l1dcache_uc rend \
+fault.cpu.intel.l1dcache_uc
+
+ereport.cpu.intel.l0icache_uc rend \
+fault.cpu.intel.l0icache_uc
+
+ereport.cpu.intel.l1icache_uc rend \
+fault.cpu.intel.l1icache_uc
+
+ereport.cpu.intel.dcache_uc rend \
+fault.cpu.intel.dcache_uc
+
+ereport.cpu.intel.icache_uc rend \
+fault.cpu.intel.icache_uc
+
+ereport.cpu.intel.cache_uc rend \
+fault.cpu.intel.cache_uc
+
+ereport.cpu.intel.l2cache_uc rend \
+fault.cpu.intel.l2cache_uc
+
+ereport.cpu.intel.l2dcache_uc rend \
+fault.cpu.intel.l2dcache_uc
+
+ereport.cpu.intel.l2icache_uc rend \
+fault.cpu.intel.l2icache_uc
+
+/*	tlb	*/
+ereport.cpu.intel.l0dtlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l0dtlb
+
+ereport.cpu.intel.l1dtlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l1dtlb
+
+ereport.cpu.intel.l2dtlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l2dtlb
+
+ereport.cpu.intel.l0itlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l0itlb
+
+ereport.cpu.intel.l1itlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l1itlb
+
+ereport.cpu.intel.l2itlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l2itlb
+
+ereport.cpu.intel.l0tlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l0tlb
+
+ereport.cpu.intel.l1tlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l1tlb
+
+ereport.cpu.intel.l2tlb \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l2tlb
+
+ereport.cpu.intel.dtlb \
+@serd.cpu.tlb-b rend \
+fault.cpu.intel.dtlb
+
+ereport.cpu.intel.itlb \
+@serd.cpu.tlb-b rend \
+fault.cpu.intel.itlb
+
+ereport.cpu.intel.tlb \
+@serd.cpu.tlb-b rend \
+fault.cpu.intel.tlb
+
+ereport.cpu.intel.l0dtlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l0dtlb
+
+ereport.cpu.intel.l1dtlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l1dtlb
+
+ereport.cpu.intel.l2dtlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l2dtlb
+
+ereport.cpu.intel.l0itlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l0itlb
+
+ereport.cpu.intel.l1itlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l1itlb
+
+ereport.cpu.intel.l2itlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l2itlb
+
+ereport.cpu.intel.l0tlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l0tlb
+
+ereport.cpu.intel.l1tlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l1tlb
+
+ereport.cpu.intel.l2tlb_rc \
+@serd.cpu.tlb-l rend \
+fault.cpu.intel.l2tlb
+
+ereport.cpu.intel.dtlb_rc \
+@serd.cpu.tlb-b rend \
+fault.cpu.intel.dtlb
+
+ereport.cpu.intel.itlb_rc \
+@serd.cpu.tlb-b rend \
+fault.cpu.intel.itlb
+
+ereport.cpu.intel.tlb_rc \
+@serd.cpu.tlb-b rend \
+fault.cpu.intel.tlb
+
+ereport.cpu.intel.l0dtlb_uc rend \
+fault.cpu.intel.l0dtlb_uc
+
+ereport.cpu.intel.l1dtlb_uc rend \
+fault.cpu.intel.l1dtlb_uc
+
+ereport.cpu.intel.l2dtlb_uc rend \
+fault.cpu.intel.l2dtlb_uc
+
+ereport.cpu.intel.l0itlb_uc rend \
+fault.cpu.intel.l0itlb_uc
+
+ereport.cpu.intel.l1itlb_uc rend \
+fault.cpu.intel.l1itlb_uc
+
+ereport.cpu.intel.l2itlb_uc rend \
+fault.cpu.intel.l2itlb_uc
+
+ereport.cpu.intel.l0tlb_uc rend \
+fault.cpu.intel.l0tlb_uc
+
+ereport.cpu.intel.l1tlb_uc rend \
+fault.cpu.intel.l1tlb_uc
+
+ereport.cpu.intel.l2tlb_uc rend \
+fault.cpu.intel.l2tlb_uc
+
+ereport.cpu.intel.dtlb_uc rend \
+fault.cpu.intel.dtlb_uc
+
+ereport.cpu.intel.itlb_uc rend \
+fault.cpu.intel.itlb_uc
+
+ereport.cpu.intel.tlb_uc rend \
+fault.cpu.intel.tlb_uc
+
+/*	bus	*/
+ereport.cpu.intel.bus_interconnect \
+@serd.cpu.bus rend \
+fault.cpu.intel.bus_interconnect
+
+ereport.cpu.intel.bus_interconnect_memory \
+@serd.cpu.bus rend \
+fault.cpu.intel.bus_interconnect_memory
+
+ereport.cpu.intel.bus_interconnect_io \
+@serd.cpu.bus rend \
+fault.cpu.intel.bus_interconnect_io
+
+ereport.cpu.intel.bus_external_memory_rc \
+@serd.cpu.bus rend \
+fault.cpu.intel.bus_external_memory
+
+ereport.cpu.intel.bus_external_io_rc \
+@serd.cpu.bus rend \
+fault.cpu.intel.bus_external_io
+
+ereport.cpu.intel.bus_internal_uc rend \
+fault.cpu.intel.bus_internal_uc
+
+ereport.cpu.intel.bus_internal_memory_uc rend \
+fault.cpu.intel.bus_internal_memory_uc
+
+ereport.cpu.intel.bus_internal_io_uc rend \
+fault.cpu.intel.bus_internal_io_uc
+
+ereport.cpu.intel.bus_external_uc rend \
+fault.cpu.intel.bus_external_uc
+
+ereport.cpu.intel.bus_external_memory_uc rend \
+fault.cpu.intel.bus_external_memory_uc
+
+ereport.cpu.intel.bus_external_io_uc rend \
+fault.cpu.intel.bus_external_io_uc
+
+/*	register	*/
+ereport.cpu.intel.gr \
+@serd.cpu.reg rend \
+fault.cpu.intel.gr
+
+ereport.cpu.intel.fr \
+@serd.cpu.reg rend \
+fault.cpu.intel.fr
+
+ereport.cpu.intel.gr_rc \
+@serd.cpu.reg rend \
+fault.cpu.intel.gr
+
+ereport.cpu.intel.fr_rc \
+@serd.cpu.reg rend \
+fault.cpu.intel.fr
+
+ereport.cpu.intel.gr_uc rend \
+fault.cpu.intel.gr_uc
+
+ereport.cpu.intel.fr_uc rend \
+fault.cpu.intel.gr_uc
+
+/* memory */
+ereport.cpu.intel.quickpath.mem_page_ce \
+@serd.cpu.mem rend \
+fault.cpu.intel.quickpath.mem_page_ce
+
+ereport.cpu.intel.quickpath.mem_page_uc rend \
+fault.cpu.intel.quickpath.mem_page_uc
+
+ereport.cpu.intel.mem_dev rend \
+fault.cpu.intel.mem_dev

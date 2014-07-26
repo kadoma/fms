@@ -1,0 +1,12 @@
+/*
+Author: Inspur OS Team
+Date:	2011-06-28
+*/
+ereport.io.pcie.bus_uaccessible_rc, N=3
+ereport.io.pcie.bus_uaccessible_uc
+ereport.io.pcie.data_link_err_rc, N=3
+ereport.io.pcie.data_link_err_uc
+ereport.io.pcie.data_trans_link_err_rc, N=3
+ereport.io.pcie.data_trans_link_err_uc
+ereport.io.pcie.physical_link_err_rc, N=3
+ereport.io.pcie.physical_link_err_uc

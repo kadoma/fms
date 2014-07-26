@@ -1,0 +1,19 @@
+/*
+Author: Inspur OS Team
+Date:	2011-06-28
+*/
+ereport.ipmi.cpu.temp.upper-non-recoverable
+ereport.ipmi.cpu.temp.upper-critical
+ereport.ipmi.cpu.temp.upper-non-critical
+
+ereport.ipmi.mem.temp.upper-non-recoverable
+ereport.ipmi.mem.temp.upper-critical
+ereport.ipmi.mem.temp.upper-non-critical
+
+ereport.ipmi.ioh.temp.upper-non-recoverable
+ereport.ipmi.ioh.temp.upper-critical
+ereport.ipmi.ioh.temp.upper-non-critical
+
+ereport.ipmi.fan.lower-upper-non-recoverable
+ereport.ipmi.fan.lower-upper-critical
+ereport.ipmi.fan.lower-upper-non-critical

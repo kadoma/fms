@@ -1,0 +1,46 @@
+/**
+ * ereport
+ *
+ */
+event ereport.topo.cpu.hotadd
+event ereport.topo.cpu.hotremove
+event ereport.topo.memory.hotadd
+event ereport.topo.memory.hotremove
+event ereport.topo.disk.hotadd
+event ereport.topo.disk.hotremove
+event ereport.topo.pciedev.hotadd
+event ereport.topo.pciedev.hotremove
+event ereport.topo.mpio.failpath
+event ereport.topo.mpio.reinstatepath
+
+
+/**
+ * fault
+ *
+ */
+event fault.topo.cpu.hotadd
+event fault.topo.cpu.hotremove
+event fault.topo.memory.hotadd
+event fault.topo.memory.hotremove
+event fault.topo.disk.hotadd
+event fault.topo.disk.hotremove
+event fault.topo.pciedev.hotadd
+event fault.topo.pciedev.hotremove
+event fault.topo.mpio.failpath
+event fault.topo.mpio.reinstatepath
+
+
+/**
+ * rendezvous
+ *
+ */
+ereport.topo.cpu.hotadd rend fault.topo.cpu.hotadd
+ereport.topo.cpu.hotremove rend fault.topo.cpu.hotremove
+ereport.topo.memory.hotadd rend fault.topo.memory.hotadd
+ereport.topo.memory.hotremove rend fault.topo.memory.hotremove
+ereport.topo.disk.hotadd rend fault.topo.disk.hotadd
+ereport.topo.disk.hotremove rend fault.topo.disk.hotremove
+ereport.topo.pciedev.hotadd rend fault.topo.pciedev.hotadd
+ereport.topo.pciedev.hotremove rend fault.topo.pciedev.hotremove
+ereport.topo.mpio.failpath rend fault.topo.mpio.failpath
+ereport.topo.mpio.reinstatepath rend fault.topo.mpio.reinstatepath

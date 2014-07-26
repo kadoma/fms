@@ -1,0 +1,14 @@
+diff -u -r -N kernel-2.6.28.10-vs2.3.0.36.11.85b8.1/include/linux/fm/fm.h kernel-2.6.28.10-vs2.3.0.36.11.85b8.1_xrh/include/linux/fm/fm.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.85b8.1/include/linux/fm/fm.h	2010-12-03 09:41:14.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.85b8.1_xrh/include/linux/fm/fm.h	2010-12-03 09:43:34.000000000 +0800
+@@ -28,8 +28,8 @@
+ #define FM_PCIEAER				12
+ 
+ struct fm_kevt {
+-	u8 flags;				/* RC or UC ? */
+-	u8 cpu;					/* processor id */
++	__u8 flags;			/* RC or UC ? */
++	__u8 cpu;			/* processor id */
+ 	int type;
+ 	char buf[248];
+ 	char *device;			/* device id */

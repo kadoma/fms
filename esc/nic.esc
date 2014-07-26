@@ -1,0 +1,62 @@
+/**
+ * ereport
+ *
+ */
+event ereport.io.network.linkdown
+event ereport.io.network.rxerr
+event ereport.io.network.txerr
+event ereport.io.network.ipconflict
+event ereport.io.network.rt-error
+event ereport.io.network.dns-error
+event ereport.io.network.unknown
+
+
+/**
+ * fault
+ *
+ */
+event fault.io.network.linkdown
+event fault.io.network.rxerr
+event fault.io.network.txerr
+event fault.io.network.ipconflict
+event fault.io.network.rt-error
+event fault.io.network.dns-error
+event fault.io.network.unknown
+
+
+/**
+ * serd
+ *
+ */
+engine serd.io.nic.transmit {N=5, T=10seconds}
+engine serd.io.nic.service {N=1, T=10seconds}
+
+
+/**
+ * rendezvous
+ *
+ */
+ereport.io.network.linkdown \
+@serd.io.nic.transmit rend \
+fault.io.network.linkdown
+
+ereport.io.network.rxerr \
+@serd.io.nic.transmit rend \
+fault.io.network.rxerr
+
+ereport.io.network.txerr \
+@serd.io.nic.transmit rend \
+fault.io.network.txerr
+
+ereport.io.network.ipconflict \
+@serd.io.nic.service rend \
+fault.io.network.ipconflict
+
+ereport.io.network.rt-error rend \
+fault.io.network.rt-error
+
+ereport.io.network.dns-error rend \
+fault.io.network.dns-error
+
+ereport.io.network.unknown rend \
+fault.io.network.unknown

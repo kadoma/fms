@@ -1,0 +1,62 @@
+/**
+ * ereport
+ *
+ */
+event ereport.service.network.apache.http.network_unreachable
+event ereport.service.network.apache.http.invalid_error
+event ereport.service.network.apache.http.server_error
+event ereport.service.network.apache.http.client_error
+event ereport.service.network.apache.http.socket_timeout
+event ereport.service.proc.stop
+event ereport.service.proc.zombie
+
+
+/**
+ * fault
+ *
+ */
+event fault.service.network.apache.http.network_unreachable
+event fault.service.network.apache.http.invalid_error
+event fault.service.network.apache.http.server_error
+event fault.service.network.apache.http.client_error
+event fault.service.network.apache.http.socket_timeout
+event fault.service.proc.stop
+event fault.service.proc.zombie
+
+
+/**
+ * serd
+ *
+ */
+engine serd.service.network.apache {N=2, T=10seconds}
+
+
+/**
+ * rendezvous
+ *
+ */
+ereport.service.network.apache.http.network_unreachable \
+@serd.service.network.apache rend \
+fault.service.network.apache.http.network_unreachable
+
+ereport.service.network.apache.http.invalid_error \
+@serd.service.network.apache rend \
+fault.service.network.apache.http.invalid_error
+
+ereport.service.network.apache.http.server_error \
+@serd.service.network.apache rend \
+fault.service.network.apache.http.server_error
+
+ereport.service.network.apache.http.client_error \
+@serd.service.network.apache rend \
+fault.service.network.apache.http.client_error
+
+ereport.service.network.apache.http.socket_timeout \
+@serd.service.network.apache rend \
+fault.service.network.apache.http.socket_timeout
+
+ereport.service.proc.stop rend \
+fault.service.proc.stop
+
+ereport.service.proc.zombie rend \
+fault.service.proc.zombie

@@ -1,0 +1,37 @@
+# makefile.defs
+#
+# Created on: Jan 19, 2010
+#     Author: Inspur OS Team
+#
+#
+.KEEP_STATE:
+
+
+all: 		TARGET := all
+clean: 		TARGET := clean
+install:	TARGET := install
+uninstall: 	TARGET := uninstall
+
+CC = /usr/bin/gcc
+MAKE = /usr/bin/make
+LEX = /usr/bin/lex
+YACC = /usr/bin/yacc -d
+RM = /bin/rm -f
+CP = /bin/cp 1>/dev/null 2>&1 -f
+LN = /bin/ln -s -f
+CPP = /usr/bin/cpp
+
+ROOTLIB = $(DESTDIR)/usr/lib/fm
+LOGDIR = $(DESTDIR)/var/log/fm
+INCDIR = $(DESTDIR)/usr/include/fm
+FMDDIR = $(ROOTLIB)/fmd
+ESCDIR = $(ROOTLIB)/eversholt
+PLUGDIR = $(FMDDIR)/plugins
+
+#CFLAGS = -c -Wall -g
+CFLAGS = -c -g -DFMD_DEBUG
+#CFLAGS = -c -g 
+LDFLAGS = -L$(ROOTLIB) -ldl -lpthread
+
+#lib version
+LIBVER = 0.85

@@ -1,0 +1,27 @@
+/**
+ * ereport
+ *
+ */
+event ereport.io.raid.failed
+
+
+/**
+ * fault
+ *
+ */
+event fault.io.raid.failed
+
+/**
+ * serd
+ *
+ */
+engine serd.io.raid.transmit {N=5, T=10seconds}
+engine serd.io.raid.service {N=1, T=10seconds}
+
+
+/**
+ * rendezvous
+ *
+ */
+ereport.io.raid.failed rend \
+fault.io.raid.failed

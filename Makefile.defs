@@ -1,0 +1,47 @@
+# makefile.defs
+#
+# Created on: Jan 19, 2010
+#     Author: Inspur OS Team
+#
+#
+
+.KEEP_STATE:
+
+all: 		TARGET := all
+clean: 		TARGET := clean
+install:	TARGET := install
+uninstall: 	TARGET := uninstall
+
+CC = /usr/bin/gcc
+MAKE = /usr/bin/make
+MKDIR = /bin/mkdir -p
+CP = /bin/cp 1>/dev/null 2>&1 -f
+LEX = /usr/bin/lex
+YACC = /usr/bin/yacc -d
+LN = /bin/ln -s -f
+
+SRCROOT := $(PWD)
+SRCINC := $(SRCROOT)/include
+ROOTLIB := $(DESTDIR)/usr/lib/fm
+LOGDIR := $(DESTDIR)/var/log/fm
+ERRLOGDIR := $(LOGDIR)/errlog
+FLTLOGDIR := $(LOGDIR)/fltlog
+LSTLOGDIR := $(LOGDIR)/lstlog
+INCDIR := $(DESTDIR)/usr/include/fm
+INSTDIR := $(DESTDIR)/usr/local/fms
+INSCTDIR := $(DESTDIR)/usr/local/fms/scripts
+FMDDIR := $(ROOTLIB)/fmd
+ESCDIR := $(ROOTLIB)/eversholt
+DICTDIR := $(ROOTLIB)/dict
+DICTDIRS := $(DICTDIR)/zh_CN/LC_MESSAGES
+CKPTDIR := $(ROOTLIB)/ckpt
+NOWDIR := $(CKPTDIR)/now
+PLUGDIR := $(FMDDIR)/plugins
+
+CFLAGS = -c -Wall -g -I$(SRCINC) -DFMD_DEBUG 
+#CFLAGS = -c -Wall -g 
+#CFLAGS = -c -g
+LDFLAGS = -L$(ROOTLIB) -ldl -lpthread
+
+#lib version
+LIBVER = 0.85

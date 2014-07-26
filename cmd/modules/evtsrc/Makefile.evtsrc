@@ -1,0 +1,38 @@
+# Makefile.evtsrc
+#
+# Created on: Jan 19, 2010
+#     Author: Inspur OS Team
+#
+#
+
+include ../../../Makefile.defs
+
+LDFLAGS += -L../../../../lib/libfmd \
+			-L../../../../lib/modules/libmod \
+			-L../../../../lib/modules/libevtsrc \
+			-lfmd -lfmd_module -lfmd_evtsrc
+LDFLAGS += -shared -fpic
+CFLAGS += -I../../../../include \
+	-fpic
+
+SRCS = $(wildcard *.c)
+OBJS = $(SRCS:%.c=%.o)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) $<
+
+all: $(OBJS)
+	$(CC) -o $(PROGNAME) $(LDFLAGS) $(OBJS)
+
+clean:
+	$(RM) $(OBJS) $(PROGNAME)
+
+install:
+	$(CP) $(CONFNAME) $(PLUGDIR)
+	$(CP) $(PROGNAME) $(PLUGDIR)/$(PROGNAME).$(LIBVER)
+#	$(LN) $(PLUGDIR)/$(PROGNAME).$(LIBVER) $(PLUGDIR)/$(PROGNAME)
+	$(CP) $(PROGNAME) $(PLUGDIR)/$(PROGNAME)
+
+uninstall:
+	$(RM) $(PLUGDIR)/$(PROGNAME) $(PLUGDIR)/$(CONFNAME)
+	$(RM) $(PLUGDIR)/$(PROGNAME).$(LIBVER)

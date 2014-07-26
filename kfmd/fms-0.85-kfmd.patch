@@ -1,0 +1,1949 @@
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/include/asm/mca.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/include/asm/mca.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/include/asm/mca.h	2009-06-22 10:28:14.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/include/asm/mca.h	2010-09-30 17:38:12.000000000 +0800
+@@ -154,9 +154,6 @@
+ extern void ia64_mca_printk(const char * fmt, ...)
+ 	 __attribute__ ((format (printf, 1, 2)));
+ 
+-/* Ben add */
+-void ia64_mca_recover(struct ia64_sal_os_state *);
+-
+ struct ia64_mca_notify_die {
+ 	struct ia64_sal_os_state *sos;
+ 	int *monarch_cpu;
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/kernel/mca.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/kernel/mca.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/kernel/mca.c	2009-06-22 10:28:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/kernel/mca.c	2010-09-30 17:39:13.000000000 +0800
+@@ -86,9 +86,6 @@
+ #include <linux/kdebug.h>
+ #include <linux/cpu.h>
+ 
+-/* Ben add */
+-#include <linux/fm.h>
+-
+ #include <asm/delay.h>
+ #include <asm/machvec.h>
+ #include <asm/meminit.h>
+@@ -135,9 +132,6 @@
+ 
+ unsigned long __per_cpu_mca[NR_CPUS];
+ 
+-/* Ben add, In fm.c */
+-extern int mca_event(void *);
+-
+ /* In mca_asm.S */
+ extern void			ia64_os_init_dispatch_monarch (void);
+ extern void			ia64_os_init_dispatch_slave (void);
+@@ -539,7 +533,6 @@
+ {
+ 	static unsigned long	cpe_history[CPE_HISTORY_LENGTH];
+ 	static int		index;
+-	struct mca_event_content *mca_event_cont = kzalloc(sizeof(*mca_event_cont), GFP_KERNEL);
+ 	static DEFINE_SPINLOCK(cpe_history_lock);
+ 
+ 	IA64_MCA_DEBUG("%s: received interrupt vector = %#x on CPU %d\n",
+@@ -588,11 +581,6 @@
+ 	/* Get the CPE error record and log it */
+ 	ia64_mca_log_sal_error_record(SAL_INFO_TYPE_CPE);
+ 
+-	mca_event_cont->event = CPE;
+-	/* sent event_type and log buffer */
+-
+-	mca_event(mca_event_cont);
+-
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -1250,27 +1238,6 @@
+ 	ia64_set_psr(psr);
+ }
+ 
+-/* Ben add */
+-void ia64_mca_recover(struct ia64_sal_os_state *sos)
+-{
+-	/* MCA error recovery */
+-	int recover;
+-	recover = (ia64_mca_ucmc_extension
+-		&& ia64_mca_ucmc_extension(
+-			IA64_LOG_CURR_BUFFER(SAL_INFO_TYPE_MCA),
+-			sos));
+- 
+-	if (recover) {
+-		sal_log_record_header_t *rh = IA64_LOG_CURR_BUFFER(SAL_INFO_TYPE_MCA);
+-		rh->severity = sal_log_severity_corrected;
+-		ia64_sal_clear_state_info(SAL_INFO_TYPE_MCA);
+-		sos->os_status = IA64_MCA_CORRECTED;
+-	} else {
+-		/* Dump buffered message to console */
+-		ia64_mlogbuf_finish(1);
+-	}
+-}
+-
+ /*
+  * ia64_mca_handler
+  *
+@@ -1301,7 +1268,6 @@
+ 		{ .sos = sos, .monarch_cpu = &monarch_cpu, .data = &recover };
+ 	static atomic_t mca_count;
+ 	static cpumask_t mca_cpu;
+-	struct mca_event_content *mca_event_cont = kzalloc(sizeof(*mca_event_cont), GFP_KERNEL);
+ 
+ 	if (atomic_add_return(1, &mca_count) == 1) {
+ 		monarch_cpu = cpu;
+@@ -1339,27 +1305,21 @@
+ 	/* Get the MCA error record and log it */
+ 	ia64_mca_log_sal_error_record(SAL_INFO_TYPE_MCA);
+ 	
+-	mca_event_cont->event = MCA;
+-	mca_event_cont->sos = sos;
+-	/* sent event_type and log buffer */
+-
+-	mca_event(mca_event_cont);
+-
+ 	/* MCA error recovery */
+-//	recover = (ia64_mca_ucmc_extension
+-//		&& ia64_mca_ucmc_extension(
+-//			IA64_LOG_CURR_BUFFER(SAL_INFO_TYPE_MCA),
+-//			sos));
+-//
+-//	if (recover) {
+-//		sal_log_record_header_t *rh = IA64_LOG_CURR_BUFFER(SAL_INFO_TYPE_MCA);
+-//		rh->severity = sal_log_severity_corrected;
+-//		ia64_sal_clear_state_info(SAL_INFO_TYPE_MCA);
+-//		sos->os_status = IA64_MCA_CORRECTED;
+-//	} else {
+-//		/* Dump buffered message to console */
+-//		ia64_mlogbuf_finish(1);
+-//	}
++	recover = (ia64_mca_ucmc_extension
++		&& ia64_mca_ucmc_extension(
++			IA64_LOG_CURR_BUFFER(SAL_INFO_TYPE_MCA),
++			sos));
++
++	if (recover) {
++		sal_log_record_header_t *rh = IA64_LOG_CURR_BUFFER(SAL_INFO_TYPE_MCA);
++		rh->severity = sal_log_severity_corrected;
++		ia64_sal_clear_state_info(SAL_INFO_TYPE_MCA);
++		sos->os_status = IA64_MCA_CORRECTED;
++	} else {
++		/* Dump buffered message to console */
++		ia64_mlogbuf_finish(1);
++	}
+ 
+ 	if (__get_cpu_var(ia64_mca_tr_reload)) {
+ 		mca_insert_tr(0x1); /*Reload dynamic itrs*/
+@@ -1414,7 +1374,6 @@
+ {
+ 	static unsigned long	cmc_history[CMC_HISTORY_LENGTH];
+ 	static int		index;
+-	struct mca_event_content *mca_event_cont = kzalloc(sizeof(*mca_event_cont), GFP_KERNEL);
+ 	static DEFINE_SPINLOCK(cmc_history_lock);
+ 
+ 	IA64_MCA_DEBUG("%s: received interrupt vector = %#x on CPU %d\n",
+@@ -1467,11 +1426,6 @@
+ 	/* Get the CMC error record and log it */
+ 	ia64_mca_log_sal_error_record(SAL_INFO_TYPE_CMC);
+ 
+-	mca_event_cont->event = CMC;
+-	/* sent event_type and log buffer */
+-
+-	mca_event(mca_event_cont);
+-
+ 	return IRQ_HANDLED;
+ }
+ 
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/kernel/mca_drv.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/kernel/mca_drv.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/kernel/mca_drv.c	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/kernel/mca_drv.c	2010-09-30 19:03:05.000000000 +0800
+@@ -23,6 +23,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/mm.h>
+ 
++#include <linux/fm/fm.h>
+ #include <linux/fm/protocol.h>
+ 
+ #include <asm/delay.h>
+@@ -44,6 +45,9 @@
+ /* from mca_drv_asm.S */
+ extern void *mca_handler_bhhook(void);
+ 
++/* from fm_kfmd.c */
++extern int fm_event_post_intr(struct fm_kevt *evt);
++
+ static DEFINE_SPINLOCK(mca_bh_lock);
+ 
+ typedef enum {
+@@ -480,6 +484,35 @@
+ }
+ 
+ /**
++ *  cpumem_fm_event_post - post MCA fm event
++ *  @cpuid: MCA in which cpu
++ *  @fullclass: FM event description
++ *  
++ *  After drive OS_MCA recovery operation, this function
++ *  post an UC or RC event to KFMD.
++ *
++ *  RETURNS:
++ *      none
++ */
++static void
++cpumem_fm_event_post(int cpuid, char *fullclass)
++{
++	struct fm_kevt *evt;
++
++	evt = kzalloc(sizeof(*evt), GFP_KERNEL);
++	if (!evt)
++		return;
++
++	evt->cpu = cpuid;
++	evt->fullclass = fullclass;
++
++	fm_event_post_intr(evt);
++
++	kfree(evt->fullclass);
++	kfree(evt);
++}
++
++/**
+  * recover_from_read_error - Try to recover the errors which type are "read"s.
+  * @slidx:	pointer of index of SAL error record
+  * @peidx:	pointer of index of processor error section
+@@ -591,11 +624,10 @@
+ 
+ 	cpuid = smp_processor_id();
+ 
+-//      fm_sal_log_timestamp = time;
+-
+ 	(void) snprintf(fullclass, sizeof(fullclass), "%s.cpu.intel.bus_external_%s_%s",
+ 		FM_EREPORT_CLASS, bus, fault);
+ 
++	cpumem_fm_event_post(cpuid, fullclass);
+ 	printk("cpumem_fm_event_post(%s)\n", fullclass);
+ }
+ 
+@@ -640,11 +672,10 @@
+ 
+ 	cpuid = smp_processor_id();
+ 
+-//      fm_sal_log_timestamp = time;
+-
+ 	(void) snprintf(fullclass, sizeof(fullclass), "%s.cpu.intel.l%d%s%s",
+ 		FM_EREPORT_CLASS, level, cache, faultname);
+ 
++	cpumem_fm_event_post(cpuid, fullclass);
+ 	printk("cpumem_fm_event_post(%s)\n", fullclass);
+ }
+ 
+@@ -780,8 +811,6 @@
+ 
+ 	cpuid = smp_processor_id();
+ 
+-//      fm_sal_log_timestamp = time;
+-
+ 	/*
+ 	 * Look for signature of a duplicate TLB DTC entry, which is
+ 	 * a SW bug and always fatal.
+@@ -792,7 +821,7 @@
+ 		(void) snprintf(fullclass, sizeof(fullclass), "%s.cpu.intel.l%d%s%s",
+ 			FM_EREPORT_CLASS, level, tlb, faultname);
+ 
+-//		cpumem_fm_event_post(fullclass);
++		cpumem_fm_event_post(cpuid, fullclass);
+ 		printk("cpumem_fm_event_post(%s)\n", fullclass);
+ 
+ 		return fatal_mca("Duplicate TLB entry");/* software misprograming causes illegal DTR purge */
+@@ -801,7 +830,7 @@
+ 		(void) snprintf(fullclass, sizeof(fullclass), "%s.cpu.intel.l%d%s%s",
+ 			FM_EREPORT_CLASS, level, tlb, faultname);
+ 
+-//		cpumem_fm_event_post(fullclass);
++		cpumem_fm_event_post(cpuid, fullclass);
+ 		printk("cpumem_fm_event_post(%s)\n", fullclass);
+ 
+ 		return mca_recovered("TLB check recovered");
+@@ -908,12 +937,10 @@
+ 
+ 	cpuid = smp_processor_id();
+ 
+-//      fm_sal_log_timestamp = time;
+-
+ 	(void) snprintf(fullclass, sizeof(fullclass), "%s.cpu.intel.%s_%s",
+ 		FM_EREPORT_CLASS, bus, fault);
+ 
+-//	cpumem_fm_event_post(fullclass);
++	cpumem_fm_event_post(cpuid, fullclass);
+ 	printk("cpumem_fm_event_post(%s)\n", fullclass);
+ }
+ 
+@@ -947,12 +974,10 @@
+ 
+ 	cpuid = smp_processor_id();
+ 
+-//      fm_sal_log_timestamp = time;
+-
+ 	(void) snprintf(fullclass, sizeof(fullclass), "%s.cpu.intel.%s_%s",
+ 		FM_EREPORT_CLASS, bus, fault);
+ 
+-//	cpumem_fm_event_post(fullclass);
++	cpumem_fm_event_post(cpuid, fullclass);
+ 	printk("cpumem_fm_event_post(%s)\n", fullclass);
+ }
+ 
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/kernel/setup.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/kernel/setup.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/arch/ia64/kernel/setup.c	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/arch/ia64/kernel/setup.c	2010-09-30 17:40:27.000000000 +0800
+@@ -46,9 +46,6 @@
+ #include <linux/kexec.h>
+ #include <linux/crash_dump.h>
+ 
+-/* Ben add */
+-#include <linux/fm.h>
+-
+ #include <asm/ia32.h>
+ #include <asm/machvec.h>
+ #include <asm/mca.h>
+@@ -639,9 +636,6 @@
+ 	check_sal_cache_flush();
+ #endif
+ 	paging_init();
+-
+-	/* Ben add, Fault Management System Init. */
+-	fm_init();
+ }
+ 
+ /*
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/ata/libata-eh.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/ata/libata-eh.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/ata/libata-eh.c	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/ata/libata-eh.c	2010-09-30 17:41:12.000000000 +0800
+@@ -43,6 +43,7 @@
+ #include "../scsi/scsi_transport_api.h"
+ 
+ #include <linux/libata.h>
++#include <linux/fm/fm.h>
+ 
+ #include "libata.h"
+ 
+@@ -1008,8 +1009,10 @@
+ 			struct ata_device *dev = ap->link.device;
+ 
+ 			if ((dev->class == ATA_DEV_ATAPI) &&
+-			    (dev->flags & ATA_DFLAG_AN))
++			    (dev->flags & ATA_DFLAG_AN)) {
+ 				ata_scsi_media_change_notify(dev);
++				sata_fm_event_post(&ap->link, dev, FM_EVT_MEDIA_CHANGE);
++			}	
+ 			return 0;
+ 		} else {
+ 			/* PMP is attached but SNTF is not available.
+@@ -1030,8 +1033,10 @@
+ 				continue;
+ 
+ 			if ((link->device->class == ATA_DEV_ATAPI) &&
+-			    (link->device->flags & ATA_DFLAG_AN))
++			    (link->device->flags & ATA_DFLAG_AN)) {
+ 				ata_scsi_media_change_notify(link->device);
++				sata_fm_event_post(link, link->device, FM_EVT_MEDIA_CHANGE);
++			}
+ 		}
+ 
+ 		/* If PMP is reporting that PHY status of some
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/ata/libata.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/ata/libata.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/ata/libata.h	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/ata/libata.h	2010-09-30 17:41:40.000000000 +0800
+@@ -183,6 +183,9 @@
+ extern int sata_pmp_scr_read(struct ata_link *link, int reg, u32 *val);
+ extern int sata_pmp_scr_write(struct ata_link *link, int reg, u32 val);
+ extern int sata_pmp_attach(struct ata_device *dev);
++extern void sata_fm_event_post(struct ata_link *link, 
++		struct ata_device *dev, int flag);
++	
+ #else /* CONFIG_SATA_PMP */
+ static inline int sata_pmp_scr_read(struct ata_link *link, int reg, u32 *val)
+ {
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/ata/libata-pmp.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/ata/libata-pmp.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/ata/libata-pmp.c	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/ata/libata-pmp.c	2010-09-30 19:02:28.000000000 +0800
+@@ -10,8 +10,12 @@
+ #include <linux/kernel.h>
+ #include <linux/libata.h>
+ #include <linux/fm/protocol.h>
++#include <linux/fm/fm.h>
+ #include "libata.h"
+ 
++/* from fm_kfmd.c */
++extern int fm_event_post_intr(struct fm_kevt *evt);
++
+ const struct ata_port_operations sata_pmp_port_ops = {
+ 	.inherits		= &sata_port_ops,
+ 	.pmp_prereset		= ata_std_prereset,
+@@ -798,45 +802,20 @@
+ 	return 0;
+ }
+ 
+-static int sata_pmp_handle_link_fail(struct ata_link *link, int *link_tries)
+-{
+-	struct ata_port *ap = link->ap;
+-	unsigned long flags;
+-
+-	if (link_tries[link->pmp] && --link_tries[link->pmp])
+-		return 1;
+-
+-	/* disable this link */
+-	if (!(link->flags & ATA_LFLAG_DISABLED)) {
+-		ata_link_printk(link, KERN_WARNING,
+-			"failed to recover link after %d tries, disabling\n",
+-			ATA_EH_PMP_LINK_TRIES);
+-
+-		spin_lock_irqsave(ap->lock, flags);
+-		link->flags |= ATA_LFLAG_DISABLED;
+-		spin_unlock_irqrestore(ap->lock, flags);
+-	}
+-
+-	ata_dev_disable(link->device);
+-	link->eh_context.i.action = 0;
+-
+-	return 0;
+-}
+-
+ /**
+- *	sata_fm_event_post - port sata fm event
++ *  sata_fm_event_post - post sata fm event
+  *  @link: ATA link to recover
+- *	@dev: SATA device to be recovered
+- *	@recoverd: 0 on UC event, 1 on RC event
+- *	
+- *	After drive EH recovery operation for PMP enabled port, this
+- *  function post an UC or RC event to user space FMD.
++ *  @dev: SATA device to be recovered
++ *  @recoverd: 0 on UC event, 1 on RC event, 2 on Media Change event
++ *  
++ *  After drive EH recovery operation for PMP enabled port, this
++ *  function post an UC or RC event to KFMD.
+  *
+  *  RETURNS:
+- *  	none
++ *      none
+  */
+-static void
+-sata_fm_event_post(struct ata_link *link, struct ata_device *dev, int recoverd)
++void
++sata_fm_event_post(struct ata_link *link, struct ata_device *dev, int flag)
+ {
+ 	char *recover = NULL;
+ 	char const *faultname = NULL;
+@@ -845,6 +824,12 @@
+ 	unsigned int printid;
+ 	unsigned int dev_no;
+ 
++	struct fm_kevt *evt;
++
++	evt = kzalloc(sizeof(*evt), GFP_KERNEL);
++	if (!evt)
++		return;
++
+ 	printid = dev->link->ap->print_id;
+ 	dev_no = dev->link->pmp + dev->devno;
+ 
+@@ -854,16 +839,55 @@
+ //  faultname = ata_err_string(qc->err_mask);       /* qc? */
+ 	faultname = ata_err_string(link->eh_info.err_mask);
+ 
+-	if (recoverd == 1)
+-		recover = "_rc";
+-	else if (recoverd == 0)
+-		recover = "_uc";
++	if (flag == FM_EVT_MEDIA_CHANGE)
++		(void) snprintf(fullclass, sizeof(fullclass), "%s.io.sata.disk.media_change",
++			FM_EREPORT_CLASS);
++	else {
++		if (flag == FM_EVT_UC)
++			recover = "_uc";
++		else if (flag == FM_EVT_RC)
++			recover = "_rc";
++
++		(void) snprintf(fullclass, sizeof(fullclass), "%s.io.sata.disk.%s%s",
++			FM_EREPORT_CLASS, faultname, recover);
++	}
++
++	evt->flags = flag;
++	evt->device = fm_device;
++	evt->fullclass = fullclass;
++
++	fm_event_post_intr(evt);
++	printk("sata_fm_event_post_intr(%s)\n", fullclass);
++
++	kfree(evt->device);
++	kfree(evt->fullclass);
++	kfree(evt);
++}
+ 
+-	(void) snprintf(fullclass, sizeof(fullclass), "%s.io.sata.disk.%s%s",
+-		FM_EREPORT_CLASS, faultname, recover);
++static int sata_pmp_handle_link_fail(struct ata_link *link, int *link_tries)
++{
++	struct ata_port *ap = link->ap;
++	unsigned long flags;
+ 
+-//  sata_fm_event_post(fullclass);
+-	printk("sata_fm_event_post(%s)\n", fullclass);
++	if (link_tries[link->pmp] && --link_tries[link->pmp])
++		return 1;
++
++	/* disable this link */
++	if (!(link->flags & ATA_LFLAG_DISABLED)) {
++		ata_link_printk(link, KERN_WARNING,
++			"failed to recover link after %d tries, disabling\n",
++			ATA_EH_PMP_LINK_TRIES);
++
++		spin_lock_irqsave(ap->lock, flags);
++		link->flags |= ATA_LFLAG_DISABLED;
++		spin_unlock_irqrestore(ap->lock, flags);
++	}
++
++	sata_fm_event_post(link, link->device, FM_EVT_UC);
++//	ata_dev_disable(link->device);
++	link->eh_context.i.action = 0;
++
++	return 0;
+ }
+ 
+ /**
+@@ -891,11 +915,10 @@
+ 	u32 *gscr = pmp_dev->gscr;
+ 	struct ata_link *link;
+ 	struct ata_device *dev;
+-	struct ata_device *dev1;
++//	struct ata_device *dev1;
+ 	unsigned int err_mask;
+ 	u32 gscr_error, sntf;
+ 	int cnt, rc;
+-//	int all, part;
+ 
+ 	pmp_tries = ATA_EH_PMP_TRIES;
+ 	ata_port_for_each_link(link, ap)
+@@ -908,14 +931,14 @@
+ 				    ops->hardreset, ops->postreset, NULL);
+ 		if (rc) {
+ 			ata_link_for_each_dev(dev, &ap->link) {
+-				sata_fm_event_post(pmp_link, dev, 0);
+-				ata_dev_disable(dev);
++				sata_fm_event_post(pmp_link, dev, FM_EVT_UC);
++//				ata_dev_disable(dev);
+ 			}
+ 			return rc;
+ 		}
+ 
+ 		if (pmp_dev->class != ATA_DEV_PMP) {
+-			sata_fm_event_post(pmp_link, pmp_dev, 1);
++			sata_fm_event_post(pmp_link, pmp_dev, FM_EVT_RC);
+ 
+ 			return 0;
+ 		}
+@@ -960,8 +983,8 @@
+ 	if (rc)
+ 		goto link_fail;
+ 
+-	if (rc == 0)	/* Recover success. */
+-		sata_fm_event_post(link, link->device, 1);
++//	if (rc == 0)	/* Recover success. */
++//		sata_fm_event_post(link, link->device, FM_EVT_RC);
+ 
+ 	/* Connection status might have changed while resetting other
+ 	 * links, check SATA_PMP_GSCR_ERROR before returning.
+@@ -1010,7 +1033,7 @@
+ 			ata_link_printk(link, KERN_WARNING,
+ 				"Manully issue scan to resume this link\n");
+ 
+-			sata_fm_event_post(link, link->device, 0);
++			sata_fm_event_post(link, link->device, FM_EVT_UC);
+ 		}
+ 	}
+ 
+@@ -1020,6 +1043,9 @@
+ 		goto retry;
+ 	}
+ 
++	/* Recover success. */
++	sata_fm_event_post(link, link->device, FM_EVT_RC);
++
+ 	return 0;
+ 
+  link_fail:
+@@ -1048,12 +1074,13 @@
+ 			"failed to recover PMP after %d tries, giving up\n",
+ 			ATA_EH_PMP_TRIES);
+ 
+-	ata_link_for_each_dev(dev1, &ap->link) {
+-		sata_fm_event_post(&ap->link, dev1, 0);
+-	}
++//	ata_link_for_each_dev(dev1, &ap->link) {
++//		sata_fm_event_post(&ap->link, dev1, FM_EVT_UC);
++//	}
+ 
+ 	sata_pmp_detach(pmp_dev);
+-	ata_dev_disable(pmp_dev);
++	sata_fm_event_post(pmp_link, pmp_dev, FM_EVT_UC);
++//	ata_dev_disable(pmp_dev);
+ 
+ 	return rc;
+ }
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/md/dm-mpath.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/md/dm-mpath.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/md/dm-mpath.c	2009-06-22 10:29:25.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/md/dm-mpath.c	2010-09-30 17:43:20.000000000 +0800
+@@ -23,21 +23,9 @@
+ #include <scsi/scsi_dh.h>
+ #include <asm/atomic.h>
+ 
+-#include <linux/notifier.h>
+-
+ #define DM_MSG_PREFIX "multipath"
+ #define MESG_STR(x) x, sizeof(x)
+ 
+-#define path_to_pgpath(__pgp) container_of((__pgp), struct pgpath, path)
+-
+-/*
+- * Context information attached to each bio we process.
+- */
+-struct dm_mpath_io {
+-	struct pgpath *pgpath;
+-	struct dm_bio_details details;
+-};
+-
+ /* Path properties */
+ struct pgpath {
+ 	struct list_head list;
+@@ -50,6 +38,8 @@
+ 	struct work_struct deactivate_path;
+ };
+ 
++#define path_to_pgpath(__pgp) container_of((__pgp), struct pgpath, path)
++
+ /*
+  * Paths are grouped into Priority Groups and numbered from 1 upwards.
+  * Each has a path selector which controls which path gets used.
+@@ -107,6 +97,14 @@
+ 	mempool_t *mpio_pool;
+ };
+ 
++/*
++ * Context information attached to each bio we process.
++ */
++struct dm_mpath_io {
++	struct pgpath *pgpath;
++	struct dm_bio_details details;
++};
++
+ typedef int (*action_fn) (struct pgpath *pgpath);
+ 
+ #define MIN_IOS 256	/* Mempool size */
+@@ -119,8 +117,6 @@
+ static void activate_path(struct work_struct *work);
+ static void deactivate_path(struct work_struct *work);
+ 
+-extern int fm_notifier_call_chain(unsigned long, void *);
+-
+ 
+ /*-----------------------------------------------
+  * Allocation routines
+@@ -866,24 +862,6 @@
+ 	return r;
+ }
+ 
+-#if 0
+-/* Ben add */
+-int isolate_path(struct pgpath *pgpath)
+-{
+-	struct multipath *m = pgpath->pg->m;
+-	
+-	pgpath->is_active = 0;
+-	pgpath->fail_count++;
+-	
+-	m->nr_valid_paths--;
+-
+-	if (pgpath == m->current_pgpath)
+-		m->current_pgpath = NULL;
+-	
+-	return 0;
+-}
+-#endif
+-
+ /*
+  * Take a path out of use.
+  */
+@@ -900,12 +878,17 @@
+ 	DMWARN("Failing path %s.", pgpath->path.dev->name);
+ 
+ 	pgpath->pg->ps.type->fail_path(&pgpath->pg->ps, &pgpath->path);
+-	
+-	fm_notifier_call_chain(MPATH_EVENT, pgpath);
+-	
++	pgpath->is_active = 0;
++	pgpath->fail_count++;
++
++	m->nr_valid_paths--;
++
++	if (pgpath == m->current_pgpath)
++		m->current_pgpath = NULL;
++
+ 	dm_path_uevent(DM_UEVENT_PATH_FAILED, m->ti,
+ 		      pgpath->path.dev->name, m->nr_valid_paths);
+-	
++
+ 	queue_work(kmultipathd, &m->trigger_event);
+ 	queue_work(kmultipathd, &pgpath->deactivate_path);
+ 
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/md/dm-mpath.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/md/dm-mpath.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/md/dm-mpath.h	2009-06-22 10:29:22.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/md/dm-mpath.h	2010-09-30 17:43:38.000000000 +0800
+@@ -9,15 +9,7 @@
+ #ifndef	DM_MPATH_H
+ #define	DM_MPATH_H
+ 
+-#include "dm.h"
+-#include "dm-path-selector.h"
+-#include "dm-bio-list.h"
+-#include "dm-bio-record.h"
+-#include "dm-uevent.h"
+-
+ struct dm_dev;
+-//struct pgpath;
+-//struct multipath;
+ 
+ struct dm_path {
+ 	struct dm_dev *dev;	/* Read-only */
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/net/bonding/bonding.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/net/bonding/bonding.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/net/bonding/bonding.h	2009-06-22 10:29:17.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/net/bonding/bonding.h	2010-09-30 17:44:27.000000000 +0800
+@@ -248,6 +248,12 @@
+ 	return (struct bonding *)slave->dev->master->priv;
+ }
+ 
++static inline bool bond_is_lb(const struct bonding *bond)
++{
++        return bond->params.mode == BOND_MODE_TLB
++                || bond->params.mode == BOND_MODE_ALB;
++}
++
+ #define BOND_FOM_NONE			0
+ #define BOND_FOM_ACTIVE			1
+ #define BOND_FOM_FOLLOW			2
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/net/bonding/bond_main.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/net/bonding/bond_main.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/drivers/net/bonding/bond_main.c	2009-06-22 10:29:17.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/drivers/net/bonding/bond_main.c	2010-09-30 17:44:57.000000000 +0800
+@@ -77,7 +77,6 @@
+ #include <linux/jiffies.h>
+ #include <net/route.h>
+ #include <net/net_namespace.h>
+-#include <linux/notifier.h>
+ #include "bonding.h"
+ #include "bond_3ad.h"
+ #include "bond_alb.h"
+@@ -203,8 +202,6 @@
+ static void bond_send_gratuitous_arp(struct bonding *bond);
+ static void bond_deinit(struct net_device *bond_dev);
+ 
+-extern int fm_notifier_call_chain(unsigned long, void *);
+-
+ /*---------------------------- General routines -----------------------------*/
+ 
+ static const char *bond_mode_name(int mode)
+@@ -2398,9 +2395,6 @@
+ 
+ 			slave->link = BOND_LINK_DOWN;
+ 
+-			fm_notifier_call_chain(NETPATH_EVENT_MII, bond);////////////
+-			/* finish all blocks until NOTIFY_DONE. */
+-
+ 			if (bond->params.mode == BOND_MODE_ACTIVEBACKUP ||
+ 			    bond->params.mode == BOND_MODE_8023AD)
+ 				bond_set_slave_inactive_flags(slave);
+@@ -3024,8 +3018,6 @@
+ 				slave->link_failure_count++;
+ 
+ 			slave->link = BOND_LINK_DOWN;
+-			
+-			fm_notifier_call_chain(NETPATH_EVENT_ARP, bond);////////////
+ 
+ 			if (slave == bond->curr_active_slave) {
+ 				printk(KERN_INFO DRV_NAME
+@@ -3544,11 +3536,26 @@
+ 		}
+ 		break;
+ 	case NETDEV_CHANGE:
+-		/*
+-		 * TODO: is this what we get if somebody
+-		 * sets up a hierarchical bond, then rmmod's
+-		 * one of the slave bonding devices?
+-		 */
++		if (bond->params.mode == BOND_MODE_8023AD || bond_is_lb(bond)) {
++			struct slave *slave;
++
++			slave = bond_get_slave_by_dev(bond, slave_dev);
++			if (slave) {
++				u16 old_speed = slave->speed;
++				u16 old_duplex = slave->duplex;
++
++				bond_update_speed_duplex(slave);
++
++				if (bond_is_lb(bond))
++					break;
++
++				if (old_speed != slave->speed)
++					bond_3ad_adapter_speed_changed(slave);
++				if (old_duplex != slave->duplex)
++					bond_3ad_adapter_duplex_changed(slave);
++			}
++		}
++
+ 		break;
+ 	case NETDEV_DOWN:
+ 		/*
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm.c	2009-06-22 10:28:26.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm.c	1970-01-01 08:00:00.000000000 +0800
+@@ -1,443 +0,0 @@
+-#include "../drivers/md/dm-mpath.h"
+-#include "../drivers/net/bonding/bonding.h"
+-#include "../arch/ia64/include/asm/mca.h"
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/notifier.h>
+-#include <linux/init.h>
+-#include <linux/fm.h>
+-
+-static RAW_NOTIFIER_HEAD(fm_chain);
+-
+-/*
+- * Handle MCA error.
+- */
+-static void mca_detection(struct fm *mca_fm, void *ptr)
+-{
+-	struct mca_event_content *mca_event_cont = ptr;
+-	struct ia64_sal_os_state *sos = mca_event_cont->sos;
+-	int event = mca_event_cont->event;
+-	
+-	switch (event) {
+-		case CMC:
+-			//struct .. *.. = ptr;
+-			//struct .. *..;
+-			
+-			/* Log */
+-			break;
+-		case CPE:
+-			//struct .. *.. = ptr;
+-			//struct .. *..;
+-
+-			/* Log */
+-			break;
+-		case MCA:
+-			//struct ia64_sal_os_state *sos = ptr;
+-			//struct ia64_sal_os_state *sos = mca_event_cont->sos;	
+-			
+-			//mca_fm->ops->diagnosis(mca_fm, sos);
+-			mca_fm->ops->recovery(mca_fm, sos);
+-			break;
+-	}
+-	return;
+-}
+-
+-static void mca_diagnosis(struct fm *mca_fm, void *ptr)
+-{
+-//	struct .. *.. = ptr;
+-//	struct .. *.. = ..->..;
+-//					/* todo later */
+-//	/* Recieve record buffer */
+-//	mca_fm->ops->recovery(mca_fm, ..);
+-}
+-
+-static void mca_isolation(struct fm *mca_fm, void *ptr)
+-{
+-	/* MCA need isolation? todo */
+-}
+-
+-static void mca_os_recovery(struct fm *mca_fm, void *ptr)
+-{
+-	struct ia64_sal_os_state *sos = ptr;
+-	
+-	/* In mca.c */
+-	ia64_mca_recover(sos);
+-	/* Tell the user. */
+-	/* Log. */
+-}
+-
+-static void mca_repair(struct fm *mca_fm, void *ptr)
+-{
+-
+-}
+-
+-static void mca_prediction(struct fm *mca_fm, void *ptr)
+-{
+-
+-}
+-   
+-/*
+- * Handle multipath I/O error.
+- */
+-static void mpath_detection(struct fm *mpath_fm, void *ptr)
+-{
+-	mpath_fm->ops->diagnosis(mpath_fm, ptr);
+-	return;
+-}
+-
+-static void mpath_diagnosis(struct fm *mpath_fm, void *ptr)
+-{
+-	struct pgpath_diagnosis *pgpath_diag = ptr;
+-	struct pgpath *pgpath = pgpath_diag->pgpath;
+-
+-//	char dev_name[16];
+-//	dev_name[0]= pgpath->path.dev->name;
+-//	printk(KERN_INFO "DM_NAME : %s is failure\n", dev_name);
+-	
+-	if (pgpath_diag->flag) {
+-		mpath_fm->ops->isolation(mpath_fm, pgpath);
+-		return;
+-	} else {
+-		mpath_fm->ops->repair(mpath_fm, pgpath);
+-		return;
+-	}
+-}
+-
+-static int isolate_path(struct pgpath *pgpath)
+-{
+-	struct multipath *m = pgpath->pg->m;
+-
+-	pgpath->is_active = 0;
+-	pgpath->fail_count++;
+-
+-	m->nr_valid_paths--;
+-
+-	if (pgpath == m->current_pgpath)
+-		m->current_pgpath = NULL;
+-
+-	return 0;
+-}
+-
+-static void mpath_isolation(struct fm *mpath_fm, void *ptr)
+-{
+-	struct pgpath *pgpath = ptr;
+-	
+-	isolate_path(pgpath);
+-	mpath_fm->ops->recovery(mpath_fm, ptr);
+-	return;
+-}
+-
+-static void mpath_recovery(struct fm *mpath_fm, void *ptr)
+-{
+-//	struct pgpath *pgpath = ptr;
+-	/* How to recover? */
+-	/* Tell the user. */
+-	/* Log. */
+-	return;
+-}
+-
+-static void mpath_repair(struct fm *mpath_fm, void *ptr)
+-{
+-//	struct pgpath *pgpath = ptr;
+-	/* Repair */
+-	return;
+-}
+-
+-static void mpath_prediction(struct fm *mpath_fm, void *ptr)
+-{
+-//      struct pgpath *pgpath = ptr;
+-        return;
+-}
+-
+-/*
+- * Handle bonding error.
+- */
+-static void netpath_detection(struct fm *netpath_fm, void *ptr)
+-{
+-	netpath_fm->ops->diagnosis(netpath_fm, ptr);
+-	return;
+-}
+-
+-static void netpath_diagnosis(struct fm *netpath_fm, void *ptr)
+-{
+-	struct bond_diagnosis *bond_diag = ptr;
+-	struct bonding *bond = bond_diag->bond;
+-	
+-	if (bond_diag->flag) {
+-		netpath_fm->ops->isolation(netpath_fm, bond);
+-	} else {
+-		netpath_fm->ops->repair(netpath_fm, bond);
+-	}
+-}
+-
+-static void netpath_isolation(struct fm *netpath_fm, void *ptr)
+-{
+-//	struct bonding *bond = ptr;
+-	/* How to isolate? */
+-	netpath_fm->ops->recovery(netpath_fm, ptr);
+-}
+-
+-static void netpath_recovery(struct fm *netpath_fm, void *ptr)
+-{
+-//      struct bonding *bond = ptr;
+-	/* How to recover? */
+-	/* Tell the user. */
+-	/* Log. */
+-}
+-
+-static void netpath_repair(struct fm *netpath_fm, void *ptr)
+-{
+-//      struct bonding *bond = ptr;
+-        /* Repair */
+-}
+-
+-static void netpath_prediction(struct fm *netpath_fm, void *ptr)
+-{
+-//      struct bonding *bond = ptr;
+-}
+-
+-/*
+- * Handle scm error.
+- */
+-static void scm_detection(struct fm *scm_fm, void *ptr)
+-{
+-	
+-}
+-
+-static void scm_diagnosis(struct fm *scm_fm, void *ptr)
+-{
+- 
+-}
+-
+-static void scm_isolation(struct fm *scm_fm, void *ptr)
+-{
+-
+-}
+-
+-static void scm_recovery(struct fm *scm_fm, void *ptr)
+-{
+-
+-}
+-
+-static void scm_repair(struct fm *scm_fm, void *ptr)
+-{
+-
+-}
+-
+-static void scm_prediction(struct fm *scm_fm, void *ptr)
+-{
+-
+-}
+-
+-/*-------------------------------------------------------------
+- * Module setup
+- *-----------------------------------------------------------*/
+-static struct fm_operations mca_ops = {
+-	.detection  = mca_detection,
+-	.diagnosis  = mca_diagnosis,
+-	.isolation  = mca_isolation,
+-	.recovery   = mca_os_recovery,
+-	.repair     = mca_repair,
+-	.prediction = mca_prediction,
+-};
+-
+-static struct fm_operations mpath_ops = {
+-	.detection  = mpath_detection,
+-	.diagnosis  = mpath_diagnosis,
+-	.isolation  = mpath_isolation,
+-	.recovery   = mpath_recovery,
+-	.repair     = mpath_repair,
+-	.prediction = mpath_prediction,
+-};
+-
+-static struct fm_operations netpath_ops = {
+-	.detection  = netpath_detection,
+-	.diagnosis  = netpath_diagnosis,
+-	.isolation  = netpath_isolation,
+-	.recovery   = netpath_recovery,
+-	.repair     = netpath_repair,
+-	.prediction = netpath_prediction,
+-};
+-
+-static struct fm_operations scm_ops = {
+-	.detection  = scm_detection,
+-	.diagnosis  = scm_diagnosis,
+-	.isolation  = scm_isolation,
+-	.recovery   = scm_recovery,
+-	.repair     = scm_repair,
+-	.prediction = scm_prediction,
+-};
+-
+-static struct fm mca_fm = {
+-	.ops = &mca_ops,
+-};
+-
+-static struct fm mpath_fm = {
+-	.ops = &mpath_ops,
+-};
+-
+-static struct fm netpath_fm = {
+-	.ops = &netpath_ops,
+-};
+-
+-static struct fm scm_fm = {
+-	.ops = &scm_ops,
+-};
+-
+-/*
+- * Handle mca event.
+- */
+-int mca_event(void *ptr)
+-{
+-	mca_fm.ops->detection(&mca_fm, ptr);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(mca_event);
+-
+-/*
+- * Handle the trigger event.
+- */
+-#define TO_REPAIR	0
+-#define TO_ISOLATION    1
+-
+-int fm_event(struct notifier_block *this, unsigned long event,
+-                             void *ptr)
+-{
+-	struct pgpath *pgpath;
+-	struct pgpath_diagnosis *pgpath_diag;
+-	struct bonding *bond;
+-	struct bond_diagnosis *bond_diag;
+-
+-	switch (event) {
+-                case MPATH_EVENT:
+-			pgpath_diag = kzalloc(sizeof(*pgpath_diag), GFP_KERNEL);
+-			if (!pgpath_diag) {
+-				return -ENOMEM;
+-			}
+-
+-			pgpath = ptr;
+-			pgpath_diag->pgpath = pgpath;
+-			pgpath_diag->flag = TO_ISOLATION;
+-			mpath_fm.ops->detection(&mpath_fm, pgpath_diag);
+-			kfree(pgpath_diag);
+-			pgpath_diag = NULL;
+-			break;
+-		case MPATH_REPAIR:
+-			pgpath_diag = kzalloc(sizeof(*pgpath_diag), GFP_KERNEL);
+-			if (!pgpath_diag) {
+-				return -ENOMEM;
+-			}
+-			
+-			pgpath = ptr;
+-			pgpath_diag->pgpath = pgpath;
+-			pgpath_diag->flag = TO_REPAIR;
+-			mpath_fm.ops->detection(&mpath_fm, pgpath_diag);
+-			kfree(pgpath_diag);
+-			pgpath_diag = NULL;
+-			break;
+-                case NETPATH_EVENT_MII:
+-                        bond_diag = kzalloc(sizeof(*bond_diag), GFP_KERNEL);
+-			if (!bond_diag) {
+-				return -ENOMEM;
+-			}
+-			
+-			bond = ptr;
+-			bond_diag->bond = bond;
+-			bond_diag->flag = TO_ISOLATION;
+-			netpath_fm.ops->detection(&netpath_fm, bond_diag);
+-                        kfree(bond_diag);
+-			bond_diag = NULL;
+-			break;
+-		case NETPATH_EVENT_ARP:
+-			bond_diag = kzalloc(sizeof(*bond_diag), GFP_KERNEL);
+-			if (!bond_diag) {
+-				return -ENOMEM;
+-			}
+-			
+-			bond = ptr;
+-			bond_diag->bond = bond;
+-			bond_diag->flag = TO_ISOLATION;
+-			netpath_fm.ops->detection(&netpath_fm, bond_diag);
+-			kfree(bond_diag);
+-			bond_diag = NULL;
+-			break;
+-		case NETPATH_REPAIR:
+-			bond_diag = kzalloc(sizeof(*bond_diag), GFP_KERNEL);
+-			if (!bond_diag) {
+-				return -ENOMEM;
+-			}
+-			
+-			bond = ptr;
+-			bond_diag->bond = bond;
+-			bond_diag->flag = TO_REPAIR;
+-			netpath_fm.ops->detection(&netpath_fm, bond_diag);
+-			kfree(bond_diag);
+-			bond_diag = NULL;
+-			break;
+-                case SCM_EVENT:
+-                        
+-			/* todo */
+-                        break;
+-        }
+-        return NOTIFY_DONE;
+-}
+-
+-#if 0
+-static struct notifier_block mpath_notifier = {
+-	.notifier_call = fm_event,
+-};
+-
+-static struct notifier_block netpath_notifier = {
+-	.notifier_call = fm_event,
+-};
+-#endif
+-
+-static int register_fm_notifier(struct notifier_block *nb)
+-{
+-        int err;
+-	err = raw_notifier_chain_register(&fm_chain, nb);
+-	if (err) {
+-		goto ret;
+-	} else {
+-		goto rollback;
+-	}
+-
+-ret:
+-	return err;
+-
+-rollback:
+-	raw_notifier_chain_unregister(&fm_chain, nb);
+-	goto ret;
+-}       
+-
+-//static int unregister_fm_notifier(struct notifier_block *nb)
+-//{       
+-//	return raw_notifier_chain_unregister(&fm_chain, nb);
+-//}
+-
+-int fm_notifier_call_chain(unsigned long val, void *ptr)
+-{
+-	return raw_notifier_call_chain(&fm_chain, val, ptr);
+-}
+-EXPORT_SYMBOL(fm_notifier_call_chain);
+-
+-/*--------------------------------------------------------------
+- * Fault Management System init
+- *------------------------------------------------------------*/
+-void __init fm_init(void)
+-{
+-	static struct notifier_block mpath_notifier = {
+-		.notifier_call = fm_event,
+-	};
+-	static struct notifier_block netpath_notifier = {
+-		.notifier_call = fm_event,
+-	};
+-
+-//	ia64_mca_init();
+-//	ia64_mca_late_init();	//or device_initcall(ia64_mca_late_init);
+-	register_fm_notifier(&mpath_notifier);
+-	register_fm_notifier(&netpath_notifier);
+-}
+-
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm_kfmd.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm_kfmd.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm_kfmd.c	1970-01-01 08:00:00.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm_kfmd.c	2010-09-30 19:09:23.000000000 +0800
+@@ -0,0 +1,375 @@
++/*
++ * fm_kfmd.c
++ *
++ * Copyright (C) 2009 Inspur, Inc.  All rights reserved.
++ * Copyright (C) 2009-2010 Fault Managment System Development Team
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/sched.h>
++#include <linux/list.h>
++#include <linux/kthread.h>
++#include <linux/socket.h>
++#include <linux/skbuff.h>
++#include <net/sock.h>
++#include <net/netlink.h>
++
++#include <linux/fm/fm.h>
++#include "fm_proc.h"
++
++struct sock *fm_sk = NULL;
++struct task_struct *kfmd;
++struct task_struct *kfmd_s;
++
++int sd_r, sd_rs;
++struct sockaddr_nl daddr_r;
++struct sockaddr_nl daddr_rs;
++struct nlmsghdr *nlhdr_r = NULL; /* malloc at channel create */
++struct nlmsghdr *nlhdr_rs = NULL; /* malloc at channel create */
++struct socket *fm_socket_r;
++struct socket *fm_socket_rs;
++
++/* the follow for 2 kfmd sync */
++static int master = 0;	//counter for master
++static int slave  = 0;	//counter for slave
++
++static struct task_struct *pmaster = NULL;
++static struct timer_list timer;
++
++/*check every 1s for each other */
++#define INTERVAL_TIME (jiffies + 2000)
++/* if 5s diden't update, slave will take charge */
++#define FAILURE_TIME  5	
++
++DEFINE_SPINLOCK(list_lock);
++static struct msg_head{
++	struct execute_work ew;
++	struct list_head head;
++}	msg_head;
++
++struct msg_entry {
++	struct fm_kevt *ev;
++	struct list_head list;
++};
++
++void kfmd_switch(struct sk_buff *skb)
++{
++	//TODO:may need length check, but
++	struct nlmsghdr *nlh;
++	int type;
++	nlh = (struct nlmsghdr *)skb->data;
++	type = *(int *)NLMSG_DATA(nlh);
++	switch(type)
++	{
++		case FM_ON:
++			mod_timer(&timer, jiffies);	/* activate timer */
++			printk("turn fm_netlink heartbeat on\n");
++			break;
++
++		case FM_OFF:
++			del_timer_sync(&timer);
++			printk("turn fm_netlink heartbeat off\n");
++			break;
++	}
++}
++
++static int fm_channel_create(void)
++{
++	int ret = 0;
++	/* crelate NETLINK sock */
++	fm_sk = netlink_kernel_create(&init_net, NETLINK_KFMD, 1, kfmd_switch, NULL, THIS_MODULE);
++
++	if (!fm_sk) {
++		printk(KERN_ERR "fm_channel: Cannot create netlink socket.\n");
++		return -EIO;
++	}
++	printk("fm_channel: create socket ok.\n");
++
++	sd_r = sock_create_kern(PF_NETLINK, SOCK_RAW, NETLINK_KFMD, &fm_socket_r);
++	if (sd_r < 0)
++	{
++		printk("socket sd_r create error\n");
++		ret = -EIO;
++		goto err_sd_r;
++	}
++	nlhdr_r = (struct nlmsghdr *)kmalloc(NLMSG_SPACE(FM_MAX_MSGSIZE), GFP_KERNEL);
++	if (nlhdr_r == NULL)
++	{
++		printk("malloc failure, kfmd exit.\n");
++		ret = -ENOMEM;
++		goto err_nlhdr_r;
++	}
++	daddr_r.nl_family = AF_NETLINK;
++	daddr_r.nl_pid 	= 0;
++	daddr_r.nl_groups	= 1;
++	if (kernel_bind(fm_socket_r, (struct sockaddr *)&daddr_r, sizeof(daddr_r)) < 0)
++	{
++		printk("kfmd: bind fm_socket_r error, exit\n");
++		ret = -EINVAL;
++		goto err_bind_r;
++	}
++
++	sd_rs = sock_create_kern(PF_NETLINK, SOCK_RAW, NETLINK_KFMD, &fm_socket_rs);
++	if (sd_rs < 0)
++	{
++		printk("socket create error\n");
++		ret = -EIO;
++		goto err_bind_r;
++	}
++	nlhdr_rs = (struct nlmsghdr *)kmalloc(NLMSG_SPACE(FM_MAX_MSGSIZE), GFP_KERNEL);
++	if (nlhdr_rs == NULL)
++	{
++		printk("malloc failure, kfmd exit.\n");
++		ret = -ENOMEM;
++		goto err_nlhdr_rs;
++	}
++	daddr_rs.nl_family = AF_NETLINK;
++	daddr_rs.nl_pid 	= 0;
++	daddr_rs.nl_groups	= 1;
++	if (kernel_bind(fm_socket_rs, (struct sockaddr *)&daddr_rs, sizeof(daddr_rs)) < 0)
++	{
++		printk("kfmd: bind fm_socket_rs error, exit\n");
++		ret = -EINVAL;
++		goto err;
++	}
++	return 0;
++err:
++	kfree(nlhdr_rs);
++err_nlhdr_rs:
++//	close(sd_rs);
++err_bind_r:
++	kfree(nlhdr_r);
++err_nlhdr_r:
++//	close(sd_r);
++err_sd_r:
++	sock_release(fm_sk->sk_socket);
++	return ret;
++}
++
++/* is evt need to be processed in kernel? */
++static int need_to_process(struct fm_kevt *ev)
++{
++	return 0;
++}
++
++/* send message to netlink endpoing.
++ * used in process context, send one message once */
++void fm_event_post_proc(struct fm_kevt *ev)
++{
++	struct sk_buff *skb;
++	struct nlmsghdr *nlh;
++	size_t len;
++	char *p;
++
++	len = NLMSG_SPACE(sizeof(*ev));
++	skb = alloc_skb(len, GFP_KERNEL);
++
++	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
++	p = NLMSG_DATA(nlh);
++	memcpy(p, (char *)ev, len);
++	len = netlink_broadcast(fm_sk, skb, 0, 1, GFP_KERNEL);
++}
++EXPORT_SYMBOL(fm_event_post_proc);
++
++/* executed in kevent process context,
++   check the kevt to be processed or to be forward to fmd
++   */
++static void send_msg( struct work_struct *work)
++{
++	struct msg_entry *me;
++
++do_again:
++	list_for_each_entry(me, &msg_head.head, list)
++	{
++		spin_lock(&list_lock);
++		/* messup the point , need to goto*/
++		list_del_init(&me->list);
++		spin_unlock(&list_lock);
++		/* processed the evt */
++		if (!need_to_process(me->ev))
++			fm_event_post_proc(me->ev);
++		kfree(me->ev);
++		kfree(me);
++		goto do_again;
++	}
++}
++
++/*
++	call this to send evt to all listening process. 
++	export it  to other module to use this func to post 
++	message in INTERRUPT context.
++	queue evt into the msg_head, and deffed to kevent
++	to send this message
++*/
++int fm_event_post_intr(struct fm_kevt *evt)
++{
++	struct fm_kevt *e;
++	struct msg_entry *me;
++
++	me = kmalloc(sizeof(*me), GFP_ATOMIC);
++	e  = kmalloc(sizeof(* e), GFP_ATOMIC);
++	if (!me || !e)
++		return -ENOMEM;
++	memcpy((char *)e, (char *)evt, sizeof(*evt));
++	me->ev = e;
++
++	_spin_lock_irq(&list_lock);
++	list_add(&me->list, &msg_head.head);
++	_spin_unlock_irq(&list_lock);
++
++	if (likely(!work_pending(&msg_head.ew.work)))
++		execute_in_process_context(send_msg, &msg_head.ew);
++	return 0;
++}
++EXPORT_SYMBOL(fm_event_post_intr);
++
++/* main kfmd thread */
++static int kfmd_run(void *data)
++{
++	struct fm_kevt *kevt;
++	struct kvec vec;
++	struct msghdr msg;
++	int ret;
++
++	struct socket *fm_socket;
++	struct sockaddr_nl *daddr;
++	struct nlmsghdr *nlhdr;
++
++	if (master == 0)
++	{
++		master = 1;
++		pmaster = current;
++		fm_socket = fm_socket_r;
++		daddr = &daddr_r;
++		nlhdr = nlhdr_r;
++	}else{
++		fm_socket = fm_socket_rs;
++		daddr = &daddr_rs;
++		nlhdr = nlhdr_rs;
++	}
++	while (1) {
++		if (kthread_should_stop())
++			break;
++		memset(nlhdr, 0, NLMSG_SPACE(FM_MAX_MSGSIZE));
++		memset(&msg, 0, sizeof(struct msghdr));
++		vec.iov_base = (void *)nlhdr;
++		vec.iov_len  = NLMSG_SPACE(FM_MAX_MSGSIZE);
++		msg.msg_name = (void *)daddr;
++		msg.msg_namelen=sizeof(daddr);
++		ret = kernel_recvmsg(fm_socket, &msg, &vec, 1, vec.iov_len, 0);
++		if (ret < 0)
++			continue;
++		kevt = (struct fm_kevt *)NLMSG_DATA(nlhdr);
++		switch (kevt->type)
++		{
++			case FM_DEBUG:
++				printk("I'am  %s(%p, %d): %d %d get:%d %s\n", pmaster == current ? "master":"slave",
++			   		current, current->pid, master, slave,  *(int*)kevt, (char *)kevt);
++				continue;
++
++			case FM_BEAT: 
++				if (pmaster == current)	/* I'am master */
++				{
++					++master;
++				}else{					/* I'am slave */
++					++slave;
++					if (slave > master + FAILURE_TIME)
++						pmaster = current;	/* change to master */
++				}
++				continue;				/* recv next message */
++				break;
++
++			default:
++				/* only master do the things */
++				if (pmaster != current)
++					continue;
++				/* do the thing */
++				//TODO:		fm_proc_callback(kevt);
++				break;
++		}
++	}
++	return 0;
++}
++
++static void time_update(unsigned long nouse)
++{
++	int type = FM_BEAT;
++	fm_event_post_intr((struct fm_kevt *)&type);	/* kevt.type is the 1st element */
++	mod_timer(&timer, INTERVAL_TIME);
++}
++
++static int init_kfmd(void)
++{
++	int err;
++	int cpu = 0;
++	INIT_LIST_HEAD(&msg_head.head);
++	err = fm_channel_create();
++	if (err < 0)
++		return err;
++
++	kfmd = kthread_create(kfmd_run, NULL, "kfmd");
++	if(IS_ERR(kfmd)) {
++		printk("Unable to start kernel thread MASTER KFMD.\n");
++		err = PTR_ERR(kfmd);
++		kfmd = NULL;
++		return err;
++	}
++    if ( !cpus_empty(cpu_isolated_map) )
++    {
++        cpu = first_cpu(cpu_isolated_map);
++        if (cpu != 0 && cpu < NR_CPUS)
++            kthread_bind(kfmd, cpu);
++    }else{
++        kthread_bind(kfmd, 0);
++    }
++
++	wake_up_process(kfmd);
++
++	kfmd_s = kthread_create(kfmd_run, NULL, "kfmd_s");
++	//TODO: move to reserved CPU
++	if ( IS_ERR(kfmd_s) ) {
++		printk("Unable to start kernel thread SLAVE KFMD.\n");
++		err = PTR_ERR(kfmd_s);
++		kfmd_s = NULL;
++		return err;
++	}
++    if ( !cpus_empty(cpu_isolated_map) )
++    {
++        cpu = next_cpu(cpu, cpu_isolated_map);
++        if (cpu != 0 && cpu < NR_CPUS)
++            kthread_bind(kfmd_s, cpu);
++    }else{
++        kthread_bind(kfmd_s, 0);
++    }
++	wake_up_process(kfmd_s);
++
++	init_timer(&timer);
++	timer.function =  time_update;
++	timer.data = 0;
++	mod_timer(&timer, jiffies);	/* activate timer */
++    return 0;
++}
++
++/* be a module */
++#ifdef FM_DEBUG_MODULE
++int init_module()
++{
++	return init_kfmd();
++}
++
++void cleanup_module( )
++{
++	//stop kfmd
++	if (fm_sk != NULL){
++		sock_release(fm_sk->sk_socket);
++  	}
++	printk("net_link: remove ok.\n");
++}
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("k2os");
++#else
++late_initcall(init_kfmd);
++#endif
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm_proc.c kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm_proc.c
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm_proc.c	1970-01-01 08:00:00.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm_proc.c	2010-09-30 18:59:44.000000000 +0800
+@@ -0,0 +1,77 @@
++/*
++ * fm_proc.c - kfmd process events.
++ *
++ * Copyright (C) 2009 Inspur, Inc.  All rights reserved.
++ * Copyright (C) 2009-2010 Fault Managment System Development Team
++ *
++ */
++
++#include <asm/atomic.h>
++
++#include "fm_proc.h"
++
++/**
++ * fm_proc_uc
++ * @evt: event sent from kernel space module via fm channel
++ */
++static void
++fm_proc_uc(struct fm_kevt *evt)
++{
++	char *ev_class = NULL;
++	ev_class = evt->fullclass;
++
++	printk("KFMD: Fatal event.\n");
++	printk("KFMD: KEXEC is going on.\n");
++	
++//	do_kexec;
++}
++
++/**
++ * fm_proc_faultevt
++ * @evt: fault event sent from userspace FMD's sys_agent via fm channel
++ */
++static void
++fm_proc_faultevt(struct fm_kevt *evt)
++{
++	char *ev_class = NULL;
++	ev_class = evt->fullclass;
++
++	if (strcmp(ev_class, "ereport.cpu.intel.quickpath.mem_page_ce") == 0) {
++		printk("FM: Page offline.\n");
++//		do_pageoffline;
++	}
++}
++
++void fm_proc_callback(struct fm_kevt *evt)
++{
++	char *ev_class = NULL;
++	u8 ev_type;
++
++	ev_class = evt->fullclass;
++	ev_type = evt->flags;
++
++/*for debug*/
++	printk("kfmd received %s.\n", ev_class);
++
++	if (strncmp(ev_class, "ereport.", 8) == 0) {
++		if (ev_type == FM_EVT_RC)
++			return;				/* RC event, direct return */
++		else if (ev_type == FM_EVT_UC)
++			fm_proc_uc(evt);		/* process UC event */
++	} else if (strncmp(ev_class, "fault.", 6) == 0)
++		fm_proc_faultevt(evt);			/* process fault event */
++
++	return;
++}
++
++/*
++ * fm_proc_prep - prepare for fm process fault events.
++ *
++ * Create rulebase for handling fault events.
++ */
++int fm_proc_prep(void)
++{
++	/* TODO */
++	return 0;
++}
++
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm_proc.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm_proc.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/fm_proc.h	1970-01-01 08:00:00.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/fm_proc.h	2010-09-30 18:59:55.000000000 +0800
+@@ -0,0 +1,19 @@
++/*
++ * fm_proc.h - kfmd process events.
++ *
++ * Copyright (C) 2009 Inspur, Inc.  All rights reserved.
++ * Copyright (C) 2009-2010 Fault Managment System Development Team
++ *
++ */
++
++#ifndef __FM_PROC_H
++#define __FM_PROC_H
++
++#include <linux/netlink.h>
++#include <linux/fm/fm.h>
++
++void fm_proc_callback(struct fm_kevt *evt);
++
++int fm_proc_prep(void);
++
++#endif	/* __FM_PROC_H */
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/Makefile kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/Makefile
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/fm/Makefile	2009-06-22 10:28:26.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/fm/Makefile	2010-09-30 18:15:13.000000000 +0800
+@@ -1 +1,7 @@
+-obj-y += fm.o
++#
++# Makefile for the K2 FMS Routines.
++#
++
++obj-y		+= fms.o
++
++fms-y		:= fm_kfmd.o fm_proc.o
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm/fm.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm/fm.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm/fm.h	1970-01-01 08:00:00.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm/fm.h	2010-09-30 18:07:07.000000000 +0800
+@@ -0,0 +1,43 @@
++/*
++ * fm.h
++ *
++ * Copyright (C) 2009 Inspur, Inc.  All rights reserved.
++ * Copyright (C) 2009-2010 Fault Managment System Development Team
++ *
++ */
++
++#ifndef __FM_H
++#define __FM_H
++
++//#define FM_DEBUG
++
++/*
++ * Maximum fm channel's message size.
++ */
++#define FM_MAX_MSGSIZE        1000
++
++#define FM_BEAT					1
++#define FM_DEBUG				2
++#define FM_ON					3
++#define FM_OFF					4
++#define FM_EVT_UC				5
++#define FM_EVT_RC				6
++#define FM_EVT_MEDIA_CHANGE		7
++#define FM_NET					10
++#define FM_MPIO					11
++#define FM_PCIEAER				12
++
++struct fm_kevt {
++	u8 flags;				/* RC or UC ? */
++	u8 cpu;					/* processor id */
++	int type;
++	char buf[248];
++	char *device;			/* device id */
++	char *fullclass;		/* event (ereport.class.*) */
++	void *ev_data;			/* data */
++};
++
++extern void fm_event_post_proc(struct fm_kevt *ev);
++extern int fm_event_post_intr(struct fm_kevt *evt);
++
++#endif				/* __FM_H */
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm/Kbuild kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm/Kbuild
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm/Kbuild	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm/Kbuild	2010-09-30 17:52:49.000000000 +0800
+@@ -1 +1,2 @@
++unifdef-y += fm.h
+ unifdef-y += protocol.h
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm/protocol.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm/protocol.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm/protocol.h	2010-09-30 09:29:13.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm/protocol.h	2010-09-30 17:52:49.000000000 +0800
+@@ -4,11 +4,6 @@
+  * Copyright (C) 2009 Inspur, Inc.  All rights reserved.
+  * Copyright (C) 2009-2010 Fault Managment System Development Team
+  *
+- * Created on: Apr 07, 2010
+- *      Author: Inspur OS Team
+- *  
+- * Description:
+- *      protocol.h
+  */
+ 
+ #ifndef _FM_PROTOCOL_H
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/fm.h	2009-06-22 10:31:48.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/fm.h	1970-01-01 08:00:00.000000000 +0800
+@@ -1,123 +0,0 @@
+-#ifndef _LINUX_FM_H
+-#define _LINUX_FM_H
+-#include "../../drivers/md/dm-mpath.h"
+-#include "../../drivers/md/dm-path-selector.h"
+-#include "../../drivers/md/dm-bio-list.h"
+-#include "../../drivers/net/bonding/bonding.h"
+-#include "../../arch/ia64/include/asm/mca.h"
+-
+-#include <linux/device-mapper.h>
+-
+-#define CMC	0
+-#define CPE	1
+-#define MCA     2
+-
+-struct fm;
+-struct fm_operations {
+-	void( *detection)(struct fm *fm, void *ptr);
+-	void( *diagnosis)(struct fm *fm, void *ptr);
+-	void( *isolation)(struct fm *fm, void *ptr);
+-	void( *recovery)(struct fm *fm, void *ptr);
+-	void( *repair)(struct fm *fm, void *ptr);
+-	void( *prediction)(struct fm *fm, void *ptr);
+-};
+-
+-/*
+- * a fault management object.
+- */
+-struct fm {
+-	struct fm_operations *ops;
+-	void *context;
+-};
+-
+-struct pgpath;
+-struct pgpath_diagnosis {
+-	struct pgpath *pgpath;
+-	int flag;   /* to isolate or repair */
+-};
+-
+-struct bond_diagnosis {
+-        struct bonding *bond;
+-        int flag;   /* to isolate or repair */
+-};
+-
+-struct mca_event_content {
+-	struct ia64_sal_os_state *sos;
+-	int event;
+-};
+-
+-struct priority_group;
+-
+-/* Path properties */
+-struct pgpath {
+-	struct list_head list;
+-
+-	struct priority_group *pg;	/* Owning PG */
+-	unsigned is_active;		/* Path status */
+-	unsigned fail_count;		/* Cumulative failure count */
+-
+-	struct dm_path path;
+-	struct work_struct deactivate_path;
+-};
+-
+-struct multipath;
+-
+-/*
+- * Paths are grouped into Priority Groups and numbered from 1 upwards.
+- * Each has a path selector which controls which path gets used.
+- */
+-struct priority_group {
+-	struct list_head list;
+-
+-	struct multipath *m;		/* Owning multipath instance */
+-	struct path_selector ps;
+-
+-	unsigned pg_num;		/* Reference number */
+-	unsigned bypassed;		/* Temporarily bypass this PG? */
+-
+-	unsigned nr_pgpaths;		/* Number of paths in PG */
+-	struct list_head pgpaths;
+-};
+-
+-/* Multipath context */
+-struct multipath {
+-	struct list_head list;
+-	struct dm_target *ti;
+-
+-	spinlock_t lock;
+-
+-	const char *hw_handler_name;
+-	struct work_struct activate_path;
+-	struct pgpath *pgpath_to_activate;
+-	unsigned nr_priority_groups;
+-	struct list_head priority_groups;
+-	unsigned pg_init_required;	/* pg_init needs calling? */
+-	unsigned pg_init_in_progress;	/* Only one pg_init allowed at once */
+-
+-	unsigned nr_valid_paths;	/* Total number of usable paths */
+-	struct pgpath *current_pgpath;
+-	struct priority_group *current_pg;
+-	struct priority_group *next_pg;	/* Switch to this PG if set */
+-	unsigned repeat_count;		/* I/Os left before calling PS again */
+-
+-	unsigned queue_io;		/* Must we queue all I/O? */
+-	unsigned queue_if_no_path;	/* Queue I/O if last path fails? */
+-	unsigned saved_queue_if_no_path;/* Saved state during suspension */
+-	unsigned pg_init_retries;	/* Number of times to retry pg_init */
+-	unsigned pg_init_count;		/* Number of times pg_init called */
+-
+-	struct work_struct process_queued_ios;
+-	struct bio_list queued_ios;
+-	unsigned queue_size;
+-
+-	struct work_struct trigger_event;
+-
+-	/*
+-	 * We must use a mempool of dm_mpath_io structs so that we
+-	 * can resubmit bios on error.
+-	 */
+-	mempool_t *mpio_pool;
+-};
+-
+-extern void fm_init(void);
+-#endif
+diff -urN kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/netlink.h kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/netlink.h
+--- kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2/include/linux/netlink.h	2009-06-22 10:31:47.000000000 +0800
++++ kernel-2.6.28.10-vs2.3.0.36.11.k2os.85b2-kfmd/include/linux/netlink.h	2010-09-30 17:54:10.000000000 +0800
+@@ -24,6 +24,7 @@
+ /* leave room for NETLINK_DM (DM Events) */
+ #define NETLINK_SCSITRANSPORT	18	/* SCSI Transports */
+ #define NETLINK_ECRYPTFS	19
++#define NETLINK_KFMD        20  /* fault managment system */
+ 
+ #define MAX_LINKS 32		
+ 
