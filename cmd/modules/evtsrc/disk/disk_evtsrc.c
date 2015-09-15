@@ -1,196 +1,195 @@
-/*
- * disk_evtsrc.c
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    disk_evtsr.c
+ * Author:      Inspur OS Team 
+                guomeisi@inspur.com
+ * Date:        20xx-xx-xx
+ * Description: 
  *
- * Copyright (C) 2009 Inspur, Inc.  All rights reserved.
- * Copyright (C) 2009-2010 Fault Managment System Development Team
- *
- * Created on: Apr 07, 2010
- *      Author: Inspur OS Team
- *  
- * Description:
- *	Disk error evtsrc module
- *
- * 	This evtsrc module is respon
- */
+ ************************************************************/
 
-#include <sys/types.h>
-#include <alloca.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <limits.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <ctype.h>
 #include <limits.h>
-#include <string.h>
+#include <sys/types.h>
 
 #include <fmd.h>
-#include <fmd_evtsrc.h>
 #include <fmd_module.h>
 #include <protocol.h>
 #include <nvpair.h>
-#include "libdiskstatus.h"
+#include <errno.h>
 
-static fmd_t *fmdp;
+#include "fm_diskspacedect.h"  /* for disk space insufficient error */
+#include "fm_disksmartdect.h"
+#include "fm_badblockdect.h"
+#include "fm_cmd.h"
+#include "logging.h"
+
+
+
+static fmd_t *p_fmd;
 
 /*
- * This enum definition is used to define a set of error tags associated with
- * the module api error conditions.  The shell script mkerror.sh is
- * used to parse this file and create a corresponding topo_error.c source file.
- * If you do something other than add a new error tag here, you may need to
- * update the mkerror shell script as it is based upon simple regexps.
+ * Input
+ * head   -  list of all event
+ * nvl    -  current event
+ * fullclass
+ * ena
+ *
  */
-enum {
-	EMOD_UNKNOWN = 2000,    /* unknown libtopo error */
-	EMOD_NOMEM,             /* module memory limit exceeded */
-	EMOD_PARTIAL_ENUM,      /* module completed partial enumeration */
-	EMOD_METHOD_INVAL,      /* method arguments invalid */
-	EMOD_METHOD_NOTSUP,     /* method not supported */
-	EMOD_FMRI_NVL,          /* nvlist allocation failure for FMRI */
-	EMOD_FMRI_VERSION,      /* invalid FMRI scheme version */
-	EMOD_FMRI_MALFORM,      /* malformed FMRI */
-	EMOD_NODE_BOUND,        /* node already bound */
-	EMOD_NODE_DUP,          /* duplicate node */
-	EMOD_NODE_NOENT,        /* node not found */
-	EMOD_NODE_RANGE,        /* invalid node range */
-	EMOD_VER_ABI,           /* registered with invalid ABI version */
-	EMOD_VER_OLD,           /* attempt to load obsolete module */
-	EMOD_VER_NEW,           /* attempt to load a newer module */
-	EMOD_NVL_INVAL,         /* invalid nvlist */
-	EMOD_NONCANON,          /* non-canonical component name requested */
-	EMOD_MOD_NOENT,         /* module lookup failed */
-	EMOD_UKNOWN_ENUM,       /* unknown enumeration error */
-	EMOD_END                /* end of mod errno list (to ease auto-merge) */
-};
-
-void
-disk_fm_event_post(nvlist_t *nvl, char *fullclass)
+int 
+disk_fm_event_post(struct list_head *head, nvlist_t * nvl, char * fullclass, char * ena)
 {
-	nvl = nvlist_alloc();
-	sprintf(nvl->name, FM_CLASS);
+	sprintf(nvl->name, ena);
 	strcpy(nvl->value, fullclass);
-	nvl->rscid = topo_get_storageid(fmdp, "sda");
-}
-
-/*
- * Query the current disk status. If successful, the disk status is returned
- * as an nvlist consisting of at least the following members:
- *
- *      protocol        string          Supported protocol (currently "scsi")
- *
- *      status          nvlist          Arbitrary protocol-specific information
- *                                      about the current state of the disk.
- *
- *      faults          nvlist          A list of supported faults. Each
- *                                      element of this list is a boolean value.
- *                                      An element's existence indicates that
- *                                      the drive supports detecting this fault,
- *                                      and the value indicates the current
- *                                      state of the fault.
- *
- *      <fault-name>    nvlist          For each fault named in 'faults', a
- *                                      nvlist describing protocol-specific
- *                                      attributes of the fault.
- *
- * This method relies on the libdiskstatus library to query this information.
- */
-int
-disk_status(disk_status_t *dsp)
-{
-	char *fullpath = NULL;
-	int ret = 0;
-	int err = 0;
-
-	fullpath = strdup("/dev/sda");
-
-	if ((ret = disk_status_open(dsp, fullpath, &err)) != 0) {
-		err == EDS_NOMEM ? EMOD_NOMEM : EMOD_METHOD_NOTSUP;
-		return err;
-	}
-
-	if ((ret = disk_status_check(dsp)) != 0) {
-		err = (disk_status_errno(dsp) == EDS_NOMEM ?
-			EMOD_NOMEM : EMOD_METHOD_NOTSUP);
-		return err;
-	}
+	
+	nvlist_add_nvlist(head, nvl);
 
 	return 0;
+	
 }
 
-/*
- * Check a single topo node for failure.  This simply invokes the disk status
- * method, and generates any ereports as necessary.
- */
-static int
-dt_analyze_disk(disk_status_t *dsp)
-{
-	struct list_head *faults =
-		(struct list_head *)malloc(sizeof(struct list_head));
 
-	if (faults == NULL) {
-		printf("Disk Module: failed to malloc\n");
-		return (-1);
-	}
-
-	dsp->faults = faults;
-	dsp->ds_scsi_overtemp = dsp->ds_scsi_predfail = NULL;
-	dsp->ds_scsi_testfail = NULL;
-	dsp->ds_ata_overtemp = dsp->ds_ata_error = NULL;
-	dsp->ds_ata_testfail = dsp->ds_ata_sataphyevt = NULL;
-	INIT_LIST_HEAD(dsp->faults);
-
-	if (disk_status(dsp) != 0)
-		return (-1);
-
-	return (0);
-}
-
-/*
- * Periodic timeout.
- * Calling dt_analyze_disk().
-  */
 struct list_head *
-disk_probe(evtsrc_module_t *emp)
+disk_probe(evtsrc_module_t * emp)
 {
-	struct list_head *faults = NULL;
-	fmdp = emp->module.mod_fmd;
+	char 	*ena = NULL;
+	char fullclass[PATH_MAX];
+	char *fault;
+	nvlist_t *nvl;
+	struct list_head *head = nvlist_head_alloc();
 
-	disk_status_t *dsp =
-		(disk_status_t *)malloc(sizeof(disk_status_t));
+	p_fmd = emp->module.p_fmd;
 
-	if (dsp == NULL) {
-		printf("Disk Module: failed to malloc\n");
-		return NULL;
+	char *diskname = NULL;//for disk space insufficient
+	char *fullpath = NULL;
+	char fullpathtmp[9];
+	char *result = NULL;
+	FILE *fstream = NULL;
+    char buff[LINE_MAX];
+    memset(buff,0,sizeof(buff));
+	char* cmd = NULL;
+	char cmdresult[PATH_MAX];
+	
+	/* get disk`s name */
+	cmd = disknamecmd(cmdresult);  
+				
+    fstream = popen(cmd,"r");
+    if(fstream == NULL)
+    {
+        fprintf(stderr,"execute command failed: %s",strerror(errno));
+    }	
+		
+    while(fgets(buff, sizeof(buff),fstream) != NULL)
+	{
+		//get device name ,eg:/dev/sda
+        strncpy(fullpathtmp,buff,sizeof(fullpathtmp)-1);
+        fullpathtmp[sizeof(fullpathtmp)-1] = '\0';
+
+		// the same disk, check  only  once
+        if(strcmp(fullpathtmp,result)!=0)
+        {
+            fullpath = fullpathtmp;
+        
+			
+			// if smart is Available and Enable
+			if(DoesSmartWork(fullpath) == 1){
+				
+				 /* ////////////////////////////////////////////////////////
+				  * smartctl check : disk unhealthy error
+				  * ////////////////////////////////////////////////////////  */
+				if(disk_unhealthy_check(fullpath)== 1){
+					memset(fullclass, 0, sizeof(fullclass));
+					sprintf(fullclass,"%s.io.disk.unhealthy", FM_EREPORT_CLASS);
+					ena = fullpath;
+					nvl = nvlist_alloc();
+					if (nvl == NULL) {
+						fprintf(stderr,"DISK: out of memory\n");
+						return NULL;
+					}
+					if ( disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
+						nvlist_free(nvl);
+						nvl = NULL;
+					}
+				}
+
+
+				/* ////////////////////////////////////////////////////
+				 * smartctl check : disk over-temperature error
+			 	 * /////////////////////////////////////////////////////  */
+				if (disk_temperature_check(fullpath)== 1){
+					memset(fullclass, 0, sizeof(fullclass));
+					sprintf(fullclass,"%s.io.disk.over-temperature", FM_EREPORT_CLASS);
+					ena = fullpath;
+					nvl = nvlist_alloc();
+					if (nvl == NULL) {
+						fprintf(stderr,"DISK: out of memory\n");
+						return NULL;
+					}
+					if ( disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
+						nvlist_free(nvl);
+						nvl = NULL;
+					}
+				}
+			}
+
+			
+		/* ////////////////////////////////////////////////////
+		 * disk badblocks chenck : disk`s badblocks error
+		 * ////////////////////////////////////////////////////  */
+			if (disk_badblocks_check(fullpath) == 1){		
+				memset(fullclass, 0, sizeof(fullclass));
+				sprintf(fullclass,"%s.io.disk.badblocks", FM_EREPORT_CLASS);
+				ena = fullpath;
+				nvl = nvlist_alloc();
+				if (nvl == NULL) {
+					fprintf(stderr,"DISK: out of memory\n");
+					return NULL;
+				}
+				if ( disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
+					nvlist_free(nvl);
+					nvl = NULL;
+				}
+			}
+
+			result = fullpath;  //flag  the device name  for  strcmp  (Avoid a repeat of the disk check)
+
+		}else{
+        		continue;
+        }
+    }
+	pclose(fstream);
+
+/* ////////////////////////////////////////////////////
+ * disk space chenck : disk space insufficient error
+ * ////////////////////////////////////////////////////  */
+
+	if (disk_space_check() == 1){
+		memset(fullclass, 0, sizeof(fullclass));
+		sprintf(fullclass,"%s.io.disk.space-insufficient", FM_EREPORT_CLASS);
+		ena = NULL;
+		nvl = nvlist_alloc();
+		if (nvl == NULL) {
+			fprintf(stderr,"DISK: out of memory\n");
+			return NULL;
+		}
+		if ( disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
+			nvlist_free(nvl);
+			nvl = NULL;
+		}
 	}
-	memset(dsp, 0, sizeof(disk_status_t));
-
-	if (dt_analyze_disk(dsp) != 0 ) {
-		printf("Disk Module: failed to check disk\n");
-		disk_status_close(dsp);
-		return NULL;
-	}
-
-	faults = dsp->faults;
-	disk_status_close(dsp);
-
-	return faults;
 }
 
 static evtsrc_modops_t disk_mops = {
-        .evt_probe = disk_probe,
+		.evt_probe = disk_probe,
 };
 
-
 fmd_module_t *
-fmd_init(const char *path, fmd_t *pfmd)
+fmd_init(char * path, fmd_t * pfmd)
 {
-        return (fmd_module_t *)evtsrc_init(&disk_mops, path, pfmd);
+ 		return (fmd_module_t *)evtsrc_init(&disk_mops, path, pfmd);
 }
-
-void
-fmd_fini(fmd_module_t *mp)
+void 
+fmd_fini(fmd_module_t * mp)
 {
+	return;
 }
-

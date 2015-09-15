@@ -1,11 +1,30 @@
-# Makefile
-#
-# Created on: Apr 07, 2010
-#     Author: Inspur OS Team
-#
-#
+###Makefile for plugins is ok
 
-include ../Makefile.evtsrc
+SHELL=/bin/sh
+CC=gcc
 
-PROGNAME = evtsrc.disk.so
-CONFNAME = evtsrc.disk.conf
+BASEPATH=.
+OUTPUT=$(BASEPATH)
+
+TARGET=disk_src.so
+
+LDFLAGS= -lpthread -ldl -levt -lfmd -ll -shared -fpic -g
+
+CFLAGS= -g -O0\
+	-I ../../include\
+	-I ../../../include\
+	-L /usr/lib/fms
+
+SRCS = $(wildcard *.c)
+
+all:
+	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
+	cp disk_src.so /usr/lib/fms/plugins
+
+install:
+	cp disk_src.so /usr/lib/fms/plugins
+
+clean:
+	rm -rf *.o *.so
+
+
