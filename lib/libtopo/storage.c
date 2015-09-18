@@ -1,13 +1,12 @@
-/*
- * storage.c
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    storage.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-17
+ * Description: get storage infomation function
  *
- *  Created on: Dec 7, 2010
- *      Author: Inspur OS Team
- *
- *  Descriptions:
- *      storage.c
- */
-
+ ************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -16,9 +15,7 @@
 #include <string.h>
 #include <syslog.h>
 
-#include <fmd.h>
 #include <fmd_topo.h>
-#include <fmd_list.h>
 #include <fmd_errno.h>
 
 /**
@@ -28,18 +25,18 @@
  * @return
  */
 static int
-fmd_scan_pci_storage(topo_storage_t *pstr)
+fmd_scan_pci_storage(topo_pci_t *ppci,fmd_topo_t *ptopo)
 {
 	struct dirent *dp;
 	const char *p;
 	DIR *dirp;
-	int ret = 0;
+	//int ret = 0;
 	char dir[100];
 
 	memset(dir, 0, 100 * sizeof (char));
 	sprintf(dir, "/sys/bus/pci/devices/%04x:%02x:%02x.%x",
-		pstr->storage_chassis, pstr->storage_hostbridge,
-		pstr->storage_slot, pstr->storage_func);
+		ppci->pci_chassis, ppci->pci_hostbridge,
+		ppci->pci_slot, ppci->pci_func);
 
 	if ((dirp = opendir(dir)) == NULL)
 		return OPENDIR_FAILED; /* failed to open directory; just skip it */
@@ -47,7 +44,6 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 	while ((dp = readdir(dirp)) != NULL) {
 		if (dp->d_name[0] == '.')
 			continue; /* skip "." and ".." */
-
 		p = dp->d_name;
 /* /sys/bus/pci/devices/xxxx:xx:xx.x/hostsx */
 		if (strncmp(p, "host", 4) == 0) {	
@@ -59,7 +55,6 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 			sprintf(dir1, "%s/%s", dir, p);
 			if ((dirp1 = opendir(dir1)) == NULL)
 				return OPENDIR_FAILED; /* failed to open directory; just skip it */
-
 			while ((dp1 = readdir(dirp1)) != NULL) {
 				if (dp1->d_name[0] == '.')
 					continue; /* skip "." and ".." */
@@ -69,18 +64,33 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 				if (strncmp(p1, "target", 6) == 0) {
 					struct dirent *dp2;
 					char *p2;
+					char tmp[20];
 					DIR *dirp2;
 					char dir2[100];
+					memset(tmp, 0, 20* sizeof(char));
 					memset(dir2, 0, 100 * sizeof (char));
 					sprintf(dir2, "%s/%s", dir1, p1);
+
 					if ((dirp2 = opendir(dir2)) == NULL)
 						return OPENDIR_FAILED; /* failed to open directory; just skip it */
-
 					while ((dp2 = readdir(dirp2)) != NULL) {
 						if (dp2->d_name[0] == '.')
 							continue; /* skip "." and ".." */
 
+ 					topo_storage_t *pstr = (topo_storage_t *)malloc(sizeof (topo_storage_t));
+        				assert(pstr != NULL);
+        				memset(pstr, 0, sizeof (topo_storage_t));
+
+        				pstr->storage_system = ppci->pci_system;
+        				pstr->storage_chassis =  ppci->pci_chassis;
+        				pstr->storage_board = ppci->pci_board;
+        				pstr->storage_hostbridge =  ppci->pci_hostbridge;
+        				pstr->storage_slot = ppci->pci_slot;
+       					pstr->storage_func = ppci->pci_func;
+        				pstr->storage_topoclass = ppci->pci_topoclass;
+        				pstr->dev_icon = ppci->dev_icon;
 						p2 = dp2->d_name;
+						sprintf(tmp,"%s",p2);
 /* /sys/bus/pci/devices/xxxx:xx:xx.x/hostsX/targetX:X:X/X:X:X:X */
 						if (strchr(p2, ':') != NULL) {
 							char *token = NULL;
@@ -101,8 +111,8 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 							DIR *dirp3;
 							char dir3[100];
 							memset(dir3, 0, 100 * sizeof (char));
-							p2 = dp2->d_name;
-							sprintf(dir3, "%s/%s", dir2, p2);
+							//p2 = dp2->d_name;
+							sprintf(dir3, "%s/%s", dir2, tmp);
 							if ((dirp3 = opendir(dir3)) == NULL)
 								return OPENDIR_FAILED;
 
@@ -115,6 +125,7 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 								if (strncmp(p3, "block", 5) == 0) {
 									if (strchr(p3, ':') != NULL) {
 										pstr->storage_name = strdup(&p3[6]);
+										list_add(&pstr->list,&ptopo->list_storage);
 										/*strcpy(pstr->storage_name, &p3[6]);*/
 									} else {
 										struct dirent *dp4;
@@ -132,6 +143,7 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 
 											p4 = dp4->d_name;
 											pstr->storage_name = strdup(p4);
+											list_add(&pstr->list,&ptopo->list_storage);
 											/*strcpy(pstr->storage_name, p4);*/
 										}
 										closedir(dirp4);
@@ -154,7 +166,6 @@ fmd_scan_pci_storage(topo_storage_t *pstr)
 	return FMD_SUCCESS;
 }
 
-
 /**
  * fmd_topo_walk_storage
  *
@@ -165,30 +176,7 @@ int
 fmd_topo_walk_storage(topo_pci_t *ppci, fmd_topo_t *ptopo)
 {
 	int ret = 0;
-
-	/* malloc */
-	topo_storage_t *pstr = (topo_storage_t *)malloc(sizeof (topo_storage_t));
-	assert(pstr != NULL);
-	memset(pstr, 0, sizeof (topo_storage_t));
-
-	pstr->storage_system = ppci->pci_system;
-	pstr->storage_chassis = ppci->pci_chassis;
-	pstr->storage_board = ppci->pci_board;
-	pstr->storage_hostbridge = ppci->pci_hostbridge;
-	pstr->storage_slot = ppci->pci_slot;
-	pstr->storage_func = ppci->pci_func;
-	pstr->storage_topoclass = ppci->pci_topoclass;
-	pstr->dev_icon = ppci->dev_icon;
-
-	free(ppci);
-	ret = fmd_scan_pci_storage(pstr);
-	if(ret < 0) {
-		syslog(LOG_NOTICE, "Failed to get storage topology info.\n");
-		return ret;
-	}
-
-	list_add(&pstr->list, &ptopo->list_storage);    /* pci storage */
-
+	ret = fmd_scan_pci_storage(ppci,ptopo);
 	return ret;
 }
 

@@ -1,0 +1,46 @@
+#------qpi error code encoding on the intel HASWELL_EPEX------
+
+#Status Register
+#===============
+#  636261605958575655 54     53 52           38    37    36 32 31               16 15           0
+# |V|O|U|E|M|A|P|S|A|          |               |        |     |                   |              |
+# |A|V|C|N|I|D|C| |R|Threshold |Corrected Error|Firmware|Other|MSCOD Model        |MCA Error Code|
+# |L|E| | |S|D|C| | |Status    |Count          |Updated |Info |Specific Error Code|              | 
+# | |R| | |C|R| | | |          |               |Error   |     |                   |              |
+# | | | | |V|V| | | |          |               |        |     |                   |              |
+#
+#CONDITION
+#=========
+# intel  HASWELL
+# BANK 5 20 21
+#
+#Error Code
+#==========
+#  0x9000000000020000      qpi_plddba_ce
+#  0xB000000000020000      qpi_plddba_uc
+#  0x9000000000030000      qpi_pldlbr_ce
+#  0x9000000000100000      qpi_lldcefr_ce
+#  0x9000000000110000      qpi_relasoce_ce
+#  0x9000000000120000      qpi_uoup_ce
+#  0x9000000000130000      qpi_llce_ce
+#  0x9000000000150000      qpi_ruuv_ce					
+#  0x9000000000200000      qpi_pldqir_ce
+#  0x9000000000210000      qpi_lfdsh_ce
+#  0x9000000000220000      qpi_pdir_ce
+#  0x9000000000230000      qpi_lfcf_ce
+#  0x9000000000300000      qpi_rdcea_ce
+#  0x9000000000310000      qpi_rdcew_ce
+#
+#
+#DESCRIPTION
+#===========
+# 16~25 BIT
+#
+#
+
+
+#Test Case
+#==========
+
+CPU 6 BANK 5
+STATUS 0x9000000000220000

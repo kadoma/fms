@@ -1,13 +1,12 @@
-/*
- * network.c
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    network.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-15
+ * Description: get network infomation function
  *
- *  Created on: Dec 6, 2010
- *      Author: Inspur OS Team
- *
- *  Descriptions:
- *      network.c
- */
-
+ ************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -16,9 +15,7 @@
 #include <syslog.h>
 #include <dirent.h>
 
-#include <fmd.h>
 #include <fmd_topo.h>
-#include <fmd_list.h>
 #include <fmd_errno.h>
 
 /**
@@ -30,6 +27,7 @@
 static int
 fmd_topo_walk_net(const char *dir, char *file, fmd_topo_t *ptopo)
 {
+//printf("net work dir = %s \n",dir);
 	char filename[50], *fptr;
 	char devicepath[100];
 	char *delims = ":.";
@@ -72,6 +70,7 @@ fmd_topo_walk_net(const char *dir, char *file, fmd_topo_t *ptopo)
 		 && (item[2] == ppci->pci_slot)
 		 && (item[3] == ppci->pci_func))
 			ppci->pci_name = file;
+//printf("network file = %s \n",file);
 	}
 
 	(void) closedir(dirp);

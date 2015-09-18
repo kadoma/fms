@@ -1,12 +1,12 @@
-/*
- * fmd_adm.c
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    libfmd_adm.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-21
+ * Description: adm get faulty from fms
  *
- *  Created on: Oct 13, 2010
- *	Author: Inspur OS Team
- *
- *  Description:
- *	fmd_adm.c
- */
+ ************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +16,11 @@
 #include <errno.h>
 
 #include <fmd_adm.h>
+#include "fmd_topo.h"
+
+
+
+static const char _url_fallback[] = "wang.leibj@inspur.com";
 
 fmd_adm_t *
 fmd_adm_open(void)
@@ -126,7 +131,7 @@ fmd_adm_errmsg(fmd_adm_t *ap)
 		return (strerror(ap->adm_errno));
 	}
 }
-
+#if 0
 static int
 fmd_adm_set_svcerr(fmd_adm_t *ap, enum fmd_adm_error err)
 {
@@ -140,7 +145,7 @@ fmd_adm_set_svcerr(fmd_adm_t *ap, enum fmd_adm_error err)
 		return (0);
 	}
 }
-
+#endif
 static int
 fmd_adm_set_errno(fmd_adm_t *ap, int err)
 {
@@ -223,12 +228,12 @@ fmd_adm_case_url(fmd_adm_caseinfo_t *aci)
 {
 	faf_case_t *fafc = NULL;
 	uint64_t rscid;
-	uint64_t state;
+	//uint64_t state;
 	uint64_t topoclass;
 
 	fafc = &aci->fafc;
 	rscid = fafc->fafc_rscid;
-	state = fafc->fafc_state;
+	//state = fafc->fafc_state;
 	topoclass = rscid & 0x1f;
 
 	if (topoclass == TOPO_PROCESSOR) {
@@ -260,7 +265,7 @@ fmd_adm_case_url(fmd_adm_caseinfo_t *aci)
 			subbus=%d/subslot=%d/subfunc=%d",
 			chassis, hostbridge, slot, func,
 			subdomain, subbus, subslot, subfunc);
-		sprintf(aci->aci_asru, "pci:///pci_name=%s", NULL/*pciname*/);
+		sprintf(aci->aci_asru, "pci:///pci_name=%s", aci->aci_fru/*pciname*/);
 	} else if (topoclass == TOPO_STORAGE) {
 		uint32_t chassis, hostbridge, slot, func;
 		uint32_t host, channel, target, lun;
@@ -278,7 +283,7 @@ fmd_adm_case_url(fmd_adm_caseinfo_t *aci)
 			channel=%d/target=%d/lun=%d",
 			chassis, hostbridge, slot, func,
 			host, channel, target, lun);
-		sprintf(aci->aci_asru, "storage:///storage_name=%s", NULL/*storagename*/);
+		sprintf(aci->aci_asru, "storage:///storage_name=%s", aci->aci_fru/*storagename*/);
 	} else if (topoclass == TOPO_MEMORY) {
 		uint32_t chassis, socket, controller, dimm;
 		chassis = (rscid >> 48) & 0x0ff;
@@ -289,7 +294,7 @@ fmd_adm_case_url(fmd_adm_caseinfo_t *aci)
 		sprintf(aci->aci_fru, "hc://chassis=%d/motherboard=0/ \
 			socket=%d/memory-controller=%d/dimm=%d",
 			chassis, socket, controller, dimm);
-		sprintf(aci->aci_asru, "mem:///physic_address=%s", NULL/*address*/);
+		sprintf(aci->aci_asru, "mem:///physic_address=%s",aci->aci_fru/*address*/);
 	}
 }
 
@@ -343,4 +348,3 @@ fmd_adm_case_iter(fmd_adm_t *ap)
 
 	return (0);
 }
-

@@ -1,19 +1,21 @@
-/*
- * fmd_topo.c
- *
- *  Created on: Feb 2, 2010
- *      Author: Inspur OS Team
- *  
- *  Descriptions:
- *  	TOPO
- */
 
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    fmd_topo.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-14
+ * Description: the topo function
+ *
+ ************************************************************/
 #include <stdio.h>
 #include <ctype.h>
 #include <syslog.h>
+
+#include <pci.h>
+#include <dmi.h>
+#include <cpu.h>
 #include <fmd.h>
-#include <fmd_topo.h>
-#include <fmd_list.h>
 #include <fmd_errno.h>
 
 /* global defs */
@@ -35,10 +37,10 @@ _print_cpu_topo(fmd_topo_t *pptopo)
 
 	/* traverse cpu */
 	printf("----	CPU	----\n");
-	printf("node socket core thread\n");
+	printf("node  socket  core  thread\n");
 	list_for_each(pos, &pptopo->list_cpu) {
 		pcpu = list_entry(pos, topo_cpu_t, list);
-		printf("%d    %d    %d    %d\n", pcpu->cpu_chassis,
+		printf("%3d%7d%7d%7d\n", pcpu->cpu_chassis,
 			pcpu->cpu_socket, pcpu->cpu_core, pcpu->cpu_thread);
 	} /* list_for_each */
 }
@@ -51,6 +53,7 @@ _print_cpu_topo(fmd_topo_t *pptopo)
  * @param
  * @return
  */
+#if 0
 void
 _print_pci_topo(fmd_topo_t *pptopo)
 {
@@ -62,14 +65,69 @@ _print_pci_topo(fmd_topo_t *pptopo)
 	list_for_each(pos, &pptopo->list_pci) {
 		ppci = list_entry(pos, topo_pci_t, list);
 
-		printf("%4x:%2x:%2x.%1x-%4x:%2x:%2x.%1x", ppci->pci_chassis, ppci->pci_hostbridge,
+		printf("%04x:%02x:%02x.%1x-%04x:%02x:%02x.%1x", ppci->pci_chassis, ppci->pci_hostbridge,
 			ppci->pci_slot, ppci->pci_func, ppci->pci_subdomain, ppci->pci_subbus,
 			ppci->pci_subslot, ppci->pci_subfunc);
 
 		if (ppci->pci_name != NULL) {
-			printf(" name:%s\n ", ppci->pci_name);
+			printf(" name:%s\n", ppci->pci_name);
 		} else
 			printf("\n");
+	}
+}
+#endif
+/**
+ *_print_mem_topo
+ *
+ *print MEM topology information to stdio, not syslog.
+ *
+ *@param
+ *@return 
+ */
+void
+_print_mem_topo(fmd_topo_t *pptopo)
+{
+	struct list_head *pos = NULL;
+	topo_mem_t *pmem = NULL;
+
+	/* traverse mem */
+	printf("----   MEMORY  ----\n");
+	printf("node  socket  controller  dimm\n");
+	list_for_each(pos,&pptopo->list_mem){
+		pmem = list_entry(pos,topo_mem_t,list);
+
+		printf("%3d%7d%9d%10d\n",pmem->mem_chassis,
+			pmem->mem_socket,pmem->mem_controller,pmem->mem_dimm);
+	}/* list_for_each */
+}
+/**
+ *_print_disk_top
+ *
+ * print DISK topology information to stdio , not syslog
+ *
+ * @param
+ * @return
+ */
+void
+_print_disk_topo(fmd_topo_t *pptopo)
+{
+	struct list_head *pos = NULL;
+	topo_storage_t *pstr = NULL;
+
+	/* traverse storage */
+	printf("----   DISK  ----\n");
+//	printf("node  hostbridge  slot  host  channel  target  lun\n");
+	list_for_each(pos,&pptopo->list_storage){
+		pstr = list_entry(pos,topo_storage_t,list);
+
+		printf("%04x:%02x:%02x.%1x-%04x:%02x:%02x.%1x", pstr->storage_chassis, pstr->storage_hostbridge,
+                        pstr->storage_slot, pstr->storage_func, pstr->storage_host, pstr->storage_channel,
+                        pstr->storage_target, pstr->storage_lun);
+
+		if (pstr->storage_name != NULL) {
+                        printf("  name:%s\n", pstr->storage_name);
+                } else
+                        printf("\n");
 	}
 }
 
@@ -126,9 +184,7 @@ _fmd_topo(fmd_t *fmd)
 	int ret;
 	struct list_head *pos, *ppos;
 	topo_cpu_t *pcpu = NULL, *ppcpu = NULL;
-
 	ptopo = &fmd->fmd_topo;
-
 	/* initialization */
 	INIT_LIST_HEAD(&ptopo->list_cpu);
 	INIT_LIST_HEAD(&ptopo->list_mem);
@@ -179,6 +235,7 @@ _fmd_topo(fmd_t *fmd)
 	 * TOPO
 	 */ 
 	ret = fmd_topo_dmi(ptopo);
+	
 	if(ret < 0) {
 		syslog(LOG_NOTICE, "Failed to get memory topology info.\n");
 		return ret;

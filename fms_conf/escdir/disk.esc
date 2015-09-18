@@ -1,0 +1,19 @@
+/**
+ * ereport for log
+ */
+event ereport.disk.unhealthy
+
+/**
+ * fault
+ */
+
+fault ereport.disk.space-insufficient
+fault ereport.disk.over-temperature
+fault ereport.disk.badblocks
+
+/**
+ * serd
+ *
+ */
+engine ereport.disk.read_error {N=6, T=2}
+engine ereport.disk.write_error {N=6, T=2}

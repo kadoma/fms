@@ -1,62 +1,84 @@
-# Makefile
-#
-# Created on: Jan 19, 2010
-#	Author: Inspur OS Team
-#
-# Delete the following two lines on IA64:
-# finish:
-#	...
-#	$(CHCON) $(ROOTLIB)/*.so
-#	$(CHCON) $(PLUGDIR)/*.so
-#
+##############################
+# file   Makefile
+###############################
 
-include ./Makefile.defs
+FMD_DIR = ./fms
+EVT_PREFIX = ./evt_modules
+KFM_DIR = $(EVT_PREFIX)/evtlib/kfm/kfm
+KFMADM_DIR = $(EVT_PREFIX)/evtlib/kfm/kfmadm
+EVT_SRC_DIR = $(EVT_PREFIX)/evtsrc
+EVT_AGENT_DIR = $(EVT_PREFIX)/evtagent
+INSTALL_KFM_DIR = /lib/modules/$(shell uname -r)/kernel/fm
+INSTALL_KFMADM_DIR = /usr/sbin/
 
-SUBDIRS = \
-	lib \
-	cmd
+PROJECT = fms
+PROGRAM = fmd
 
-#all: prep $(SUBDIRS) preun
-all: $(SUBDIRS) 
+#SUBDIRS=`ls -d */ | grep -v 'bin' | grep -v 'lib' | grep -v 'include'`
+SUBDIRS=lib/libcase lib/libesc lib/libfmd evt_modules/evtlib  \
+				evt_modules/libfmd_adm evt_modules/libfmd_msg evt_modules/libfmd_msg \
+									fms \
+				tools/fmstopo tools/ tools/fmsinject tools/fmsadm \
+				evt_modules/evtsrc/trace evt_modules/evtagent/trace \
+				evt_modules/evtsrc/inject evt_modules/evtagent/inject \
+				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
+				evt_modules/evtsrc/disk evt_modules/evtagent/disk \
+				evt_modules/evtsrc/adm \
+				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
+				evt_modules/evtlib/kfm/kfm evt_modules/evtlib/kfm/kfmadm				
 
-install: prepins $(SUBDIRS) post
 
-clean: $(SUBDIRS)
+define make_subdir
+ @for subdir in $(SUBDIRS) ; do \
+ ( cd $$subdir && make $1) \
+ done;
+endef
 
-uninstall: preun $(SUBDIRS)
+all:
+	$(call make_subdir , all)
 
-$(SUBDIRS): FRC
-	@cd $@;	pwd; $(MAKE) $(TARGET)
+install :
+	$(call make_subdir , install)
 
-FRC:
+clean:
+	$(call make_subdir , clean)
 
-prepins:
-	${MKDIR} ${INCDIR}
-	${MKDIR} ${INSTDIR}
-	${MKDIR} ${INSCTDIR}
-	${MKDIR} ${ERRLOGDIR}
-	${MKDIR} ${FLTLOGDIR}
-	${MKDIR} ${LSTLOGDIR}
-	${MKDIR} ${ROOTLIB}
-	${MKDIR} ${ESCDIR}
-	${MKDIR} ${FMDDIR}
-	${MKDIR} ${DICTDIR}
-	${MKDIR} ${DICTDIRS}
-	${MKDIR} ${CKPTDIR}
-	${MKDIR} ${NOWDIR}
-	${MKDIR} ${PLUGDIR}
-	${CP} include/*.h ${INCDIR}
-	${CP} scripts/* ${INSCTDIR}
-	${CP} esc/*.esc ${ESCDIR}
-	${CP} dict/*.po ${DICTDIR}
-	${CP} dict/*.mo ${DICTDIRS}
-	${CP} cmd/fmckpt/ckpt.conf ${CKPTDIR}
-	${CP} cmd/modules/evtsrc/proc/evtsrc.proc.monitor.xml ${PLUGDIR}
 
-preun:
-	${RM} ${CKPTDIR}/ckpt.conf
-	${RM} ${PLUGDIR}/evtsrc.proc.monitor.xml
-	./scripts/preun.sh
+###   for rpm   ###
+PKG=$(PROJECT)
+RPM_BUILD_ROOT=/root/rpmbuild/BUILD
+BRROOTDIR=$(RPM_BUILD_ROOT)/$(PKG)
+RPM=/usr/bin/rpmbuild
+RPMFLAGS=-bb
+FMS_SPEC_FILE=fms.spec
+RPM_FMS=$(BRROOTDIR)/usr/sbin/
 
-post:
-	./scripts/post.sh
+rpm: all
+	rm -rf $(BRROOTDIR)/*
+	mkdir -p $(BRROOTDIR)/usr/sbin
+#	mkdir -p $(BRROOTDIR)/etc/$(PROJECT)
+	mkdir -p $(BRROOTDIR)/var/log/$(PROJECT)
+	mkdir -p $(BRROOTDIR)/$(INSTALL_KFM_DIR)
+	mkdir -p $(BRROOTDIR)/$(INSTALL_KFMADM_DIR)
+	mkdir -p $(BRROOTDIR)/lib/systemd/system
+	mkdir -p $(BRROOTDIR)/var/run
+	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)
+	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
+	
+	install -cm 755 $(FMD_DIR)/$(PROGRAM)   $(RPM_FMS)
+	install -cm 755 $(KFMADM_DIR)/kfmadm    $(INSTALL_KFMADM_DIR)
+	cp ./fmd.service                        $(BRROOTDIR)/lib/systemd/system/fmd.service
+	cp ./lib/libcase/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libesc/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libfmd/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./evt_modules/evtlib/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)
+#	cp $(EVT_SRC_DIR)/disk/*.so	 $(EVT_SRC_DIR)/disk/*.conf             $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+#	cp $(EVT_AGENT_DIR)/disk/*.so  $(EVT_AGENT_DIR)/disk/*.conf         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_SRC_DIR)/cpumem/*.so  $(EVT_SRC_DIR)/cpumem/*.conf         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_AGENT_DIR)/cpumem/*.so  $(EVT_AGENT_DIR)/cpumem/*.conf     $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+#	cp $(EVT_SRC_DIR)/trace/*.so  $(EVT_SRC_DIR)/trace/*.conf           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+#	cp $(EVT_AGENT_DIR)/trace/*.so  $(EVT_AGENT_DIR)/trace/*.conf       $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp ./esc/*.esc                          $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
+	cp $(KFM_DIR)/kfm.ko                    $(BRROOTDIR)/$(INSTALL_KFM_DIR)/fms.ko
+	$(RPM) $(RPMFLAGS) $(FMS_SPEC_FILE)

@@ -1,18 +1,19 @@
-/*
- * topo_tree.c
+ /************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    topo_tree.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-21
+ * Description: topo tree function
  *
- *  Created on: Sep 19, 2010
- *      Author: Inspur OS Team
- *
- *  Description:
- *      TOPO Tree
- */
+ ************************************************************/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
+#include <string.h>
+
 #include <fmd.h>
-#include <fmd_topo.h>
-#include <fmd_list.h>
 #include <topo_tree.h>
 
 static tnode_t *
@@ -192,8 +193,7 @@ print_topo_thread(core_t *cp)
 	/* traverse thread */
 	list_for_each(pos, &cp->ht_head) {
 		tp = list_entry(pos, thread_t, list);
-
-		printf("|	|       |       |       |-- thread%d\n", tp->tnode->tn_value);
+		printf("|	|       |       |--thread %d     |	|	|	|\n", tp->tnode->tn_value);
 	}
 }
 
@@ -205,8 +205,7 @@ print_topo_dimm(memcontroller_t *mcp)
 	/* traverse dimm */
 	list_for_each(pos, &mcp->dimm_head) {
 		dp = list_entry(pos, dimm_t, list);
-
-		printf("|	|       |       |       |-- dimm%d\n", dp->tnode->tn_value);
+		printf("|	|       |       |-- dimm%d	|	|	|	|\n", dp->tnode->tn_value);
 	}
 }
 
@@ -220,18 +219,26 @@ print_topo_core(chip_t *chp)
 	/* traverse core */
 	list_for_each(pos, &chp->core_head) {
 		cp = list_entry(pos, core_t, list);
-
-		printf("|	|       |       |-- core%d\n", cp->tnode->tn_value);
-		print_topo_thread(cp);
+                printf("|	|	|-------------------------------|	|	|\n");     
+		printf("|	|       | core%d                 	|	|	|\n", cp->tnode->tn_value);
+	        printf("|       |       |       |---------------|       |       |       |\n");
+         	print_topo_thread(cp);
+                printf("|       |       |       |---------------|       |       |       |\n");
+                printf("|       |       |-------------------------------|	|	|\n");
+                printf("|	|						|	|\n");
 	}
 
 	if (chp->mctl != NULL) {
 		/* traverse mem-controller */
 		list_for_each(ppos, &chp->mctl_head) {
 			mcp = list_entry(ppos, memcontroller_t, list);
-
-			printf("|       |       |       |-- memory-controller%d\n", mcp->tnode->tn_value);
-			print_topo_dimm(mcp);
+              
+                        printf("|       |       |-------------------------------|       |       |\n");
+			printf("|       |	|memory-controller%d		|       |       |\n", mcp->tnode->tn_value);
+			printf("|       |       |       |---------------|       |       |       |\n");
+                        print_topo_dimm(mcp);
+                        printf("|       |       |       |---------------|       |       |       |\n");
+                        printf("|       |       |-------------------------------|       |       |\n");
 		}
 	}
 }
@@ -246,22 +253,20 @@ print_topo_func(slot_t *slp, int sub)
 	func_t *fp = NULL;
 	hostbridge_t *hbp = NULL;
 	/* traverse func */
-	list_for_each(pos, &slp->func_head) {
+        list_for_each(pos, &slp->func_head) {
 		fp = list_entry(pos, func_t, list);
 
-		if (sub == 0)
-			printf("|	|       |       |       |-- func%d\n", fp->tnode->tn_value);
-		else if (sub == 1)
-			printf("|	|       |       |       |       |       |       |-- func%d\n", fp->tnode->tn_value);
-
+		if (sub == 0){
+			printf("|	|       	|--func%d			|	|\n", fp->tnode->tn_value);
+		}else if (sub == 1)
+			printf("|	|					|--func%d|	|\n", fp->tnode->tn_value);
 		if (fp->hb == NULL)
 			continue;
 		else {
 			/* traverse hostbridge */
 			list_for_each(ppos, &fp->hb_head) {
 				hbp = list_entry(ppos, hostbridge_t, list);
-
-				printf("|	|       |       |       |       |-- hostbridge%d\n", hbp->tnode->tn_value);
+				printf("|	|       		|-- hostbridge%d		|	|\n", hbp->tnode->tn_value);
 				print_topo_slot(hbp, 1);
 			}
 		}
@@ -278,10 +283,10 @@ print_topo_slot(hostbridge_t *hbp, int sub)
 		slp = list_entry(pos, slot_t, list);
 
 		if (sub == 0) {
-			printf("|	|       |       |-- slot%d\n", slp->tnode->tn_value);
+                       	printf("|       |       |--slot%d	                        |       |\n", slp->tnode->tn_value);     
 			print_topo_func(slp, 0);
 		} else if (sub == 1) {
-			printf("|	|       |       |       |       |       |-- slot%d\n", slp->tnode->tn_value);
+			printf("|	|				|--slot%d	|	|\n", slp->tnode->tn_value);
 			print_topo_func(slp, 1);
 		}
 	}
@@ -291,40 +296,48 @@ static void
 print_topo_motherboard(motherboard_t *mb)
 {
 	struct list_head *pos = NULL;
-	struct list_head *ppos = NULL;
+	//struct list_head *ppos = NULL;
 	chip_t *chp = NULL;
-	hostbridge_t *hbp = NULL;
+	//hostbridge_t *hbp = NULL;
 	/* traverse chip */
 	list_for_each(pos, &mb->chip_head) {
 		chp = list_entry(pos, chip_t, list);
-
-		printf("|       |       |-- chip%d\n", chp->tnode->tn_value);
+                printf("|	|-----------------------------------------------|	|\n");
+		printf("|       | socket%d		   		 	|	|\n", chp->tnode->tn_value);
 		print_topo_core(chp);
-	}
+	        printf("|       |-----------------------------------------------|	|\n");
+                printf("|                                                               |\n");
+        }
+	#if 0
 	/* traverse hostbridge */
 	list_for_each(ppos, &mb->hb_head) {
 		hbp = list_entry(ppos, hostbridge_t, list);
 
-		printf("|       |       |-- hostbridge%d\n", hbp->tnode->tn_value);
+                printf("|       |-----------------------------------------------|       |\n");
+		printf("|       |hostbridge%d					|	|\n", hbp->tnode->tn_value);
 		print_topo_slot(hbp, 0);
+                printf("|       |-----------------------------------------------|       |\n");
+                printf("|                                                               |\n");
 	}
+	#endif
 }
-
+#if 0
 static void
 print_topo_systemboard(systemboard_t *sb)
 {
 	/* FIXME: print system borad information */
 	printf("|       |-- systemboard0\n");
 }
-
+#endif
 static void
 print_topo_chassis(chassis_t *csp)
 {
-	printf("|-- chassis%d\n", csp->tnode->tn_value);
-	printf("|	|-- motherboard%d\n", csp->mb->tnode->tn_value);
+        printf("|---------------------------------------------------------------|\n");
+	printf("| node%d								|\n", csp->tnode->tn_value);
 
 	print_topo_motherboard(csp->mb);
-	print_topo_systemboard(csp->sb);
+        printf("|---------------------------------------------------------------|\n");
+        printf("\n");
 }
 
 void
@@ -334,6 +347,8 @@ print_topo_tree(fmd_topo_t *ptp)
 
 	struct list_head *pos = NULL;
 	chassis_t *csp = NULL;
+        /* traverse memory */
+        
 	/* traverse chassis */
 	list_for_each(pos, &ptp->tp_root->tt_root) {
 		csp = list_entry(pos, chassis_t, list);
@@ -768,10 +783,10 @@ topo_tree_create(fmd_t *fmd)
 
 	return 0;
 }
-
+#if 0
 void
 topo_tree_destroy(fmd_t *fmd)
 {
 
 }
-
+#endif

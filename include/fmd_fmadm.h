@@ -1,23 +1,13 @@
-/*
- * fmd_fmadm.h
- *
- *  Created on: Oct 18, 2010
- *      Author: Inspur OS Team
- *
- *  Descriptions:
- *      fmd_fmadm.h
- */
 
 #ifndef FMD_FMADM_H_
-#define FMD_FMADM_H_
+#define FMD_FMADM_H_ 1
 
 #include <stdint.h>
 #include <pthread.h>
 #include <mqueue.h>
 #include <errno.h>
-#include <fmd_hash.h>
-#include <fmd_list.h>
-#include <fmd_case.h>
+#include <assert.h>
+#include <list.h>
 
 /*
  * Fault Management Daemon Administration Message Queue Format (FAF)
@@ -40,10 +30,10 @@ typedef struct faf_hdr {
 	uint64_t fafh_msgsz;		/* message size of entire FAF message */
 } faf_hdr_t;
 
-#define FAF_GET_CASELIST	"GET CASELIST"	/* get caselist command */
+#define FAF_GET_CASELIST "GET CASELIST"	/* get caselist command */
 
 typedef struct faf_case {
-	char     fafc_fault[128];	/* for fmd_case_type use */
+		char     fafc_fault[128];	/* for fmd_case_type use */
         uint64_t fafc_uuid;		/* case uuid */
         uint64_t fafc_rscid;
         uint8_t  fafc_state;		/* case state (see below) */

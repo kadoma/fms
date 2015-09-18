@@ -1,0 +1,39 @@
+#------cache error code encoding------
+
+#Status Register
+#===============
+#  636261605958575655 54     53 52           38    37    36 32 31               16 15           0
+# |V|O|U|E|M|A|P|S|A|          |               |        |     |                   |              |
+# |A|V|C|N|I|D|C| |R|Threshold |Corrected Error|Firmware|Other|MSCOD Model        |MCA Error Code|
+# |L|E| | |S|D|C| | |Status    |Count          |Updated |Info |Specific Error Code|              | 
+# | |R| | |C|R| | | |          |               |Error   |     |                   |              |
+# | | | | |V|V| | | |          |               |        |     |                   |              |
+
+#Error Code
+#==========
+#  0x900000000000000E      l2gcache_hierarchy_ce 
+#  0xB00000000000000E      l2gcache_hierarchy_uc
+#  0x9000000000000105      l1dcache_generic_ce
+#  0x9000000000000115      l1dcache_rd_ce
+#  0x9000000000000125      l1dcache_wr_ce
+#  0x9000000000000135      l1dcache_drd_ce
+#  0x9000000000000145      l1dcache_dwr_ce
+#  0x9000000000000155      l1dcache_ird_ce					
+#  0x9000000000000165      l1dcache_prefetch_ce
+#  0x9000000000000175      l1dcache_eviction_ce
+#  0x9000000000000185      l1dcache_snoop_ce
+#  0x9040000000000185      l1dcache_snoop_ce    //fault
+#
+#DESCRIPTION
+#===========
+# 0~1 BIT, level(0,1,2,3)
+# 2~3 BIT, type(i,d,g,u)
+# 4~7 BIT, error type
+# 8   BIT, cache error
+#
+ 
+#Test Case
+#==========
+
+CPU 7 BANK 1
+STATUS 0x9000000000000155

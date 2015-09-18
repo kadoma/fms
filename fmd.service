@@ -1,0 +1,13 @@
+[Unit]
+Description=Fault Management System
+After=syslog.targe
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/fmd start
+ExecReload=/usr/sbin/fmd restart
+ExecStop=/usr/sbin/fmd stop
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

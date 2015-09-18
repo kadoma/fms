@@ -1,0 +1,18 @@
+/**
+ * Description:
+ *	disk error injection
+ * 
+ * Author:
+ *	guomeisi
+ */
+
+ereport.disk.unhealthy
+ereport.disk.unhealthy
+ereport.disk.unhealthy
+
+ereport.disk.space-insufficient
+ereport.disk.over-temperature
+ereport.disk.badblocks
+
+
+

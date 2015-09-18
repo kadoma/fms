@@ -1,12 +1,12 @@
-/*
- * dmi.c
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    dmi.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-12
+ * Description: get memery infomation function
  *
- *  Created on: Dec 13, 2010
- *      Author: Inspur OS Team
- *  
- *  Description:
- *  	dmi.c
- */
+ ************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,17 +16,18 @@
 #include <dirent.h>
 #include <assert.h>
 #include <syslog.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/fcntl.h>
 #include <sys/mman.h> 
 #include <linux/limits.h>
 
-#include <fmd.h>
+#include <dmi.h>
 #include <fmd_errno.h>
-#include <fmd_list.h>
 #include <fmd_topo.h>
 
+#if 0
 struct dmi_header {
 	uint8_t type;
 	uint8_t length;
@@ -90,6 +91,7 @@ typedef struct dmi_device_map_addr {
 	struct list_head list;
 } dmi_device_map_addr_t;
 
+#endif
 
 /**
  * get_efi_systab_smbios
@@ -109,7 +111,7 @@ get_efi_systab_smbios(void)
 	memset(buf, 0, 100 * sizeof (char));
 
 	if ((fp = fopen("/sys/firmware/efi/systab", "r")) == NULL) {
-		printf("failed to open efi systab for SMBIOS\n");
+//		printf("failed to open efi systab for SMBIOS\n");
 		return (0);
 	}
 
@@ -119,7 +121,6 @@ get_efi_systab_smbios(void)
 		if (strncmp(buffer, "SMBIOS", 6) == 0) {
 			strcpy(buf, &buffer[7]);
 			result = strtol(buf, NULL, 16);
-
 			return result;
 		}
 	}
@@ -135,6 +136,7 @@ get_efi_systab_smbios(void)
  * @param
  * @return
  */
+#if 0
 static void
 dmi_data_free(dmi_data_t *pdmi)
 {
@@ -178,7 +180,7 @@ dmi_data_free(dmi_data_t *pdmi)
 		free(ddma);
 	}
 }
-
+#endif
 
 /**
  * dmi_table
@@ -239,7 +241,7 @@ dmi_table(int fd, uint32_t base, int len, int num)
 			break;
 
 		type = dm->type;
-		if (type == 4) {		// Processor
+       		if (type == 4) {		// Processor
 			dmi_processor_t *dmip = NULL;
 			/* malloc */
 			dmip = (dmi_processor_t *)malloc(sizeof (dmi_processor_t));
@@ -248,7 +250,8 @@ dmi_table(int fd, uint32_t base, int len, int num)
 
 			dmip->handle = data[2];
 			dmip->processor_id = data[8];
-			strcpy(dmip->socket_designation, &data[4]);
+			//printf("data = %c",data[4]);
+			//strcpy(dmip->socket_designation, &data[4]);
 			list_add(&dmip->list, &pdmi->processor_list);
 		} else if (type == 16) {	// Physical Memory Array
 			if (data[5] == 0x03) {		/* System Memory */
@@ -277,8 +280,8 @@ dmi_table(int fd, uint32_t base, int len, int num)
 			if (u != 0xffff)
 				dmd->size = (1024ULL * (u & 0x7fff) * ((u & 0x8000) ? 1 : 1024ULL));
 			
-			strcpy(dmd->device_locator, &data[16]);
-			strcpy(dmd->bank_locator, &data[17]);
+			//strcpy(dmd->device_locator, &data[16]);
+			//strcpy(dmd->bank_locator, &data[17]);
 			list_add(&dmd->list, &pdmi->device_list);
 		} else if (type == 19) {	// Memory Array Mapped Address
 			dmi_array_map_addr_t *dama = NULL;
@@ -361,7 +364,7 @@ fmd_topo_walk_mem(dmi_data_t *pdmi, fmd_topo_t *ptopo)
 	struct list_head *pos = NULL;
 	topo_cpu_t *pcpu = NULL;
 	int max_chassis = 0;
-	int num_socket[1024];
+	//int num_socket[1024];
 	int num_dimm[1024];
 	int num_d = 0, num_a = 0, num = 0;
 	int i = 0, j = 0, k = 0;
@@ -372,18 +375,21 @@ fmd_topo_walk_mem(dmi_data_t *pdmi, fmd_topo_t *ptopo)
 		if (pcpu->cpu_chassis > max_chassis)
 			max_chassis = pcpu->cpu_chassis;
 	}
-
+	
 	dmi_mem_device_t *dmd = NULL;
-	dmi_mem_array_t *dma = NULL;
 	struct list_head *ppos = NULL;
 	struct list_head *apos = NULL;
 	list_for_each(ppos, &pdmi->device_list) {
 		dmd = list_entry(ppos, dmi_mem_device_t, list);
+		uint64_t size = dmd->size;
+		dmd->size = size;
 		num_d++;	/* Sum of devices */
 	}
-
+	dmi_mem_array_t *dma = NULL;
 	list_for_each(apos, &pdmi->array_list) {
 		dma = list_entry(apos, dmi_mem_array_t, list);
+		uint64_t devices = dma->devices;
+		dma->devices = devices;
 		num_a++;	/* Sum of arrays */
 	} 
 
@@ -393,15 +399,15 @@ fmd_topo_walk_mem(dmi_data_t *pdmi, fmd_topo_t *ptopo)
 	dmi_mem_array_t *pdma = NULL;
 	struct list_head *dpos = NULL;
 	struct list_head *dppos = NULL;
-
+	p1 = device_handle;
 	list_for_each(dpos, &pdmi->device_list) {
 		pdmd = list_entry(dpos, dmi_mem_device_t, list);
-		p1 = device_handle;
 		*p1++ = pdmd->handle;
-	}
+	} 
+	
+	p2 = array_handle;
 	list_for_each(dppos, &pdmi->array_list) {
 		pdma = list_entry(dppos, dmi_mem_array_t, list);
-		p2 = array_handle;
 		*p2++ = pdma->handle;
 		/* Attention: lvalue(p2) required as
 		   increment operand must be correctable. */
@@ -409,63 +415,59 @@ fmd_topo_walk_mem(dmi_data_t *pdmi, fmd_topo_t *ptopo)
 		
 	qsort(device_handle, num_d, sizeof(uint64_t), comp);
 	qsort(array_handle, num_a, sizeof(uint64_t), comp);
-
 	/* chassis */
 	for (i = 0; i < max_chassis + 1; i++) {
 		struct list_head *pos1 = NULL;
 		topo_cpu_t *pcpu1 = NULL;
-		int max_socket = 0;
+		//int max_socket = 0;
 		
+		/* socket */
 		list_for_each(pos1, &ptopo->list_cpu) {
 			pcpu1 = list_entry(pos1, topo_cpu_t, list);
 			/* default: begin 0 */
-			if ((pcpu1->cpu_chassis == i) && (pcpu1->cpu_socket > max_socket))
-				max_socket = pcpu1->cpu_socket;
+			if (pcpu1->cpu_chassis == i)
+				j = pcpu1->cpu_socket;
 		}
-		num_socket[i] = max_socket;
-
-		/* socket */
-		for (j = 0; j < num_socket[i] + 1; j++) {
-			struct list_head *pos2 = NULL;
-			dmi_mem_array_t *ppdma = NULL;
-			int max_dimm = 0;
-			uint64_t handle = array_handle[i * (max_socket + 1) + j];
-
-			list_for_each(pos2, &pdmi->array_list) {
-				ppdma = list_entry(pos2, dmi_mem_array_t, list);
-				if (handle == ppdma->handle)
-					max_dimm = ppdma->devices;
+		
+		struct list_head *pos2 = NULL;
+		dmi_mem_array_t *ppdma = NULL;
+		int max_dimm = 0;
+		uint64_t handle = array_handle[i];
+		list_for_each(pos2, &pdmi->array_list) {
+			ppdma = list_entry(pos2, dmi_mem_array_t, list);
+			if (handle == ppdma->handle){
+				max_dimm = ppdma->devices;
+				break;
 			}
-			num_dimm[j] = max_dimm;
+		}
+		num_dimm[j] = max_dimm;
+		/* dimm */
+		for (k = 0; k < num_dimm[j]; k++) {
+			topo_mem_t *pmem = NULL;
+			struct list_head *pos3 = NULL;
+			dmi_device_map_addr_t *pddma = NULL;
+			uint64_t handle2 = device_handle[num++];
+			/* malloc */
+			pmem = (topo_mem_t *)malloc(sizeof (topo_mem_t));
+			assert(pmem != NULL);
+			memset(pmem, 0, sizeof (topo_mem_t));
 
-			/* dimm */
-			for (k = 0; k < num_dimm[j]; k++) {
-				topo_mem_t *pmem = NULL;
-				struct list_head *pos3 = NULL;
-				dmi_device_map_addr_t *pddma = NULL;
-				uint64_t handle2 = device_handle[num++];
-				/* malloc */
-				pmem = (topo_mem_t *)malloc(sizeof (topo_mem_t));
-				assert(pmem != NULL);
-				memset(pmem, 0, sizeof (topo_mem_t));
+			pmem->mem_system = 0;
+			pmem->mem_chassis = i;
+			pmem->mem_board = 0;
+			pmem->mem_socket = j;
+			pmem->mem_controller = 0;
+			pmem->mem_dimm = k;
+			pmem->mem_topoclass = TOPO_MEMORY;
 
-				pmem->mem_system = 0;
-				pmem->mem_chassis = i;
-				pmem->mem_board = 0;
-				pmem->mem_socket = j;
-				pmem->mem_controller = 0;
-				pmem->mem_dimm = k;
-				pmem->mem_topoclass = TOPO_MEMORY;
-
-				list_for_each(pos3, &pdmi->device_addr_list) {
-					pddma = list_entry(pos3, dmi_device_map_addr_t, list);
-					if (handle2 == pddma->device_handle) {
-						pmem->start = pddma->start;
-						pmem->end = pddma->end;
-					}
+			list_for_each(pos3, &pdmi->device_addr_list) {
+				pddma = list_entry(pos3, dmi_device_map_addr_t, list);
+				if (handle2 == pddma->device_handle) {
+					pmem->start = pddma->start;
+					pmem->end = pddma->end;
 				}
-				list_add(&pmem->list, &ptopo->list_mem);
 			}
+			list_add(&pmem->list, &ptopo->list_mem);
 		}
 	}
 }
@@ -508,7 +510,6 @@ fmd_topo_dmi(fmd_topo_t *ptopo)
 			memcpy(buf, (uint8_t *) mmp + mmoffset, sizeof(buf));
 			munmap(mmp, mmoffset + 0x20);
 		}
-
 		if (mmp == MAP_FAILED) {
 			close(fd);
 			return (-1);
@@ -516,20 +517,19 @@ fmd_topo_dmi(fmd_topo_t *ptopo)
 			uint16_t num = buf[13] << 8 | buf[12];
 			uint16_t len = buf[7] << 8 | buf[6];
 			uint32_t base = buf[11] << 24 | buf[10] << 16 | buf[9] << 8 | buf[8];
-
 			if ((pdmi = dmi_table(fd, base, len, num)) == NULL) {
 				close(fd);
 				return (-1);
 			}
+			efi = true;
 			fmd_topo_walk_mem(pdmi, ptopo);
 
-			if (efi)
+			if (efi){
 				break;	/* we don't need to search the memory for EFI systems */
+			}
 		}
 	}
 	close(fd);
 //	dmi_data_free(pdmi);
-
 	return FMD_SUCCESS;
 }
-

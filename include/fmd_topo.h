@@ -1,20 +1,10 @@
-/*
- * fmd_topo.h
- *
- *  Created on: Feb 2, 2010
- *	Author: Inspur OS Team
- *
- *  Description:
- *  	TOPO
- */
 
 #ifndef FMD_TOPO_H_
-#define FMD_TOPO_H_
+#define FMD_TOPO_H_ 1
 
 #include <stdint.h>
-#include <fmd_list.h>
+#include <list.h>
 #include <topo_tree.h>
-#include <fmd.h>
 
 #define DIR_SYS_CPU  "/sys/devices/system/node"
 #define DIR_SYS_PCI  "/sys/bus/pci/devices"
@@ -234,6 +224,9 @@ typedef struct topo_storage {
 /****************************************************************
  * Helper Routines
  ***************************************************************/
+
+
+
 #if 0
 uint64_t topo_get_cpuid(fmd_t *, int);
 uint64_t topo_get_pcid(fmd_t *, char *);
@@ -246,5 +239,4 @@ uint64_t topo_end_by_memid(fmd_t *, uint64_t);
 char *topo_pci_by_pcid(fmd_t *, uint64_t);
 char *topo_storage_by_storageid(fmd_t *, uint64_t);
 #endif
-
 #endif /* FMD_TOPO_H_ */

@@ -1,5 +1,5 @@
 #ifndef	_FMD_MSG_H
-#define	_FMD_MSG_H
+#define	_FMD_MSG_H 1
 
 #include <sys/types.h>
 

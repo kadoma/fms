@@ -1,0 +1,36 @@
+#------memory error code encoding------
+
+#Status Register
+#===============
+#  636261605958575655 54     53 52           38    37    36 32 31               16 15           0
+# |V|O|U|E|M|A|P|S|A|          |               |        |     |                   |              |
+# |A|V|C|N|I|D|C| |R|Threshold |Corrected Error|Firmware|Other|MSCOD Model        |MCA Error Code|
+# |L|E| | |S|D|C| | |Status    |Count          |Updated |Info |Specific Error Code|              | 
+# | |R| | |C|R| | | |          |               |Error   |     |                   |              |
+# | | | | |V|V| | | |          |               |        |     |                   |              |
+#
+#Error Code
+#==========
+#  0x9400000000000085      memctrl_gen_channel_ce
+#  0xB400000000000085      memctrl_gen_channel_uc
+#  0x9400000000000095      memctrl_rd_channel_ce
+#  0x94000000000000A5      memctrl_wr_channel_ce
+#  0x94000000000000B5      memctrl_ac_channel_ce
+#  0x94000000000000C5      memctrl_ms_channel_ce
+#  0x94000000000000D5      memctrl_res5_channel_ce
+#  0x94000000000000E5      memctrl_res6_channel_ce					
+#  0x94000000000000F5      memctrl_res7_channel_ce
+#
+#DESCRIPTION
+#===========
+# 0~3 BIT, channel
+# 4~6 BIT, error type
+# 7   BIT, memory type 
+#
+
+#Test Case
+#==========
+
+CPU 8 BANK 1
+STATUS 0x94000000000000C5
+ADDR 0xabcdef

@@ -1,0 +1,40 @@
+#
+#
+#    This Makefile is for test cpumem event source. 
+#
+#                    
+
+CC      = gcc
+CFLAGS  = -g -Wall -Wno-unused-function -DTEST_CMES
+LDFLAGS = -lpthread -ldl -levt -lfmd -lcase -lesc -L /usr/lib/fms
+COMPILE	= $(CC) $(CFLAGS) -c
+
+INCLUDES	= -I ../../../include/ -I ../../include
+EVTLIB_DIR	= ../../evtlib
+FMS_LIBFMD_DIR = ../../../lib/libfmd
+
+PROGRAM = cmes_test
+
+RM      = /bin/rm -f
+
+LIBOBJS = cpumem_evtsrc.o	\
+		bitfield.o		\
+		dmi.o			\
+		haswell.o		\
+		intel.o			\
+		p4.o			\
+		test.o			\
+		$(EVTLIB_DIR)/cpumem.o \
+		$(FMS_LIBFMD_DIR)/logging.o
+
+
+all: $(PROGRAM)
+
+$(PROGRAM): $(LIBOBJS)
+	$(CC) -o $@ $(LIBOBJS) $(LDFLAGS)
+
+%.o:%.c
+	$(COMPILE) $(INCLUDES) -o $@ $^
+
+clean:
+	$(RM) $(LIBOBJS) $(PROGRAM)

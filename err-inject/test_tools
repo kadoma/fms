@@ -1,0 +1,20 @@
+﻿Machine Error Injection Tools
+
+soft-inj
+============
+1.mce-inject
+		mce-inject allows to inject machine check errors on the 
+		software level into a running Linux kernel.
+		
+		Load: 
+			git://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git
+		See mce-inject README for more.
+
+	
+hw-inject
+=============
+1.EINJ
+		EINJ provides a hardware error injection mechanism.	It need BIOS and
+		kernel support.
+		
+		See documentation/acpi/apei/einj.txt for more.

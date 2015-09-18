@@ -1,0 +1,35 @@
+#------bus error code encoding------
+
+#Status Register
+#===============
+#  636261605958575655 54     53 52           38    37    36 32 31               16 15           0
+# |V|O|U|E|M|A|P|S|A|          |               |        |     |                   |              |
+# |A|V|C|N|I|D|C| |R|Threshold |Corrected Error|Firmware|Other|MSCOD Model        |MCA Error Code|
+# |L|E| | |S|D|C| | |Status    |Count          |Updated |Info |Specific Error Code|              | 
+# | |R| | |C|R| | | |          |               |Error   |     |                   |              |
+# | | | | |V|V| | | |          |               |        |     |                   |              |
+
+#Error Code
+#==========
+#  0x9000000000000801      l1bus_generic_ce
+#  0x9000000000000811      l1bus_rd_ce
+#  0x9000000000000821      l1bus_wr_ce
+#  0x9000000000000831      l1bus_drd_ce
+#  0x9000000000000841      l1bus_dwr_ce
+#  0x9000000000000851      l1bus_ird_ce					
+#  0x9000000000000861      l1bus_prefetch_ce
+#  0x9000000000000871      l1bus_eviction_ce
+#  0x9000000000000881      l1bus_snoop_ce
+#
+#DESCRIPTION
+#===========
+# 0~1 BIT, level(0,1,2,3)
+#
+#
+
+
+#Test Case
+#==========
+
+CPU 6 BANK 1
+STATUS 0xB000000000000801

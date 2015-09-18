@@ -1,12 +1,3 @@
-/*
- * fmd_string.h
- *
- *  Created on: Feb 20, 2010
- *      Author: Inspur OS Team
- *  
- *  Description:
- *  	fmd_string.h
- */
 
 #ifndef FMD_STRING_H_
 #define FMD_STRING_H_
@@ -83,3 +74,4 @@ split(char *string, char ch, int *size)
 }
 
 #endif /* FMD_STRING_H_ */
+

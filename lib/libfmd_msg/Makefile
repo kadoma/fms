@@ -1,33 +1,35 @@
 # Makefile
 #
 # Created on: Oct 13, 2010
-#     Author: Inspur OS Team
-#
+#     Author: liubin, wanghuan
 #
 
-include ../Makefile.defs
+CC = /usr/bin/gcc
+RM = /bin/rm -f
+CP = /bin/cp 1>/dev/null 2>&1 -f
 
-LDFLAGS += -shared -fpic
+ROOTLIB = /usr/lib/fms
+SRCINC =../../include
 LIBNAME = libfmd_msg.so
-CFLAGS += -I../../include
+
+CFLAGS = -g -Wall -I$(SRCINC)  \
+		-Wno-unused-function \
+    	-Wno-unused-variable
+LDFLAGS = -L$(ROOTLIB) -ldl -lpthread -shared -fpic 
+
+#lib version
+LIBVER = 2.0.0
 
 SRCS = $(wildcard *.c)
-OBJS = $(SRCS:%.c=%.o)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(LDFLAGS) $<
-
-all: $(OBJS)
-	$(CC) -o $(LIBNAME) $(LDFLAGS) $(OBJS)
-#	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
+all:
+	$(CC) -o $(LIBNAME) $(LDFLAGS) $(CFLAGS) $(SRCS)
 
 clean:
 	$(RM) $(OBJS) $(LIBNAME)
 
 install:
 	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
 	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME)
 
 uninstall:

@@ -1,13 +1,12 @@
-/*
- * pci.c
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    pci.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-16
+ * Description: get pci infomation function
  *
- *  Created on: Dec 1, 2010
- *      Author: Inspur OS Team
- *
- *  Descriptions:
- *      pci.c
- */
-
+ ************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -18,10 +17,10 @@
 #include <string.h>
 #include <syslog.h>
 
-#include <fmd.h>
 #include <fmd_topo.h>
-#include <fmd_list.h>
 #include <fmd_errno.h>
+#include <storage.h>
+#include <network.h>
 
 #define PCI_CLASS_REVISION      0x08              /* High 24 bits are class, low 8 revision */
 #define PCI_VENDOR_ID           0x00    /* 16 bits */
@@ -200,7 +199,7 @@ get_conf_word(struct pci_dev *pdev, unsigned int pos)
 	return pdev->config[pos] | (pdev->config[pos + 1] << 8);
 }
 
-
+#if 0 
 static uint8_t
 get_conf_byte(struct pci_dev *pdev, unsigned int pos)
 {
@@ -210,7 +209,7 @@ get_conf_byte(struct pci_dev *pdev, unsigned int pos)
 	return pdev->config[pos];
 }
 
-
+#endif
 /**
  * fmd_scan_pci_dev
  *
@@ -223,7 +222,6 @@ fmd_scan_pci_dev(struct pci_dev *pdev, topo_pci_t *ppci, fmd_topo_t *ptopo)
 
 	pdev->device_id = get_conf_word(pdev, PCI_DEVICE_ID);
 	uint16_t dclass = get_conf_word(pdev, PCI_CLASS_DEVICE);
-
 	switch (dclass >> 8) {
 		case PCI_BASE_CLASS_STORAGE:
 			ppci->pci_topoclass = TOPO_STORAGE;
@@ -271,7 +269,10 @@ fmd_scan_pci_dev(struct pci_dev *pdev, topo_pci_t *ppci, fmd_topo_t *ptopo)
 	}
 
 	/* add to list */
-	if (ppci->dev_icon == "pci")
+	char tmp[] = "pci";
+	if((ppci->dev_icon != NULL)&&(strcmp(tmp,ppci->dev_icon) == 0))
+	
+	//if (ppci->dev_icon == "pci")
 		list_add(&ppci->list, &ptopo->list_pci_bridge);	/* pci bridge */
 	else if (ppci->pci_topoclass == TOPO_STORAGE)
 		/* storage */
@@ -321,14 +322,13 @@ fmd_topo_walk_pci(const char *dir, const char *file, fmd_topo_t *ptopo)
 	fptr = filename;
 	while ((token = strsep(&fptr, delims)) != NULL)
 		*ptr++ = (uint32_t)strtol(token, NULL, 16);
-
 	ppci->pci_system = 0;
 	ppci->pci_chassis = p[0];	/* FIXME: pci domain */
 	ppci->pci_board = 0;		/* motherboard: 0 */
 	ppci->pci_hostbridge = p[1];	/* bus */
 	ppci->pci_slot = p[2];		/* slot */
 	ppci->pci_func = p[3];		/* func */
-
+	
 	if ((fd = open(devicepath, O_RDONLY)) < 0) {
 		perror("fmd topo open pci config");
 		return;
@@ -396,9 +396,9 @@ fmd_topo_pci(const char *dir, fmd_topo_t *ptopo)
 	DIR *dirp;
 	int ret = 0;
 
-	if ((dirp = opendir(dir)) == NULL)
+	if ((dirp = opendir(dir)) == NULL){
 		return OPENDIR_FAILED; /* failed to open directory; just skip it */
-
+	}
 	while ((dp = readdir(dirp)) != NULL) {
 		if (dp->d_name[0] == '.')
 			continue; /* skip "." and ".." */

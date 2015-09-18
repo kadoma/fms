@@ -1,20 +1,12 @@
-/*
- * fmd_adm.h
- *
- *  Created on: Oct 13, 2010
- *      Author: Inspur OS Team
- *  
- *  Description:
- *      fmd_adm.h
- */
 
 #ifndef	_FMD_ADM_H
-#define	_FMD_ADM_H
+#define	_FMD_ADM_H 1
 
 #include <mqueue.h>
-#include <fmd_api.h>
-#include <fmd_topo.h>
-#include <fmd_fmadm.h>
+
+#include "list.h"
+#include "fmd_fmadm.h"
+#include "fmd_topo.h"
 
 /*
  * Fault Management Daemon Administrative Interfaces

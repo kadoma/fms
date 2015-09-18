@@ -1,0 +1,75 @@
+#------pcu error code encoding on the intel HASWELL_EPEX------
+
+#Status Register
+#===============
+#  636261605958575655 54     53 52           38    37    36 32 31               16 15           0
+# |V|O|U|E|M|A|P|S|A|          |               |        |     |                   |              |
+# |A|V|C|N|I|D|C| |R|Threshold |Corrected Error|Firmware|Other|MSCOD Model        |MCA Error Code|
+# |L|E| | |S|D|C| | |Status    |Count          |Updated |Info |Specific Error Code|              | 
+# | |R| | |C|R| | | |          |               |Error   |     |                   |              |
+# | | | | |V|V| | | |          |               |        |     |                   |              |
+#
+#CONDITION
+#=========
+# intel  HASWELL
+# BANK 4
+#
+#Error Code
+#==========
+#  0x9000000009010402      pcu_mmct_ce
+#  0xB000000009010402      pcu_mmct_uc
+#  0x900000000D000000      pcu_mifsst_ce
+#  0x900000000E000000      pcu_mcust_ce
+#  0x9000000013000000      pcu_mdtt_ce
+#  0x9000000015000000      pcu_mdcrat_ce
+#  0x900000001E000000      pcu_mvimlfim_ce
+#  0x9000000025000000      pcu_msct_ce					
+#  0x9000000029000000      pcu_mvvmlfs_ce
+#  0x900000002B000000      pcu_mpwhcd_ce
+#  0x900000002C000000      pcu_mpwhcu_ce
+#  0x9000000039000000      pcu_mpwhcus_ce
+#  0x9000000044000000      pcu_mcvf_ce
+#  0x9000000045000000      pcu_mimn_ce
+#  0x9000000046000000      pcu_mvrdf_ce
+#  0x9000000047000000      pcu_memnpc_ce
+#  0x9000000048000000      pcu_msrrimf_ce
+#  0x9000000049000000      pcu_mswrvmf_ce
+#  0x900000004B000000      pcu_mbvtd0_ce
+#  0x900000004C000000      pcu_mbvtd1_ce
+#  0x900000004D000000      pcu_mbvtd2_ce
+#  0x900000004E000000      pcu_mbvtd3_ce
+#  0x900000004F000000      pcu_msce_ce
+#  0x9000000052000000      pcu_mfcovf_ce
+#  0x9000000053000000      pcu_mfcocf_ce
+#  0x9000000057000000      pcu_msprf_ce
+#  0x9000000058000000      pcu_msirf_ce
+#  0x9000000059000000      pcu_msarf_ce
+#  0x9000000060000000      pcu_miprep_ce
+#  0x9000000061000000      pcu_mipreq_ce
+#  0x9000000062000000      pcu_miprsq_ce
+#  0x9000000063000000      pcu_miprsp_ce
+#  0x9000000064000000      pcu_mipsc_ce
+#  0x9000000067000000      pcu_mhirbat_ce
+#  0x9000000068000000      pcu_mirst_ce
+#  0x9000000069000000      pcu_mhfcd_ce
+#  0x900000006A000000      pcu_mmpct_ce
+#  0x9000000070000000      pcu_mwtps_ce
+#  0x9000000071000000      pcu_miprep_ce
+#  0x9000000072000000      pcu_mwtpsm_ce
+#  0x900000007C000000      pcu_mbrcis_ce
+#  0x900000007D000000      pcu_mmtota_ce
+#  0x9000000081000000      pcu_mrdtth_ce
+#
+#
+#DESCRIPTION
+#===========
+# 24~31 BIT
+#
+#
+
+
+#Test Case
+#==========
+
+CPU 5 BANK 4
+STATUS 0xb000000057000000

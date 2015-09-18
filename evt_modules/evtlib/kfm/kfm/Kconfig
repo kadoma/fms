@@ -1,0 +1,11 @@
+#
+# Fault Management Kernel Module
+#
+menuconfig KFM
+	tristate "Fault Management Kernel Module"
+	---help---
+	  KFM is a kernel module that report and correct machine error for the modern x86 linux
+	  systems. Such as CPU, memory, disk, network etc.
+
+	  If you want to compile it in kernel, say Y. To compile it as a
+	  module, choose M here. If unsure, say N.

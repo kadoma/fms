@@ -1,0 +1,41 @@
+#
+#	Makefile for test cpumem event agent.
+#            
+
+CC      = gcc
+CFLAGS  = -g -Wall -DTEST_CMEA
+COMPILE	= $(CC) $(CFLAGS) -c
+
+KFM_LIB_DIR = ../../evtlib/kfm/kfmadm
+INCLUDES	= -I ../../../include/ -I ../../include -I $(KFM_LIB_DIR)
+CPUMEM_COMM_DIR	= ../../common
+FMS_LIBFMD_DIR = ../../../lib/libfmd
+
+PROGRAM = cmea_test
+
+RM      = /bin/rm -f
+
+LIBOBJS = cpumem_agent.o	\
+		  evt_process.o		\
+		  memdev.o			\
+		  sysfs.o			\
+		  tsc.o				\
+		  cache.o			\
+		  test.o			\
+		  $(CPUMEM_COMM_DIR)/cpumem.o \
+		  $(FMS_LIBFMD_DIR)/logging.o \
+		  $(KFM_LIB_DIR)/kfm_nl.o \
+		  $(KFM_LIB_DIR)/kfm_nl_policy.o \
+		  $(KFM_LIB_DIR)/libkfm_cpumem.o 
+
+
+all: $(PROGRAM)
+
+$(PROGRAM): $(LIBOBJS)
+	$(CC) -o $@ $(LIBOBJS) -lnl
+
+%.o:%.c
+	$(COMPILE) $(INCLUDES) -o $@ $^
+
+clean:
+	$(RM) $(LIBOBJS) $(PROGRAM)

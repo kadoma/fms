@@ -1,36 +1,28 @@
-# Makefile
-#
-# Created on: Jan 19, 2010
-#     Author: Inspur OS Team
-#
-#
+### create so lib file is ok
 
-include ../Makefile.defs
+SHELL=/bin/sh
+CC=gcc
 
-LDFLAGS += -shared -fpic
-LIBNAME = libfmd.so
-CFLAGS += -I../../include
+TARGET_PATH=/usr/lib/fms/
+
+TARGET=libfmd.so
+
+LDFLAGS= -ldl -lpthread -shared -fpic -g
+
+CFLAGS= -g -Wall\
+	-Wno-unused-function \
+    -Wno-unused-variable \
+	-I ../../include\
+	-I ../include\
 
 SRCS = $(wildcard *.c)
-OBJS = $(SRCS:%.c=%.o)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(LDFLAGS) $<
-
-all: $(OBJS)
-	$(CC) -o $(LIBNAME) $(LDFLAGS) $(OBJS)
-#	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
-
-clean:
-	$(RM) $(OBJS) $(LIBNAME)
+all:
+	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
+	$ mkdir -p $(TARGET_PATH) && cp $(TARGET) $(TARGET_PATH)
 
 install:
-	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
-	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME)
+	$ mkdir -p $(TARGET_PATH) && cp $(TARGET) $(TARGET_PATH)
 
-uninstall:
-	$(RM) $(ROOTLIB)/$(LIBNAME)
-	$(RM) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-
+clean:
+	rm -rf *.o *.so

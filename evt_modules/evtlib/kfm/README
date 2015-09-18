@@ -1,0 +1,49 @@
+-----------KFM(Fault Management Kernel Modules)
+
+ABSTRACT
+=========
+	KFM is a kernel module that report and correct machine error for the modern x86 linux
+	systems. Such as CPU, memory, disk, network etc.
+
+/kfm
+================
+	This directory contains a kernel module that report and correct machine error.
+		
+	make
+	insmod ./kfm.ko
+		
+/kfmadm
+================
+	This directory provides the API function, and communicate with the kfm.ko
+	kernel module.
+		
+	kfmadm is command line program for testing kfm module API.
+		
+	make -f Makefile.test
+
+kernel version
+==============
+	kernel-3.10.0 (for centos 7)
+	kernel-4.1.1 (for kanas)
+
+Debug level(0x00LL)
+===================
+	level(LL): 1~255
+
+	1. core debug
+	2. reserved for core debug
+	3. reserved for core debug
+	4. reserved for core debug
+	5. reserved for core debug
+	6. cache
+	7. mempage
+
+install & uninstall
+====================
+	# install
+	make
+	insmod ./kfm.ko
+
+	# uninstall
+	echo 1 > /proc/sys/fm/unload
+	rmmod kfm

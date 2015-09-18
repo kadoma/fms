@@ -1,0 +1,29 @@
+#------simple error code encoding------
+#
+#Status Register
+#================
+#  636261605958575655 54     53 52           38    37    36 32 31               16 15           0
+# |V|O|U|E|M|A|P|S|A|          |               |        |     |                   |              |
+# |A|V|C|N|I|D|C| |R|Threshold |Corrected Error|Firmware|Other|MSCOD Model        |MCA Error Code|
+# |L|E| | |S|D|C| | |Status    |Count          |Updated |Info |Specific Error Code|              |
+# | |R| | |C|R| | | |          |               |Error   |     |                   |              |
+# | | | | |V|V| | | |          |               |        |     |                   |              |
+#
+#Error Code
+#==========
+#  0x9000000000000001      unclassified_ce
+#  0xB000000000000001      unclassified_uc
+#  0x9000000000000002      mrom_parity_ce
+#  0x9000000000000004      frc_ce
+#  0x9000000000000005      internal_parity_ce
+#  0x9000000000000006      smm_hcav_ce
+#  0x9000000000000400      internal_timer_ce
+#  0x9000000000000401      internal_unclassified_ce     401~4FF
+#  0x9000000000000001      tmp_high                     BANK 128
+#  0x9000000000000000      tmp_high                     BANK 128
+
+#Test Case
+#==========
+
+CPU 5 BANK 1
+STATUS 0x9000000000000400

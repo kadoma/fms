@@ -1,4 +1,11 @@
-/*
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    libfmd_msg.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-21
+ * Description: message mode
+ 
  * FMD Message Library
  *
  * This library supports a simple set of routines for use in converting FMA
@@ -54,7 +61,8 @@
  * are made internally as part of the top-level library entry points, but they
  * can also be used by applications that themselves call setlocale() and wish
  * to appropriately synchronize with other threads that are calling libfmd_msg.
- */
+ ************************************************************/
+
 
 #include <libintl.h>
 #include <locale.h>
@@ -155,7 +163,7 @@ fmd_msg_init(int version)
 {
 	fmd_msg_hdl_t *h = NULL;
 	const char *s;
-	size_t len;
+	//size_t len;
 
 	if (version != FMD_MSG_VERSION)
 		return (fmd_msg_init_err(h, EINVAL));
@@ -371,7 +379,7 @@ fmd_msg_gettext_locked(fmd_msg_hdl_t *h, const char *dict, const char *code)
 	size_t len;
 	int i;
 
-	time_t sec;
+	time_t sec = 0;
 	char date[64];
 
 //	assert(fmd_msg_lock_held(h));

@@ -1,17 +1,10 @@
-/*
- * topo_tree.h
- *
- *  Created on: Sep 19, 2010
- *      Author: Inspur OS Team
- *
- *  Description:
- *      TOPO Tree
- */
 
 #ifndef _TOPO_TREE_H
-#define _TOPO_TREE_H
+#define _TOPO_TREE_H 1
 
 #include <pthread.h>
+
+#include "list.h"
 
 typedef struct topo_node {
 	char *tn_name;			/* Node name */
@@ -47,47 +40,47 @@ typedef struct topo_rank {
 #endif
 
 /* memory dimm */
-typedef struct topo_dimm {
+typedef struct topo_dimm{
 	tnode_t *tnode;
 //	rank_t *rank;
 	struct list_head list;
-} dimm_t;
+}dimm_t;
 
 /* memory controller */
-typedef struct topo_memcontroller {
+typedef struct topo_memcontroller{
 	tnode_t *tnode;
 	dimm_t *dimm;
 	struct list_head list;
 	struct list_head dimm_head;	/* dimm list head */
-} memcontroller_t;
+}memcontroller_t;
 
 /* cpu socket */
-typedef struct topo_chip {
+typedef struct topo_chip{
 	tnode_t *tnode;
 	core_t *core;
 	memcontroller_t *mctl;
 	struct list_head list;
 	struct list_head core_head;	/* core list head */
 	struct list_head mctl_head;	/* memcontroller list head */
-} chip_t;
+}chip_t;
 
 struct topo_hostbridge;
 
 /* pci func */
-typedef struct topo_func {
+typedef struct topo_func{
 	tnode_t *tnode;
 	struct topo_hostbridge *hb;	/* secondary bus */
 	struct list_head list;
 	struct list_head hb_head;
-} func_t;
+}func_t;
 
 /* pci slot */
-typedef struct topo_slot {
+typedef struct topo_slot{
 	tnode_t *tnode;
 	func_t *func;
 	struct list_head list;
 	struct list_head func_head;	/* func list head */
-} slot_t;
+}slot_t;
 
 /* pci bus */
 typedef struct topo_hostbridge {

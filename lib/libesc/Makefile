@@ -1,30 +1,32 @@
-# Makefile
-#
-# Created on: Jan 19, 2010
-#     Author: Inspur OS Team
-#
-#
+### create so lib file is ok
 
-include ../Makefile.defs
 
-LDFLAGS += -shared -fpic -g
-LIBNAME = libfmd_eversholt.so
+SHELL=/bin/sh
+CC=gcc
+
+BASEPATH=.
+OUTPUT=$(BASEPATH)
+
+TARGET=libesc.so
+
+LDFLAGS= -ldl -lpthread -ll -shared -fpic
+
+CFLAGS= -g -Wall\
+	-Wno-unused-function \
+    -Wno-unused-variable \
+	-I ../../include\
+	-I ../include\
+
 
 SRCS = $(wildcard *.c)
 
 all:
-	$(CC) -o $(LIBNAME) -I../../include $(LDFLAGS) $(SRCS)
-#	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
-
-clean:
-	$(RM) $(OBJS) $(LIBNAME)
+	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
+	cp libesc.so /usr/lib/fms/
 
 install:
-	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
-#	$(LN) $(ROOTLIB)/$(LIBNAME).$(LIBVER) $(ROOTLIB)/$(LIBNAME)
-	$(CP) $(LIBNAME) $(ROOTLIB)/$(LIBNAME)
+	cp libesc.so /usr/lib/fms/
 
-uninstall:
-	$(RM) $(ROOTLIB)/$(LIBNAME)
-	$(RM) $(ROOTLIB)/$(LIBNAME).$(LIBVER)
+clean:
+	rm -rf *.o *.so
+

@@ -1,12 +1,12 @@
-/*
- * cpu.c
+ /************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    cpu.c
+ * Author:      Inspur OS Team 
+                wang.leibj@inspur.com
+ * Date:        2015-08-11
+ * Description: get cpu infomation function
  *
- *  Created on: Feb 22, 2010
- *      Author: Inspur OS Team
- *  
- *  Description:
- *  	cpu.c
- */
+ ************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,14 +15,13 @@
 #include <dirent.h>
 #include <assert.h>
 #include <syslog.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/fcntl.h>
 #include <linux/limits.h>
 
-#include <fmd.h>
 #include <fmd_errno.h>
-#include <fmd_list.h>
 #include <fmd_topo.h>
 
 /**
@@ -109,13 +108,12 @@ void
 fmd_topo_walk_cpu(const char *dir, int nodeid, fmd_topo_t *ptopo)
 {
 	char path[PATH_MAX];
-	int len;
+	//int len;
 	struct dirent *dp;
 	const char *p;
 	char ch;
 	DIR *dirp;
 	topo_cpu_t *pcpu;
-
 	if ((dirp = opendir(dir)) == NULL)
 		return; /* failed to open directory; just skip it */
 
@@ -182,7 +180,7 @@ int
 fmd_topo_cpu(const char *dir, const char *prefix, fmd_topo_t *ptopo)
 {
 	char path[PATH_MAX];
-	int len, n;
+	int n;
 	struct dirent *dp;
 	const char *p;
 	char ch;
@@ -196,7 +194,6 @@ fmd_topo_cpu(const char *dir, const char *prefix, fmd_topo_t *ptopo)
 			continue; /* skip "." and ".." */
 
 		p = dp->d_name;
-
 		if (prefix != NULL && (p == NULL ||
 				strncmp(p, prefix, n = strlen(prefix)) != 0))
 			continue; /* skip files with the wrong suffix */
@@ -206,7 +203,6 @@ fmd_topo_cpu(const char *dir, const char *prefix, fmd_topo_t *ptopo)
 		if(ch < '0' || ch > '7' || p[n + 1]) { /* node id invalid */
 			return NODE_ID_INVALD;
 		}
-
 		(void) snprintf(path, sizeof (path), "%s/%s", dir, dp->d_name);
 		(void) fmd_topo_walk_cpu(path, atoi(&ch), ptopo);
 	}

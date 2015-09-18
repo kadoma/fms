@@ -1,46 +1,36 @@
-/*
- * esc.h
- *
- *  Created on: Feb 10, 2010
- *      Author: Inspur OS Team
- *  
- *  Description:
- *  	esc
- */
+#ifndef __FMD_ESC_H__
+#define __FMD_ESC_H__ 1
 
-#ifndef ESC_H_
-#define ESC_H_
+#include "fmd_hash.h"
+#include "list.h"
 
-#include <fmd_hash.h>
-#include <fmd_list.h>
+#define CLASS_PATH 64
 
-/**
- * node defs for parse
- *
- */
-struct esc_node {
-	char *fullclass;
-	char *nvlist;
-};
+typedef struct fmd_event_type{
+	char   eclass[CLASS_PATH];
+	struct list_head list;
+}fmd_event_type_t;
 
-struct rend_node {
-	char *evtlist;
-	char *serd;
-	char *fault;
-};
+typedef struct fmd_fault_type{
+	char   eclass[CLASS_PATH];
+	struct list_head list;
+}fmd_fault_type_t;
 
-struct prop_node {
-	char *ereport;
-	char *evtlist;
-};
+typedef struct fmd_serd_type{
+	char   eclass[CLASS_PATH];
+	uint32_t N;
+	uint32_t T;
+	struct list_head list;
+}fmd_serd_type_t;
 
-
-/* global hashtable */
-typedef struct fmd_esc {
+typedef struct fmd_esc{
 	struct fmd_hash hash_clsname;
-	struct list_head list_evtype;
-	struct list_head list_serdtype;
-	struct list_head list_casetype;
-} fmd_esc_t;
 
-#endif /* ESC_H_ */
+	struct list_head list_event;
+	struct list_head list_serd;
+	struct list_head list_fault;
+}fmd_esc_t;
+
+extern struct fmd_serd_type *fmd_query_serd(char  *eclass);
+
+#endif // fmd_esc.h

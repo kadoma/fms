@@ -1,15 +1,6 @@
-/*
- * fmd_errno.h
- *
- *  Created on: Feb 2, 2010
- *      Author: Inspur OS Team
- *
- *  Description:
- *  	ERRNO
- */
 
 #ifndef FMD_ERRNO_H_
-#define FMD_ERRNO_H_
+#define FMD_ERRNO_H_ 1
 
 #define FMD_SUCCESS		0
 #define NODE_ID_INVALD 	-0x0001
