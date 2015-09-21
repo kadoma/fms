@@ -124,7 +124,7 @@ void *start_agent(void *p)
 {
 	int ret;
 	sigset_t fullset, oldset;
-//	agent_module_t *emp;
+	agent_module_t *emp;
 	agent_modops_t *mops;
 
 	agent_module_t *p_agent_mod = (agent_module_t *)p;
