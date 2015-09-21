@@ -16,9 +16,9 @@ PROGRAM = fmd
 
 #SUBDIRS=`ls -d */ | grep -v 'bin' | grep -v 'lib' | grep -v 'include'`
 SUBDIRS=lib/libcase lib/libesc lib/libfmd evt_modules/evtlib  \
-				evt_modules/libfmd_adm evt_modules/libfmd_msg evt_modules/libfmd_msg \
+				lib/libfmd_adm lib/libfmd_msg lib/libtopo \
 									fms \
-				tools/fmstopo tools/ tools/fmsinject tools/fmsadm \
+				tools/fmstopo tools/fmsinject tools/fmsadm \
 				evt_modules/evtsrc/trace evt_modules/evtagent/trace \
 				evt_modules/evtsrc/inject evt_modules/evtagent/inject \
 				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
