@@ -15,14 +15,11 @@
 #include "logging.h"
 
 static pthread_mutex_t logfile_mutex;
+
 static FILE *logfile = NULL;
-static char *filename = NULL;
 static uint8_t log_to_file = 1;
-static wr_loglevel_t loglevel = WR_LOG_MAX;
 
-wr_loglevel_t wr_log_loglevel;
-
-FILE *wr_log_logfile;
+wr_loglevel_t loglevel = WR_LOG_MAX;
 
 void
 wr_log_logrotate(int debug)
@@ -39,7 +36,7 @@ wr_log_get_loglevel(void)
 void
 wr_log_set_loglevel(wr_loglevel_t level)
 {
-    wr_log_loglevel = loglevel = level;
+     loglevel = level;
 }
 
 int32_t
@@ -50,12 +47,7 @@ wr_log_init(const char *file)
         return -1;
     }
 
-    pthread_mutex_init (&logfile_mutex, NULL);
-    filename = strdup(file);
-    if(!filename){
-        fprintf (stderr, "wr_log_init: strdup error\n");
-        return -1;
-    }
+    pthread_mutex_init(&logfile_mutex, NULL);
 
     logfile = fopen (file, "a");
     if (!logfile){
@@ -63,7 +55,7 @@ wr_log_init(const char *file)
                                                         file, strerror (errno));
         return -1;
     }
-    wr_log_logfile = logfile;
+	
     return 0;
 }
 
@@ -108,21 +100,7 @@ _wr_log(const char *domain,
     if(!domain || !fmt)
         return (-1);
 
-    if(log_to_file)
-    {
-        fclose(logfile);
-        logfile = NULL;
-		logfile = fopen(filename, "a");
-			
-        wr_log_logfile = logfile;
-        if(!logfile){
-            fprintf(stderr,"wr_log: failed to open logfile \"%s\" (%s) while logrotating\n",
-                                                                filename,strerror (errno));
-        return -1;
-        }
-    }
-
-    if(level <= loglevel)
+    if((level <= loglevel)&& (log_to_file))
     {
         pthread_mutex_lock(&logfile_mutex);
         va_start (ap, fmt);

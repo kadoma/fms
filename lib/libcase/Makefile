@@ -21,10 +21,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	cp libcase.so /usr/lib/fms/
+	scp libcase.so /usr/lib/fms/
 
 install:
-	cp libcase.so /usr/lib/fms/
+	scp libcase.so /usr/lib/fms/
 
 clean:
 	rm -rf *.o *.so

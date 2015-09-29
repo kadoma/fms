@@ -44,9 +44,6 @@ enum cputype cputype = CPU_GENERIC;
 char *logfn = LOG_DEV_FILENAME; 
 int mfd = -1;
 
-char *processor_flags;
-double cpumhz;
-
 #define PAGE_SHIFT 12
 #define PAGE_SIZE (1UL << PAGE_SHIFT)
 
@@ -207,6 +204,7 @@ dump_mce(struct mce *m, unsigned recordlen, struct fms_cpumem **fc, int *fc_num)
 		cm[i].mem_ch = mm[i].mem_ch;
 		cm[i].clevel = mm[i].clevel;
 		cm[i].ctype = mm[i].ctype;
+		cm[i].cputype = cputype;
 	}
 	*fc_num = mm_num;
 }
@@ -341,17 +339,13 @@ is_cpu_supported(void)
 			   (there are more sanity checks later to make this not as wrong
 			   as it sounds) */
 			if (sscanf(line, "cpu MHz : %lf", &mhz) == 1) { 
-					cpumhz = mhz;
 				seen |= MHZ;
 			}
 			if (!strncmp(line, "flags", 5) && isspace(line[6])) {
-				processor_flags = line;
-				line = NULL;
-				linelen = 0;
 				seen |= FLAGS;
 			}			      
-
-		} 
+		}
+		
 		if (seen == ALL) {
 			if (!strcmp(vendor,"AuthenticAMD")) {
 				if (family == 15) {
@@ -467,6 +461,7 @@ cpumem_probe(evtsrc_module_t *emp)
 	return head;
 }
 
+#ifndef TEST_CMES
 
 static evtsrc_modops_t cpumem_mops = {
 	.evt_probe = cpumem_probe,
@@ -486,6 +481,8 @@ fmd_module_finit(fmd_module_t *mp)
 {
 	cpumem_release();
 }
+
+#endif
 
 /* 
  * for test cpumem event source.

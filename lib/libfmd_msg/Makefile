@@ -6,7 +6,7 @@
 
 CC = /usr/bin/gcc
 RM = /bin/rm -f
-CP = /bin/cp 1>/dev/null 2>&1 -f
+CP = /bin/scp 1>/dev/null 2>&1 -f
 
 ROOTLIB = /usr/lib/fms
 SRCINC =../../include

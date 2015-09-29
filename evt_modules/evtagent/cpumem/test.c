@@ -24,10 +24,6 @@
 #include "cpumem.h"
 #include "logging.h"
 
-char *processor_flags;
-enum cputype cputype;
-double cpumhz;
-
 char *program;
 
 void

@@ -7,7 +7,19 @@
 #define FMD_LOG_FAULT   1
 #define FMD_LOG_LIST    2
 
-extern int fmd_log_event(fmd_event_t *);
-extern void fmd_get_time(char *, time_t);
+void
+fmd_get_time(char *date, time_t times);
+
+char *
+get_logname(char *path, int type);
+
+int
+fmd_log_open(const char *dir, int type);
+
+void
+fmd_log_close(int fd);
+
+int
+fmd_log_write(int fd, const char *buf, int size);
 
 #endif //fmd_log.h

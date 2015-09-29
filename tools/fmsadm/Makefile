@@ -14,7 +14,7 @@ LDFLAGS = -L$(ROOTLIB) -ldl -lpthread\
 	-L../../lib/libfmd_adm -L../../lib/libfmd_msg -lrt -lfmd_adm -lfmd_msg
 
 RM = /bin/rm -f
-CP = /bin/cp 1>/dev/null 2>&1 -f
+CP = /bin/scp 1>/dev/null 2>&1 -f
 LN = /bin/ln -s -f
 
 LDCONFILE = fmd-i386.conf

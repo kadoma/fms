@@ -36,26 +36,18 @@ fmd_create_listevent(fmd_event_t *fault, int action)
     fmd_event_t *pevt = NULL;
     char eclass[128] = {0};
 	char *p;
-	
-	p = strchr(fault->ev_class, '.');
-	if(p) {
-		pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t), 1);
-
-		p++; /* remove '.' */
-		sprintf(eclass, "list.%s", p);	
-	
-/*    char eclass[64] = {0};
 
     pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t), 1);
     sprintf(eclass, "list.%s", &fault->ev_class[6]);
-*/
+	
+	pevt->dev_name = fault->dev_name;
+	pevt->ev_err_id = fault->ev_err_id;
     pevt->ev_create = time(NULL);
     pevt->ev_refs = 0;
     pevt->ev_class = strdup(eclass);
 	pevt->ev_flag = action;
 	
     INIT_LIST_HEAD(&pevt->ev_list);
-	}
     return pevt;
 }
 

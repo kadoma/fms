@@ -39,7 +39,7 @@ fmd_get_time(char *date, time_t times)
 	sprintf(date, "%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hour, min, sec);
 }
 
-static char *
+char *
 get_logname(char *path, int type)
 {
 	struct tm *tm = NULL;
@@ -72,15 +72,7 @@ get_logname(char *path, int type)
 	return path;
 }
 
-/**
- * fmd_log_open
- *
- * @param: /var/log/fm/serd.log
- 		/var/log/fm/fault.log
- 		/var/log/fm/list.log
- * @return: log file fd
- */
-static int
+int
 fmd_log_open(const char *dir, int type)
 {
 	char datename[PATH_MAX];
@@ -131,7 +123,7 @@ fmd_log_open(const char *dir, int type)
  * @param: log file fd
  * @return:
  */
-static void
+void
 fmd_log_close(int fd)
 {
 	if (fd >= 0 && close(fd) != 0)
@@ -139,7 +131,7 @@ fmd_log_close(int fd)
 			"FMD: failed to close log file: fd=%d.\n", fd);
 }
 
-static int
+int
 fmd_log_write(int fd, const char *buf, int size)
 {
 	int len;
@@ -151,61 +143,4 @@ fmd_log_write(int fd, const char *buf, int size)
 	}
 
 	return 0;
-}
-
-int
-fmd_log_event(fmd_event_t *pevt)
-{
-	int type, fd;
-	int tsize, ecsize, bufsize;
-	char *dir = "/var/log/fms";
-	char *eclass = NULL;
-	char times[26];
-	char buf[PATH_MAX];
-	time_t evtime;
-	uint64_t rscid = 0;
-	uint64_t eid = 0;
-	uint64_t uuid = 0;
-	
-	evtime = pevt->ev_create;
-	eclass = pevt->ev_class;
-
-	if (strncmp(eclass, "ereport.", 8) == 0) {
-		type = FMD_LOG_ERROR;
-		dir = "/var/log/fms/serd.log";
-	} else if (strncmp(eclass, "fault.", 6) == 0) {
-		type = FMD_LOG_FAULT;
-		dir = "/var/log/fms/fault.log";
-	} else if (strncmp(eclass, "list.", 5) == 0) {
-		type = FMD_LOG_LIST;
-		dir = "/var/log/fms/list.log";
-	}
-
-	if ((fd = fmd_log_open(dir, type)) < 0) {
-		wr_log("", WR_LOG_ERROR, 
-			"FMD: failed to record log for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
-	}
-
-	fmd_get_time(times, evtime);
-	memset(buf, 0, PATH_MAX);
-	snprintf(buf, sizeof(buf), "\n%s\t%s\t0x%llx\t0x%llx\t0x%llx\n", 
-		times, 
-		eclass, 
-		(long long unsigned int)rscid, 
-		(long long unsigned int)eid, 
-		(long long unsigned int)uuid);
-
-	tsize = strlen(times) + 1;
-	ecsize = strlen(eclass) + 1;
-	bufsize = tsize + ecsize + 3*sizeof(uint64_t) + 11;
-
-	if (fmd_log_write(fd, buf, bufsize) != 0) {
-		wr_log("", WR_LOG_ERROR, 
-			"FMD: failed to write log file for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
-	}
-	fmd_log_close(fd);
-
-	return LIST_LOGED_SUCCESS;
 }

@@ -21,10 +21,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	cp disk_src.so /usr/lib/fms/plugins
+	scp disk_src.so /usr/lib/fms/plugins
 
 install:
-	cp disk_src.so /usr/lib/fms/plugins
+	scp disk_src.so /usr/lib/fms/plugins
 
 clean:
 	rm -rf *.o *.so

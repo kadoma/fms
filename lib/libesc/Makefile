@@ -22,10 +22,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	cp libesc.so /usr/lib/fms/
+	scp libesc.so /usr/lib/fms/
 
 install:
-	cp libesc.so /usr/lib/fms/
+	scp libesc.so /usr/lib/fms/
 
 clean:
 	rm -rf *.o *.so

@@ -6,10 +6,11 @@
 
 CC      = gcc
 CFLAGS  = -g -Wall -Wno-unused-function -DTEST_CMES
-LDFLAGS = -lpthread -ldl -levt -lfmd -lcase -lesc -L /usr/lib/fms
+LDFLAGS = -lpthread
 COMPILE	= $(CC) $(CFLAGS) -c
 
-INCLUDES	= -I ../../../include/ -I ../../include
+INCLUDES = -I ../../../include/ \
+           -I ../../include
 EVTLIB_DIR	= ../../evtlib
 FMS_LIBFMD_DIR = ../../../lib/libfmd
 
@@ -25,7 +26,8 @@ LIBOBJS = cpumem_evtsrc.o	\
 		p4.o			\
 		test.o			\
 		$(EVTLIB_DIR)/cpumem.o \
-		$(FMS_LIBFMD_DIR)/logging.o
+		$(FMS_LIBFMD_DIR)/logging.o \
+		$(FMS_LIBFMD_DIR)/fmd_nvpair.o
 
 
 all: $(PROGRAM)

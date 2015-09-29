@@ -26,6 +26,7 @@ typedef struct _fmd_case_{
 
 	char      *dev_name;
 	uint64_t   err_id;
+	char       last_eclass[64];
 
 	uint8_t    cs_flag;	/* see above */
 	struct     fmd_case_type *cs_type;
@@ -46,5 +47,6 @@ typedef struct _fmd_case_{
 	struct list_head cs_list;
 
 }fmd_case_t;
+
 
 #endif // fmd_case.h

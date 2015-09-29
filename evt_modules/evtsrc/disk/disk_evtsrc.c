@@ -161,12 +161,12 @@ static evtsrc_modops_t disk_mops = {
 };
 
 fmd_module_t *
-fmd_init(char * path, fmd_t * pfmd)
+fmd_module_init(char * path, fmd_t * pfmd)
 {
  		return (fmd_module_t *)evtsrc_init(&disk_mops, path, pfmd);
 }
 void 
-fmd_fini(fmd_module_t * mp)
+fmd_module_finit(fmd_module_t * mp)
 {
 	return;
 }

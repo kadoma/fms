@@ -3,12 +3,15 @@
 #	          
 
 CC      = gcc
-CFLAGS  = -g -Wall -Wno-unused-function -Wno-unused-function-variable
-LDFLAGS = -lpthread -ldl -levt -lfmd -lcpumem_src -shared -fpic -lnl -L /usr/lib/fms -L /usr/lib/fms/plugins
+CFLAGS  = -g -Wall -Wno-unused-function
+LDFLAGS = -lpthread -ldl -levt -lfmd -shared -fpic -lnl \
+          -L /usr/lib/fms
 COMPILE	= $(CC) $(CFLAGS) -c
 
 KFM_LIB_DIR = ../../evtlib/kfm/kfmadm
-INCLUDES	= -I ../../../include/ -I ../../include -I $(KFM_LIB_DIR)
+INCLUDES	= -I ../../../include/  \
+              -I ../../include      \
+              -I $(KFM_LIB_DIR)
 EVTLIB_DIR	= ../../evtlib
 FMS_LIBFMD_DIR = ../../../lib/libfmd
 FMS_SO_DIR = /usr/lib/fms/plugins
@@ -31,7 +34,6 @@ LIBOBJS = cpumem_agent.o	\
 		  $(KFM_LIB_DIR)/libkfm_cpumem.o 
 
 all: $(PROGRAM)
-	cp cpumem_agent.so /usr/lib/fms/plugins/
 
 $(PROGRAM): $(LIBOBJS)
 	echo Creating $@...

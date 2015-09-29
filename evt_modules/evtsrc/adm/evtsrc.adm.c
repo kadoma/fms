@@ -18,9 +18,11 @@
 #include <string.h>
 #include <linux/types.h>
 
-#include <evt_src.h>
-#include <fmd_case.h>
-#include <fmd_fmadm.h>
+#include "wrap.h"
+#include "evt_src.h"
+#include "fmd_case.h"
+#include "fmd_fmadm.h"
+#include "fmd_module.h"
 
 #define MODULE_NAME "evtsrc.adm"
 
@@ -203,13 +205,14 @@ static evtsrc_modops_t adm_mops = {
 
 
 fmd_module_t *
-fmd_init(char *path, fmd_t *pfmd)
+fmd_module_init(char *path, fmd_t *pfmd)
 {
 	fmd_debug;
 	return (fmd_module_t *)evtsrc_init(&adm_mops, path, pfmd);
 }
 
 void
-fmd_fini(fmd_module_t *mp)
+fmd_module_finit(fmd_module_t *mp)
 {
+	return;
 }

@@ -6,15 +6,17 @@
 
 CC      = gcc
 CFLAGS  = -g -Wall -Wno-unused-function
-LDFLAGS = -lpthread -ldl -levt -lfmd -shared -fpic -L /usr/lib/fms
+LDFLAGS = -lpthread -ldl -levt -lfmd -shared -fpic \
+          -L /usr/lib/fms
 COMPILE	= $(CC) $(CFLAGS) -c
 
-INCLUDES	= -I ../../../include/ -I ../../include
+INCLUDES = -I ../../../include/ \
+           -I ../../include
 EVTLIB_DIR	= ../../evtlib
 FMS_LIBFMD_DIR = ../../../lib/libfmd
 FMS_SO_DIR = /usr/lib/fms/plugins
 
-PROGRAM = libcpumem_src.so
+PROGRAM = cpumem_src.so
 
 RM      = /bin/rm -f
 CP		= /usr/bin/scp
@@ -30,7 +32,6 @@ LIBOBJS = cpumem_evtsrc.o	\
 
 
 all: $(PROGRAM)
-	cp ./libcpumem_src.so /usr/lib/fms/plugins
 
 $(PROGRAM): $(LIBOBJS)
 	echo Creating $@...

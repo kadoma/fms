@@ -21,7 +21,6 @@ SUBDIRS=lib/libcase lib/libesc lib/libfmd evt_modules/evtlib  \
 				tools/fmstopo tools/fmsinject tools/fmsadm \
 				evt_modules/evtsrc/trace evt_modules/evtagent/trace \
 				evt_modules/evtsrc/inject evt_modules/evtagent/inject \
-				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
 				evt_modules/evtsrc/disk evt_modules/evtagent/disk \
 				evt_modules/evtsrc/adm \
 				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
@@ -67,18 +66,27 @@ rpm: all
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
 	
 	install -cm 755 $(FMD_DIR)/$(PROGRAM)   $(RPM_FMS)
-	install -cm 755 $(KFMADM_DIR)/kfmadm    $(INSTALL_KFMADM_DIR)
+	install -cm 755 ./tools/fmsadm/fmsadm   $(RPM_FMS)
+	install -cm 755 ./tools/fmstopo/fmstopo $(RPM_FMS)
+	install -cm 755 $(KFMADM_DIR)/kfmadm    $(BRROOTDIR)/$(INSTALL_KFMADM_DIR)
 	cp ./fmd.service                        $(BRROOTDIR)/lib/systemd/system/fmd.service
 	cp ./lib/libcase/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libesc/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libfmd/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libfmd_adm/*.so                $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libfmd_msg/*.so                $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libtopo/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./evt_modules/evtlib/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)
-#	cp $(EVT_SRC_DIR)/disk/*.so	 $(EVT_SRC_DIR)/disk/*.conf             $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-#	cp $(EVT_AGENT_DIR)/disk/*.so  $(EVT_AGENT_DIR)/disk/*.conf         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-	cp $(EVT_SRC_DIR)/cpumem/*.so  $(EVT_SRC_DIR)/cpumem/*.conf         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-	cp $(EVT_AGENT_DIR)/cpumem/*.so  $(EVT_AGENT_DIR)/cpumem/*.conf     $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-#	cp $(EVT_SRC_DIR)/trace/*.so  $(EVT_SRC_DIR)/trace/*.conf           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-#	cp $(EVT_AGENT_DIR)/trace/*.so  $(EVT_AGENT_DIR)/trace/*.conf       $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-	cp ./esc/*.esc                          $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
+	cp $(EVT_SRC_DIR)/disk/*.so             $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_AGENT_DIR)/disk/*.so           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_SRC_DIR)/cpumem/*.so           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_AGENT_DIR)/cpumem/*.so         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_SRC_DIR)/trace/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_AGENT_DIR)/trace/*.so          $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_SRC_DIR)/adm/*.so              $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_SRC_DIR)/inject/*.so           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp $(EVT_AGENT_DIR)/inject/*.so         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp ./fms_conf/escdir/*.esc              $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
+	cp ./fms_conf/plugins/*.conf            $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp $(KFM_DIR)/kfm.ko                    $(BRROOTDIR)/$(INSTALL_KFM_DIR)/fms.ko
 	$(RPM) $(RPMFLAGS) $(FMS_SPEC_FILE)

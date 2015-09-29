@@ -19,6 +19,9 @@
 #include "tsc.h"
 #include "cpumem.h"
 
+extern char *processor_flags;
+extern double cpumhz;
+
 static unsigned 
 scale(uint64_t *tsc, unsigned unit, double mhz)
 {

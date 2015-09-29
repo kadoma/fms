@@ -2,7 +2,7 @@
 #define __CMEA_EVT_PROCESS_H__
 
 struct cmea_evt_data {
-	int cpu_action;
+	int cpu_action;  /* =1: Flush CPU cache. =2: CPU offline */
 };
 
 extern void dump_evt(void *data);

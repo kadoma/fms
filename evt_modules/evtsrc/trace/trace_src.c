@@ -26,7 +26,7 @@ trace_probe(evtsrc_module_t *emp)
     struct list_head *head = nvlist_head_alloc();
 
 	//char *disk = NULL;
-
+/*
 	//event list
 	nvl = nvlist_alloc();
 	sprintf(nvl->name, "cpu");
@@ -34,8 +34,8 @@ trace_probe(evtsrc_module_t *emp)
     nvl->dev_id = 0x02;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 4;	
-
+	nvl->node_num = 3;	
+*/
 	//fault
 	nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
@@ -43,8 +43,8 @@ trace_probe(evtsrc_module_t *emp)
     nvl->dev_id = 0x01;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 4;
-
+	nvl->node_num = 3;
+/*
 	//serd
 	nvl = nvlist_alloc();
 	sprintf(nvl->name, "cpu");
@@ -52,8 +52,9 @@ trace_probe(evtsrc_module_t *emp)
     nvl->dev_id = 0x01;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 4;
-	
+	nvl->node_num = 3;
+*/
+/*
 	//direct fault out of agent conf 
 	nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
@@ -62,7 +63,7 @@ trace_probe(evtsrc_module_t *emp)
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
 	nvl->node_num = 4;
-	
+*/
     return head;
 }
 

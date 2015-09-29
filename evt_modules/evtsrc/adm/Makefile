@@ -8,7 +8,7 @@ OUTPUT=$(BASEPATH)
 
 TARGET=adm_src.so
 
-LDFLAGS= -lpthread -ldl -shared -fpic -g
+LDFLAGS= -lpthread -ldl -shared -fpic -lrt -g
 
 CFLAGS= -g -O0 -Wall\
 	-Wno-unused-function \
@@ -16,16 +16,15 @@ CFLAGS= -g -O0 -Wall\
 	-I ../../../include\
 	-I ../../include\
 	-L /usr/lib/fms\
-	-Wall
 
 SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	cp adm_src.so /usr/lib/fms/plugins
+	scp adm_src.so /usr/lib/fms/plugins
 
 install:
-	cp adm_src.so /usr/lib/fms/plugins
+	scp adm_src.so /usr/lib/fms/plugins
 
 clean:
 	rm -rf *.o *.so

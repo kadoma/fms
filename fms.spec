@@ -1,6 +1,6 @@
 Name: fms
 Summary: fault management system
-Version: 1.0
+Version: 2.0
 Release: 1
 Vendor: INSPUR
 License: INSPUR SOFTWARE LICENSE.

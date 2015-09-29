@@ -70,6 +70,7 @@ main(int argc, char **argv)
 
 
 	//default log level 
+	wr_log_logrotate(debug_mode);
 	int log_level = WR_LOG_DEBUG;
 	wr_log_init("./fms.log");
 	wr_log_set_loglevel(log_level);
@@ -87,7 +88,6 @@ main(int argc, char **argv)
 	// esc file read and load.
     fmd_load_esc();
 
-	//sleep(111111);
     // begin to loop the distribute queue
     fmd_queue_load(&fmd);
 
@@ -116,6 +116,8 @@ main(int argc, char **argv)
 			break;
 	}
 
+	//sleep(11111);
+	
     pthread_mutex_init(&m_mutex_exit, NULL);
     pthread_cond_init(&m_waitexit, NULL);
     

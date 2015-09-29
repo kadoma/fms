@@ -29,6 +29,30 @@
 #define FMS_CPUMEM_MSG_NAME_LEN			32
 #define FMS_CPUMEM_FAULT_DESC_LEN		1024
 
+
+/* Don't forget to update cpumem_evtsrc.c:cputype_name[] too */
+enum cputype {
+	CPU_GENERIC,
+	CPU_P6OLD,
+	CPU_CORE2, /* 65nm and 45nm */
+	CPU_K8,
+	CPU_P4,
+	CPU_NEHALEM,
+	CPU_DUNNINGTON,
+	CPU_TULSA,
+	CPU_INTEL, /* Intel architectural errors */
+	CPU_XEON75XX, 
+	CPU_SANDY_BRIDGE, 
+	CPU_SANDY_BRIDGE_EP, 
+	CPU_IVY_BRIDGE, 
+	CPU_IVY_BRIDGE_EPEX, 
+	CPU_HASWELL,
+	CPU_HASWELL_EPEX,
+	CPU_BROADWELL,
+	CPU_KNIGHTS_LANDING,
+	CPU_ATOM,
+};
+
 struct fms_cpumem {
 	uint32_t socketid;	/* CPU socket ID */
 	uint32_t cpu;	/* linux cpu number that detected the error */
@@ -55,6 +79,7 @@ struct fms_cpumem {
 	int32_t ctype;		/* cache type*/
 	char fname[FMS_CPUMEM_MSG_NAME_LEN]; /* fault name */
 	uint64_t fid; /* fault id */
+	enum cputype cputype;
 };
 
 struct dmi_entry { 
@@ -82,6 +107,7 @@ struct dmi_memdev {
 	unsigned char asset_tag;
 	unsigned char part_number;	
 } __attribute__((packed));
+
 
 /* Software defined banks */
 #define MCE_EXTENDED_BANK	128
@@ -113,28 +139,6 @@ struct dmi_memdev {
 #define MCG_ELOG_P			(1ULL<<26)   /* Extended error log supported */
 #define MCG_LMCE_P			(1ULL<<27)   /* Local machine check supported */
 
-/* Don't forget to update cpumem_evtsrc.c:cputype_name[] too */
-enum cputype {
-	CPU_GENERIC,
-	CPU_P6OLD,
-	CPU_CORE2, /* 65nm and 45nm */
-	CPU_K8,
-	CPU_P4,
-	CPU_NEHALEM,
-	CPU_DUNNINGTON,
-	CPU_TULSA,
-	CPU_INTEL, /* Intel architectural errors */
-	CPU_XEON75XX, 
-	CPU_SANDY_BRIDGE, 
-	CPU_SANDY_BRIDGE_EP, 
-	CPU_IVY_BRIDGE, 
-	CPU_IVY_BRIDGE_EPEX, 
-	CPU_HASWELL,
-	CPU_HASWELL_EPEX,
-	CPU_BROADWELL,
-	CPU_KNIGHTS_LANDING,
-	CPU_ATOM,
-};
 
 #define CASE_INTEL_CPUS \
 	case CPU_P6OLD: \
@@ -155,9 +159,6 @@ enum cputype {
 	case CPU_KNIGHTS_LANDING
 
 
-extern char *processor_flags;
-extern enum cputype cputype;
-extern double cpumhz;
 extern void parse_cpuid(uint32_t cpuid, uint32_t *family, uint32_t *model);
 extern char *dmi_getstring(struct dmi_entry *e, unsigned number);
 extern int is_intel_cpu(int cpu);

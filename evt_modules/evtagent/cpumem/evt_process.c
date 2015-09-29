@@ -26,6 +26,8 @@
 #include "tsc.h"
 #include "cache.h"
 
+extern double cpumhz;
+
 static int evt_handle_cache(struct cmea_evt_data *edata, void *data);
 static int evt_handle_tlb(struct cmea_evt_data *edata, void *data);
 static int evt_handle_bus(struct cmea_evt_data *edata, void *data);
@@ -371,7 +373,7 @@ intel_bank_name(int num)
 }
 
 static char *
-bankname(unsigned bank) 
+bankname(unsigned bank, enum cputype cputype) 
 { 
 	static char numeric[64] = {0};
 	
@@ -391,7 +393,8 @@ bankname(unsigned bank)
 } 
 
 static void 
-print_tsc(int cpunum, __u64 tsc, unsigned long time) 
+print_tsc(int cpunum, __u64 tsc, unsigned long time, 
+        enum cputype cputype) 
 { 
 	int ret = -1;
 	char *buf = NULL;
@@ -493,10 +496,10 @@ dump_evt(void *data)
 	fc = (struct fms_cpumem *)data;
 
 	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-		"CPU %d %s", fc->cpu, bankname(fc->bank));
+		"CPU %d %s", fc->cpu, bankname(fc->bank, fc->cputype));
 
 	if (fc->tsc)
-		print_tsc(fc->cpu, fc->tsc, fc->time);
+		print_tsc(fc->cpu, fc->tsc, fc->time, fc->cputype);
 
 	if (fc->ip)
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,

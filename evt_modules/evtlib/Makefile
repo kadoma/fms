@@ -22,10 +22,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	cp libevt.so /usr/lib/fms/
+	scp libevt.so /usr/lib/fms/
 
 install:
-	cp libevt.so /usr/lib/fms/
+	scp libevt.so /usr/lib/fms/
 
 clean:
 	rm -rf *.o *.so

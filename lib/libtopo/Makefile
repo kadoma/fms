@@ -9,7 +9,7 @@
 #############################################################
 
 CC = /usr/bin/gcc
-CP = /bin/cp 1>/dev/null 2>&1 -f
+CP = /bin/scp 1>/dev/null 2>&1 -f
 LN = /bin/ln -s -f
 
 SRCINC =../../include

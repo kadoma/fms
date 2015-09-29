@@ -21,10 +21,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	cp inject_agent.so /usr/lib/fms/plugins
+	scp inject_agent.so /usr/lib/fms/plugins
 
 install:
-	cp inject_agent.so /usr/lib/fms/plugins
+	scp inject_agent.so /usr/lib/fms/plugins
 
 clean:
 	rm -rf *.o *.so

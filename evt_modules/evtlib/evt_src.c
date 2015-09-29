@@ -170,7 +170,7 @@ evtsrc_start(void *p)
     while(1){
         pthread_mutex_lock(&timer->timer_lock);
 		
-		wr_log("event deteck wait signal.",WR_LOG_DEBUG,"time is wait......" );
+		wr_log("",WR_LOG_DEBUG,"time is wait......" );
 		
         pthread_cond_wait(&timer->cond_signal, &timer->timer_lock);
 		

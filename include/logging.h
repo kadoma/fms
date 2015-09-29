@@ -15,10 +15,10 @@ typedef enum{
 
 #define WR_LOG_MAX WR_LOG_DEBUG
 
-extern wr_loglevel_t wr_log_loglevel;
+extern wr_loglevel_t loglevel;
 
 #define wr_log(dom, levl, fmt...) do{                          \
-  if (levl <= wr_log_loglevel)                                  \
+  if (levl <= loglevel)                                  \
   _wr_log (dom, __FILE__, __FUNCTION__, __LINE__, levl, ##fmt); \
 } while(0)
 

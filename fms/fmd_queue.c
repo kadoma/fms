@@ -50,6 +50,11 @@ put_to_agent(fmd_event_t *event, agent_module_t *pm)
 static int
 fmd_sub_matches(char *eclass, char *sub)
 {
+	if(eclass == NULL || sub == NULL)
+	{
+		return -1;
+		wr_log("", WR_LOG_ERROR, "fmd sub match eclass is null.");
+	}
 	char *p_sub_head = strchr(sub, '.');
 	char *p_class_head = strchr(eclass, '.');
 	
@@ -134,11 +139,12 @@ fmd_case_close(fmd_event_t *pevt)
 		{
 			list_del(&pcase->cs_list);
 			list_add(&pcase->cs_list, &fmd.list_repaired_case);
-			wr_log("", WR_LOG_NORMAL, "case had been processed, delete and add.");
+			wr_log("", WR_LOG_NORMAL, "case had been processed, delete and add...................");
 			return 0;
 		}
 	}
-	wr_log("", WR_LOG_ERROR, "case close error.");
+
+	wr_log("", WR_LOG_ERROR, "case close error..............................");
 	return -1;
 }
 
@@ -156,10 +162,10 @@ fmd_proc_event(fmd_event_t *p_event)
 		
 	if(ret > 0)
 	{
-		put_to_agents(p_event);
+		put_to_agents(p_event);// put to agent to log or fault todo
 		if(ret == 2)
 			fmd_case_insert(p_event);
-	}	
+	}
     return 0;
 }
 
