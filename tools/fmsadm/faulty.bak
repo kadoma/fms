@@ -118,7 +118,7 @@ static struct list_head status_rec_list;
 
 static int max_display;
 static int max_fault = 0;
-static int opt_f = 0;
+static int opt_t = 0;
 //static int opt_g = 0;
 
 static fmd_msg_hdl_t *fmadm_msghdl = NULL; /* handle for libfmd_msg calls */
@@ -155,6 +155,18 @@ format_date(char *buf, time_t secs)
 	sprintf(buf, "%d-%02d-%02d %02d:%02d:%02d\t", year, month, day, hour, min, sec);
 }
 
+static void
+print_faulty(fmd_adm_t *adm)
+{
+	struct list_head *pos = NULL;
+	fmd_adm_caseinfo_t *aci;
+
+	list_for_each(pos, &adm->cs_list) {
+		aci = list_entry(pos, fmd_adm_caseinfo_t, aci_list);
+
+		printf("%s\t%s\n", aci->aci_fru, aci->aci_asru);
+	}
+}
 
 static void
 print_dict_info_line(char *msgid, fmd_msg_item_t what, const char *linehdr)
@@ -259,14 +271,14 @@ print_catalog(fmd_adm_t *adm)
 			srp = list_entry(pos, status_record_t, list);
 
 			(void) printf("\n");
-			print_status_record(srp, opt_f);
+			print_status_record(srp, opt_t);
 		}
 	} else if (max > 0) {
 		list_for_each(pos, &status_rec_list) {
 			srp = list_entry(pos, status_record_t, list);
 			if (max > 0) {
 				(void) printf("\n");
-				print_status_record(srp, opt_f);
+				print_status_record(srp, opt_t);
 				max--;
 			} else
 				break;
@@ -274,6 +286,21 @@ print_catalog(fmd_adm_t *adm)
 	}
 }
 
+static void
+print_uuid_catalog(fmd_adm_t *adm, int opt_uuid)
+{
+	struct list_head *pos = NULL;
+	status_record_t *srp;
+
+	list_for_each(pos, &status_rec_list) {
+		srp = list_entry(pos, status_record_t, list);
+		if (opt_uuid == srp->uuid) {
+			(void) printf("\n");
+			print_status_record(srp, opt_t);
+		} else
+			continue;
+	}
+}
 
 static void
 print_fru(fmd_adm_t *adm)
@@ -282,25 +309,26 @@ print_fru(fmd_adm_t *adm)
 	status_record_t *srp;
 	char *head;
 	head = "---------- "
-	       "-------------------  "
-	       "-----------\n"
-	       "FAULT CLASS"
-	       "                         COUNTS"
-	       "\n---------- "
-	       "-------------------  "
-	       "----------";
+	       "--------------------------------------  "
+	       "---------- ---------- ------\n"
+	       "UUID       FAULT CLASS"
+	       "               		  EVENT COUNTS"
+	       "   RSCID   FRU\n---------- "
+	       "--------------------------------------  "
+	       "---------- ---------- ------";
 	printf("%s\n", head);
 
 	list_for_each(pos, &status_rec_list) {
 		srp = list_entry(pos, status_record_t, list);
 
 		(void) printf("\n");
-		(void) printf("%-33s \t%d\n",srp->class, srp->count);
+		(void) printf("0x%ld  %-42s %d \t0x%ld %s\n",
+			srp->uuid, srp->class, srp->count, srp->rscid, srp->fru);
 	}
 }
 
 static int
-get_cases_from_fmd(fmd_adm_t *adm,char* type)
+get_cases_from_fmd(fmd_adm_t *adm)
 {
 	struct list_head *pos = NULL;
 	fmd_adm_caseinfo_t *aci = NULL;
@@ -309,7 +337,7 @@ get_cases_from_fmd(fmd_adm_t *adm,char* type)
 	/*
 	 * These calls may fail with Protocol error if message payload is to big
 	 */
-	if (fmd_adm_case_iter(adm,type) != 0)
+	if (fmd_adm_case_iter(adm) != 0)
 		die("FMD: failed to get case list from fmd");
 
 	list_for_each(pos, &adm->cs_list) {
@@ -350,28 +378,31 @@ get_cases_from_fmd(fmd_adm_t *adm,char* type)
 int
 cmd_faulty(fmd_adm_t *adm, int argc, char *argv[])
 {
-	int opt_s = 0, opt_v = 0, opt_t = 0;
+	int opt_a = 0, opt_v = 0, opt_f = 0;
+	int opt_u = 0, opt_uuid = 0;
 	int rt, c;
-	char opt_type[32] = "repaired";
-	while ((c = getopt(argc, argv, "svftn:u:h?")) != EOF) {
+
+	while ((c = getopt(argc, argv, "afvtn:u:h?")) != EOF) {
 		switch (c) {
-		case 's':
-			opt_s++;
+		case 'a':
+			opt_a++;
+			break;
+		case 'f':
+			opt_f++;
 			break;
 		case 'v':
 			opt_v++;
 			break;
-		case 'f':
+		case 't':
 			opt_v++;
-			opt_f++;
+			opt_t++;
 			break;
 		case 'n':
 			max_fault = atoi(optarg);
 			break;
-		case 't':
-			//sprintf(opt_type,"%s",optarg);
-			//opt_type = optarg;
-			//opt_t++;
+		case 'u':
+			opt_uuid = atoi(optarg);
+			opt_u++;
 			break;
 		case 'h':
 		case '?':
@@ -390,13 +421,17 @@ cmd_faulty(fmd_adm_t *adm, int argc, char *argv[])
 		return (FMADM_EXIT_ERROR);
 
 	INIT_LIST_HEAD(&status_rec_list);
-	rt = get_cases_from_fmd(adm,opt_type);
+	rt = get_cases_from_fmd(adm);
 
-	if (opt_s)
-		print_fru(adm);
+	if (opt_a)
+		print_faulty(adm);
 	max_display = max_fault;
+	if (opt_f)
+		print_fru(adm);
 	if (opt_v)
 		print_catalog(adm);
+	if (opt_u)
+		print_uuid_catalog(adm, opt_uuid);
 	fmd_msg_fini(fmadm_msghdl);
 
 	return (rt);

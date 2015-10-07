@@ -8,7 +8,7 @@
 #include <errno.h>
 #include <assert.h>
 #include <list.h>
-
+#include <fmd.h>
 /*
  * Fault Management Daemon Administration Message Queue Format (FAF)
  *
@@ -31,6 +31,7 @@ typedef struct faf_hdr {
 } faf_hdr_t;
 
 #define FAF_GET_CASELIST "GET CASELIST"	/* get caselist command */
+#define FAF_GET_MODLIST "GET MODLIST"
 
 typedef struct faf_case {
 		char     fafc_fault[128];	/* for fmd_case_type use */
@@ -43,6 +44,14 @@ typedef struct faf_case {
         uint64_t fafc_close;
 } faf_case_t;
 
+typedef struct faf_module {
+	//char             *mod_name;
+	int	          mod_vers;
+	int               mod_interval;
+	char              mod_path[128];
+} faf_module_t;
+
+
 #define FAF_CASE_CREATE		0x00
 #define FAF_CASE_FIRED		0x01
 #define FAF_CASE_CLOSED		0x02
@@ -54,5 +63,7 @@ typedef struct faf_case {
  */
 
 extern void fmd_adm_init(void);
-
+extern int evt_load_module(fmd_t * ,char *);
+extern int evt_unload_module(fmd_t * ,char *);
+extern int fmd_init_module(fmd_t * ,char *);
 #endif /* FMD_FMADM_H_ */

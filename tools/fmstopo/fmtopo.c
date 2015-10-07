@@ -56,7 +56,7 @@ main(int argc, char *argv[])
 	}
 
 	memset(path, 0, sizeof(path));
-	sprintf(path, "%s/%s", BASE_DIR, "libfmd_topo.so");
+	sprintf(path, "%s/%s", BASE_DIR, "libtopo.so");
 	handle = dlopen(path, RTLD_LAZY);
 	if (handle == NULL) {
 		syslog(LOG_ERR, "dlopen");

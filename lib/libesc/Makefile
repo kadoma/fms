@@ -9,7 +9,7 @@ OUTPUT=$(BASEPATH)
 
 TARGET=libesc.so
 
-LDFLAGS= -ldl -lpthread -ll -shared -fpic
+LDFLAGS= -ldl -lpthread -shared -fpic
 
 CFLAGS= -g -Wall\
 	-Wno-unused-function \

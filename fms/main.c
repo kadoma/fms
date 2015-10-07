@@ -21,21 +21,11 @@ static pthread_cond_t   m_waitexit;
 
 //fmd_t fmd __attribute__ ((section ("global")));
 
-/**
- * the main function
- *
- * @name main
- * @param int, char **
- * @return int
- *
- */
 int
 main(int argc, char **argv)
 {
 	int debug_mode = 0;
     int run_mode = FMD_START;
-
-
 
     int ret = analy_start_para(argc, argv, &debug_mode, &run_mode);
 	if(ret != 0)
@@ -45,7 +35,8 @@ main(int argc, char **argv)
         rv_b2daemon();
 	else{
 		wr_log_set_loglevel(WR_LOG_DEBUG);
-		wr_log_logrotate(debug_mode);
+		wr_log_logrotate(0);
+		//wr_log_logrotate(debug_mode);
 	}
     
     ret = file_lock(app_name);
@@ -67,7 +58,6 @@ main(int argc, char **argv)
         wr_log("", WR_LOG_ERROR, "%s is running, cann't start again!", app_name);
         return 0;
     }
-
 
 	//default log level 
 	wr_log_logrotate(debug_mode);

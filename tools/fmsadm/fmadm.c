@@ -90,12 +90,12 @@ static const struct cmd {
 } cmds[] = {
 { cmd_config, "config", "[-ls] [-i <interval>] [-b] [module]",
 	"display or set fault manager configuration" },
-//{ cmd_modinfo, "modinfo", NULL, "display fault manager module status" },
+{ cmd_modinfo, "modinfo", "[-l]", "display fault manager loaded module list" },
 { cmd_faulty, "faulty", "[-afgiprsv] [-u <uuid>] [-n <max_fault>]",
 	"display list of faulty resources" },
 //{ cmd_flush, "flush", "<fmri> ...", "flush cached state for resource" },
 //{ cmd_gc, "gc", "<module>", NULL },
-//{ cmd_load, "load", "<path>", "load specified fault manager module" },
+{ cmd_load, "load", "<path>", "load specified fault manager module" },
 //{ cmd_repair, "repair", "<fmri>|label|<uuid>", NULL },
 //{ cmd_repaired, "repaired", "<fmri>|label>",
 //	"notify fault manager that resource has been repaired" },
@@ -105,7 +105,7 @@ static const struct cmd {
 //	"notify fault manager that resource has been replaced" },
 //{ cmd_reset, "reset", "[-s serd] <module>", "reset module or sub-component" },
 //{ cmd_rotate, "rotate", "<logname>", "rotate log file" },
-//{ cmd_unload, "unload", "<module>", "unload specified fault manager module" },
+{ cmd_unload, "unload", "<module>", "unload specified fault manager module" },
 { NULL, NULL, NULL }
 };
 

@@ -88,9 +88,11 @@ trace_handle_event(fmd_t *pfmd, fmd_event_t *event)
 	if(event->ev_flag == AGENT_TOLOG)
 	{
 		ret = fmd_log_event(event);
-		if(ret != 0)
+		if(ret == 0)
+		{
 			wr_log("", WR_LOG_ERROR, "trace log sucess.");
-		return (fmd_event_t *)fmd_create_listevent(event, LIST_LOGED_SUCCESS);
+			return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
+		}
 	}
 
 	if(event->ev_flag == AGENT_TODO)

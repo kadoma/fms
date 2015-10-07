@@ -24,40 +24,36 @@
 
 static void usage(void)
 {
-	fputs("Usage: fmadm modinfo\n"
+	fputs("Usage: fmadm load <path>\n"
 	      , stderr);
 }
 
-int get_module_info(fmd_adm_t *adm)
+int load_module(fmd_adm_t *adm,char* path)
 {
-	if(fmd_adm_mod_iter(adm) != 0)
-		die("FMD:failed to load module");
-	struct list_head *pos = NULL;
-	fmd_adm_modinfo_t  *mp = NULL;
-	printf("fmd load module:\n");
-	list_for_each(pos,&adm->mod_list){
-		mp = list_entry(pos,fmd_adm_modinfo_t,mod_list);
-		faf_module_t *fafm =  NULL;
-		fafm = &mp->fafm;
-		printf("%s\n",fafm->mod_path);
+	if(access(path,0))
+	{
+		printf("%s is not exist \n",path);
 	}
+	if(fmd_adm_load_module(adm,path) != 0)
+		die("FMD:failed to load module");
 	return 0;	
 }
 
 /*
- * get specified fault manager module info
+ * fmadm faulty command
+ * load specified fault manager module
  *
  */
 
 int
-cmd_modinfo(fmd_adm_t *adm, int argc, char *argv[])
+cmd_load(fmd_adm_t *adm, int argc, char *argv[])
 {
-    if (argc != 1) {
+    if (argc != 2) {
         usage();
 	return (FMADM_EXIT_SUCCESS);
     }
 
-    int rt = get_module_info(adm);
+    int rt = load_module(adm,argv[1]);
 
     return rt;
 }

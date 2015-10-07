@@ -8,7 +8,7 @@ OUTPUT=$(BASEPATH)
 
 TARGET=inject_src.so
 
-LDFLAGS= -lpthread -ldl -levt -lfmd -ll -shared -fpic -g -lrt
+LDFLAGS= -lpthread -ldl -levt -lfmd -shared -fpic -g -lrt
 
 CFLAGS= -g -O0 -Wall\
 	-Wno-unused-function \

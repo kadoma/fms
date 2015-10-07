@@ -139,12 +139,19 @@ fmd_case_close(fmd_event_t *pevt)
 		{
 			list_del(&pcase->cs_list);
 			list_add(&pcase->cs_list, &fmd.list_repaired_case);
+			list_add(&pevt->ev_list, &pcase->cs_event);
+			
 			wr_log("", WR_LOG_NORMAL, "case had been processed, delete and add...................");
 			return 0;
 		}
 	}
 
-	wr_log("", WR_LOG_ERROR, "case close error..............................");
+	if(pevt->ev_refs >= 2){
+		def_free(pevt->ev_class);
+		def_free(pevt);
+		return 0;
+	}
+	wr_log("", WR_LOG_ERROR, "event close error.");
 	return -1;
 }
 
@@ -162,9 +169,7 @@ fmd_proc_event(fmd_event_t *p_event)
 		
 	if(ret > 0)
 	{
-		put_to_agents(p_event);// put to agent to log or fault todo
-		if(ret == 2)
-			fmd_case_insert(p_event);
+		fmd_case_insert(p_event);
 	}
     return 0;
 }

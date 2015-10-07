@@ -36,6 +36,5 @@ extern int cmd_load(fmd_adm_t *, int, char *[]);
 //extern int cmd_reset(fmd_adm_t *, int, char *[]);
 //extern int cmd_rotate(fmd_adm_t *, int, char *[]);
 extern int cmd_unload(fmd_adm_t *, int, char *[]);
-
 #endif	/* _FMADM_H */
 

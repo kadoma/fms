@@ -29,6 +29,7 @@ typedef struct fmd_adm {
 	int adm_svcerr;				/* server-side error from last call */
 	int adm_errno;				/* client-side error from last call */
 	struct list_head cs_list;		/* case info list */
+    struct list_head mod_list;
 } fmd_adm_t;
 
 extern fmd_adm_t *fmd_adm_open(void);
@@ -77,7 +78,16 @@ typedef struct fmd_adm_caseinfo {
 	struct list_head aci_list;
 } fmd_adm_caseinfo_t;
 
-extern int fmd_adm_case_iter(fmd_adm_t *);
+typedef struct fmd_adm_modinfo {
+	faf_module_t fafm;
+	struct list_head mod_list;
+} fmd_adm_modinfo_t;
 
+extern int check_module(char*);
+extern int check_module_conf(char*);
+extern int fmd_adm_case_iter(fmd_adm_t *,char *);
+extern int fmd_adm_load_module(fmd_adm_t * ,char *);
+extern int fmd_adm_mod_iter(fmd_adm_t *);
+extern int fmd_adm_unload_module(fmd_adm_t *,char *);
 #endif	/* _FMD_ADM_H */
 

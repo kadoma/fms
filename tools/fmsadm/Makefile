@@ -1,48 +1,32 @@
-# makefile.defs
-#
-# Created on: Jan 19, 2010
-#     Author: nilei
-#
+### Makefile for adm tool 
 
+SHELL=/bin/sh
+CC=gcc
+RM=rm -f
 
-CC = /usr/bin/gcc
+TARGET=fmsadm
 
-CFLAGS = -c -g -DFMD_DEBUG -Wall -I../../include \
-		-Wno-unused-function \
-    	-Wno-unused-variable
-LDFLAGS = -L$(ROOTLIB) -ldl -lpthread\
-	-L../../lib/libfmd_adm -L../../lib/libfmd_msg -lrt -lfmd_adm -lfmd_msg
+CFLAGS= -g -Wall -O0 \
+	-I../../include \
+	-Wno-unused-function \
+    	-Wno-unused-variable \
+	-L/usr/lib/fms \
+	-L/usr/lib
 
-RM = /bin/rm -f
-CP = /bin/scp 1>/dev/null 2>&1 -f
-LN = /bin/ln -s -f
-
-LDCONFILE = fmd-i386.conf
-LDCONFDIR = /etc/ld.so.conf.d/
-LDCONFIG = /sbin/ldconfig
-
-INCDIR = $(DESTDIR)/usr/include/fm
-FMDDIR =/usr/lib/fms/fmd
-
-LIBVER = 2.0.0
+LDFLAGS= -ldl -lpthread -lrt -ladm -lmsg
 
 SRCS = $(wildcard *.c)
-OBJS = $(SRCS:%.c=%.o)
-PROG = fmsadm
 
-%.o: %.c
-	$(CC) $(CFLAGS) $<
-
-all: $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $(PROG)
+all: 
+	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
 
 clean:
-	$(RM) $(OBJS) $(PROG)
+	$(RM) $(TARGET)
 
-install:
-	$(CP) $(PROG) $(FMDDIR)
-	$(CP) $(PROG) $(CMDDIR)
+#install:
+#	$(CP) $(TARGET) $(FMDDIR)
+#	$(CP) $(TARGET) $(CMDDIR)
 
-uninstall:
-	$(RM) $(FMDDIR)/$(PROG)
-	$(RM) $(CMDDIR)/$(PROG)
+#uninstall:
+#	$(RM) $(FMDDIR)/$(TARGET)
+#	$(RM) $(CMDDIR)/$(TARGET)

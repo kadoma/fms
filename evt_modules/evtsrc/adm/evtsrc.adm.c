@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <string.h>
 #include <linux/types.h>
+#include <dlfcn.h>
 
 #include "wrap.h"
 #include "evt_src.h"
@@ -54,9 +55,56 @@ fmd_resv_caselist(fmd_t *pfmd, fmd_acl_t *acl)
 		case_num++;
 	}
 
+printf("hapen = %d \n",case_num);
 	acl->acl_secs = case_num;               /* number of sections */
 	acl->acl_size = case_num * sizeof(faf_case_t) + sizeof(faf_hdr_t);
 }
+
+static void
+fmd_resv_recaselist(fmd_t *pfmd, fmd_acl_t *acl)
+{
+        struct list_head *pos = NULL;
+        fmd_case_t *cp = NULL;
+        int case_num = 0;
+
+        list_for_each(pos, &pfmd->list_repaired_case) {
+                cp = list_entry(pos, fmd_case_t, cs_list);
+                uint64_t cs_uuid = cp->cs_uuid;
+                cp->cs_uuid = cs_uuid;
+                case_num++;
+        }
+printf("repaired  = %d \n",case_num);
+        acl->acl_secs = case_num;               /* number of sections */
+        acl->acl_size = case_num * sizeof(faf_case_t) + sizeof(faf_hdr_t);
+}
+
+
+#if 1
+/**
+ * fmd_resv_modlist
+ *
+ * @param
+ * @return
+ */
+static void
+fmd_resv_modlist(fmd_t *pfmd, fmd_acl_t *acl)
+{
+	struct list_head *pos = NULL;
+	fmd_module_t *mp = NULL;
+	int mod_num = 0;
+
+	list_for_each(pos, &pfmd->fmd_module) {
+		mp = list_entry(pos, fmd_module_t, list_fmd);
+		int vers = mp->mod_vers;
+		mp->mod_vers = vers;
+		mod_num++;
+	}
+
+	acl->acl_secs = mod_num;               /* number of sections */
+	acl->acl_size = mod_num * sizeof(faf_module_t) + sizeof(faf_hdr_t);
+}
+
+#endif
 
 
 /**
@@ -107,7 +155,8 @@ fmd_get_caselist(fmd_t *pfmd, int *size)
 		fafc->fafc_create = (uint64_t)cp->cs_create;
 		fafc->fafc_fire = (uint64_t)cp->cs_last_fire;
 		fafc->fafc_close = (uint64_t)cp->cs_close;
-		snprintf(fafc->fafc_fault, 128, "%s", hash_get_key(phash, cp->cs_type->fault));
+		sprintf(fafc->fafc_fault,"%s:%s",cp->dev_name,cp->last_eclass);
+	//	snprintf(fafc->fafc_fault, 128, "%s", hash_get_key(phash, cp->cs_type->fault));
 
 		if (cp->cs_flag == CASE_CREATE)
 			fafc->fafc_state = FAF_CASE_CREATE;
@@ -127,14 +176,128 @@ fmd_get_caselist(fmd_t *pfmd, int *size)
 	return (void *)acl->acl_hdr;
 }
 
+static void *
+fmd_get_recaselist(fmd_t *pfmd, int *size)
+{
+        struct list_head *pos = NULL;
+        faf_case_t *fafc = NULL;
+        fmd_case_t *cp = NULL;
+        int cnt = 0;
+
+        fmd_acl_t *acl = malloc(sizeof (fmd_acl_t));
+        assert(acl != NULL);
+        memset(acl, 0, sizeof(fmd_acl_t));
+
+        fmd_resv_recaselist(pfmd, acl);
+
+        /*
+ *          * Allocate memory for FAF.
+ *                   */
+        acl->acl_buf = malloc(acl->acl_size);
+        assert(acl->acl_buf != NULL);
+        memset(acl->acl_buf, 0, acl->acl_size);
+
+        if (acl->acl_buf == NULL)
+                return NULL; /* errno is set for us */
+
+        acl->acl_hdr = (void *)acl->acl_buf;
+        acl->acl_hdr->fafh_hdrsize = sizeof (faf_hdr_t);
+        acl->acl_hdr->fafh_secnum = acl->acl_secs;
+        acl->acl_hdr->fafh_msgsz = acl->acl_size;
+        snprintf(acl->acl_hdr->fafh_cmd, 32, FAF_GET_CASELIST);
+
+        fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize);
+
+        list_for_each(pos, &pfmd->list_repaired_case) {
+                cp = list_entry(pos, fmd_case_t, cs_list);
+
+                fafc->fafc_uuid = cp->cs_uuid;
+                fafc->fafc_rscid = cp->cs_rscid;
+                fafc->fafc_count = cp->cs_count;
+                fafc->fafc_create = (uint64_t)cp->cs_create;
+                fafc->fafc_fire = (uint64_t)cp->cs_last_fire;
+                fafc->fafc_close = (uint64_t)cp->cs_close;
+
+		sprintf(fafc->fafc_fault,"%s:%s",cp->dev_name,cp->last_eclass);
+                if (cp->cs_flag == CASE_CREATE)
+                        fafc->fafc_state = FAF_CASE_CREATE;
+                else if (cp->cs_flag == CASE_FIRED)
+                        fafc->fafc_state = FAF_CASE_FIRED;
+                else if (cp->cs_flag == CASE_CLOSED)
+                        fafc->fafc_state = FAF_CASE_CLOSED;
+                else {
+                        printf("FMD: case %p (%ld) has invalid state %u\n",
+                                (void *)cp, cp->cs_uuid, cp->cs_flag);
+                        return NULL;
+                }
+                cnt++;
+                fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize + cnt * sizeof (faf_case_t));
+        }
+        *size = acl->acl_size;
+        return (void *)acl->acl_hdr;
+}
+
+
+
+#if 1
+static void *
+fmd_get_modlist(fmd_t *pfmd, int *size)
+{
+	struct list_head *pos = NULL;
+	struct fmd_hash *phash = &pfmd->fmd_esc.hash_clsname;
+	faf_module_t *fafm = NULL;
+	fmd_module_t *mp = NULL;
+	int mnt = 0;
+
+	fmd_acl_t *acl = malloc(sizeof (fmd_acl_t));
+	assert(acl != NULL);
+	memset(acl, 0, sizeof(fmd_acl_t));
+
+	fmd_resv_modlist(pfmd, acl);
+
+	/*
+	 * Allocate memory for FAF.
+	 */
+	acl->acl_buf = malloc(acl->acl_size);
+	assert(acl->acl_buf != NULL);
+	memset(acl->acl_buf, 0, acl->acl_size);
+
+	if (acl->acl_buf == NULL)
+		return NULL; /* errno is set for us */
+
+	acl->acl_hdr = (void *)acl->acl_buf;
+	acl->acl_hdr->fafh_hdrsize = sizeof (faf_hdr_t);
+	acl->acl_hdr->fafh_secnum = acl->acl_secs;
+	acl->acl_hdr->fafh_msgsz = acl->acl_size;
+	snprintf(acl->acl_hdr->fafh_cmd, 32, FAF_GET_MODLIST);
+
+	fafm = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize);
+
+	list_for_each(pos, &pfmd->fmd_module) {
+		mp = list_entry(pos, fmd_module_t, list_fmd);
+
+        fafm->mod_vers = mp->mod_vers;
+        fafm->mod_interval = mp->mod_interval;
+        
+	snprintf(fafm->mod_path,128,"%s",mp->mod_path);
+	
+	mnt++;
+	fafm = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize + mnt * sizeof (faf_module_t));
+	}
+	*size = acl->acl_size;
+	return (void *)acl->acl_hdr;
+}
+
+#endif
 
 struct list_head *
 adm_probe(evtsrc_module_t *emp)
 {
 	fmd_debug;
- 	//fmd_t *pfmd = (&(emp)->module)->mod_fmd;
-	fmd_t *pfmd = ((fmd_module_t *)emp)->p_fmd;
-	//fmd_t *pfmd = ((fmd_module_t *)emp)->module;
+	//fmd_t *pfmd = ((fmd_module_t *)emp)->p_fmd;
+	
+	
+	fmd_t *pfmd = &fmd;
 	mqd_t mqd;
 	struct mq_attr attr;
 	void *buf = NULL;
@@ -178,10 +341,59 @@ adm_probe(evtsrc_module_t *emp)
 		mq_close(mqd);
 		return NULL;
 	}
-//printf("##DEBUG##: fmd_adm_module: after mq_receive() size=%d\n", a);
 //FIXME:if (strncmp(buf, FAF_GET_CASELIST, 12))
-	sendbuf = fmd_get_caselist(pfmd, &size);
-
+#if 1
+	char getcase[] = "GET CASELIST";
+	char getmod[] = "GET MODLIST";
+    if(strncmp(buf,getcase,12) == 0){
+	char *path = NULL;
+	path = strstr((char*)buf,":");
+	if(strncmp(path+1,"happening",9) == 0)
+	     sendbuf = fmd_get_caselist(pfmd,&size);
+	else
+             sendbuf = fmd_get_recaselist(pfmd, &size);
+    }else if(strncmp(buf,"LOAD",4) == 0){
+	char  *path = NULL;
+	path = strstr((char*)buf,":");
+	if((evt_load_module(pfmd,path+1)) == 0){
+		void *ret = NULL;
+                ret = malloc(32);
+                sprintf(ret, "load successed ");
+		size = strlen((char*)ret);
+                sendbuf = (void*)ret;
+	 }else{
+		void *ret = NULL;
+		ret = malloc(32);
+		sprintf(ret, "load failed ");
+		size = strlen((char*)ret);
+		sendbuf = (void*)ret;
+	 }	
+    }else if(strncmp(buf,"UNLOAD",6) == 0){
+	char *module = NULL;
+	module = strstr((char*)buf,":");
+	if((evt_unload_module(pfmd,module+1)) == 0 ){
+		void *ret = NULL;
+                ret = malloc(32);
+                sprintf(ret, "unload successed ");
+		size = strlen((char*)ret);
+                sendbuf = (void*)ret;	
+	}else{
+	        void *ret = NULL;
+                ret = malloc(32);
+                sprintf(ret, "unload failed ");
+		size = strlen((char*)ret);
+                sendbuf = (void*)ret;
+	     }
+    }else if(strcmp(buf,getmod) == 0){
+         sendbuf = fmd_get_modlist(pfmd, &size);
+    }else{
+                void *ret = NULL;
+                ret = malloc(128);
+                sprintf(ret, "%s is illegal cmd ",(char*)buf);
+		size = strlen((char*)ret);
+                sendbuf = (void*)ret;
+    }
+#endif
 //	printf("FMD: send the caselist message to fmd through message queue.\n");
 
 	if ((mq_send(mqd, sendbuf, size, 0)) < 0) {
@@ -197,6 +409,60 @@ adm_probe(evtsrc_module_t *emp)
 	free(buf);
 
 	return NULL;
+}
+
+int check_mod_load(fmd_t *fmd, char *path)
+{
+	if(path == NULL)
+		return (-1);
+	struct list_head *pos = NULL;
+	fmd_module_t *mp = NULL;
+	
+	list_for_each(pos,&fmd->fmd_module){
+		mp = list_entry(pos, fmd_module_t, list_fmd);
+		if(strcmp(mp->mod_path, path)== 0)
+		return (-1);
+	}
+	return 0;
+}
+
+int evt_load_module(fmd_t *fmd, char *path)
+{
+	if((check_mod_load(fmd,path))== -1){
+		printf("module : %s has loaded \n",path);
+		return (-1);
+	}
+	
+	if((fmd_init_module(fmd,path)) == -1){
+		printf("module : %s load failed \n",path);
+		return -1;
+	}else{
+		struct list_head *pos = NULL;
+		fmd_module_t *mp = NULL;
+		list_for_each(pos, &fmd->fmd_module){
+			mp = list_entry(pos, fmd_module_t, list_fmd);
+			if((mp->mod_path)== NULL)
+				mp->mod_path = "/usr/lib/fms/plugins/adm_src.so";
+		}
+	}
+	return 0;	
+}
+
+int evt_unload_module(fmd_t *fmd, char* module)
+{
+	if(module == NULL){
+		printf("module is null\n");
+		return (-1);
+	}
+	struct list_head *pos,*n;
+	fmd_module_t *mp = NULL;
+
+	list_for_each_safe(pos,n,&fmd->fmd_module){
+		mp = list_entry(pos,fmd_module_t,list_fmd);
+		if(strstr(mp->mod_path,module)!= NULL)
+			list_del(&mp->list_fmd);
+	}
+	return 0;
 }
 
 static evtsrc_modops_t adm_mops = {

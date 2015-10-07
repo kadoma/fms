@@ -38,12 +38,12 @@ fmd_create_listevent(fmd_event_t *fault, int action)
 	char *p;
 
     pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t), 1);
-    sprintf(eclass, "list.%s", &fault->ev_class[6]);
+	p = strchr(fault->ev_class, '.');
+    sprintf(eclass, "list%s", p);
 	
 	pevt->dev_name = fault->dev_name;
 	pevt->ev_err_id = fault->ev_err_id;
     pevt->ev_create = time(NULL);
-    pevt->ev_refs = 0;
     pevt->ev_class = strdup(eclass);
 	pevt->ev_flag = action;
 	

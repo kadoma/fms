@@ -1,19 +1,21 @@
-###Makefile for libtopo.so
+### Makefile for libmsg.so 
 
 SHELL=/bin/sh
 CC=gcc
+RM=rm -f
 CP=cp 1>/dev/null 2>&1 -f
 
-TARGET=libtopo.so
+LIBDIR=/usr/lib/fms
 
-CFLAGS = -g -Wall -O0\
+TARGET=libmsg.so
+
+CFLAGS = -g -Wall -O0 \
 	-Wno-unused-function \
-    	-Wno-unused-variable\
+    	-Wno-unused-variable \
 	-I../../include
 
-LDFLAGS = -shared -fpic -ldl -lpthread
+LDFLAGS = -ldl -lpthread -shared -fpic 
 
-LIBDIR=/usr/lib/fms
 
 SRCS = $(wildcard *.c)
 
@@ -22,11 +24,10 @@ all:
 	$(CP) $(TARGET) $(LIBDIR)/$(TARGET)
 
 clean:
-	$(RM) $(OBJS) $(TARGET)
+	$(RM) $(TARGET)
 
 install:
 	$(CP) $(TARGET) $(LIBDIR)/$(TARGET)
 
 uninstall:
 	$(RM) $(LIBDIR)/$(TARGET)
-
