@@ -10,12 +10,12 @@
  ************************************************************/
 #include <stdio.h>
 #include <ctype.h>
-#include <syslog.h>
 
 #include <pci.h>
 #include <dmi.h>
 #include <cpu.h>
 #include <fmd.h>
+#include <logging.h>
 #include <fmd_errno.h>
 
 /* global defs */
@@ -24,7 +24,6 @@ fmd_topo_t *ptopo;
 /**
  * _print_cpu_topo
  *
- * print CPU topology information to stdio, not syslog.
  *
  * @param
  * @return
@@ -48,7 +47,6 @@ _print_cpu_topo(fmd_topo_t *pptopo)
 /**
  * _print_pci_topo
  *
- * print PCI topology information to stdio, not syslog.
  *
  * @param
  * @return
@@ -79,7 +77,6 @@ _print_pci_topo(fmd_topo_t *pptopo)
 /**
  *_print_mem_topo
  *
- *print MEM topology information to stdio, not syslog.
  *
  *@param
  *@return 
@@ -103,7 +100,6 @@ _print_mem_topo(fmd_topo_t *pptopo)
 /**
  *_print_disk_top
  *
- * print DISK topology information to stdio , not syslog
  *
  * @param
  * @return
@@ -148,22 +144,17 @@ _stat_topo(void)
 	/* traverse cpu */
 	list_for_each(pos, &ptopo->list_cpu) {
 		pcpu = list_entry(pos, topo_cpu_t, list);
-		syslog(LOG_NOTICE, "%d %d %d %d\n", pcpu->cpu_chassis, \
 				pcpu->cpu_socket, pcpu->cpu_core, pcpu->cpu_thread);
 	} /* list_for_each */
 
 	/* traverse */
 	list_for_each(pos, &ptopo->list_pci) {
 		ppci = list_entry(pos, topo_pci_t, list);
-		syslog(LOG_NOTICE, "name:%s ", ppci->pci_name);
-		syslog(LOG_NOTICE, "%4x:%2x:%2x.%1x ", ppci->pci_chassis, ppci->pci_hostbridge,\
 			ppci->pci_slot, ppci->pci_func);
 
 		if(ppci->pci_subbus != (uint8_t)-1) {
-			syslog(LOG_NOTICE, "primary=%2x secondary=%2x\n",\
 				ppci->pci_subdomain, ppci->pci_subbus);
 		} else
-			syslog(LOG_NOTICE, "\n");
 	}
 #endif
 }
@@ -237,7 +228,7 @@ _fmd_topo(fmd_t *fmd)
 	ret = fmd_topo_dmi(ptopo);
 	
 	if(ret < 0) {
-		syslog(LOG_NOTICE, "Failed to get memory topology info.\n");
+		wr_log("",WR_LOG_ERROR,"Failed to get memory topology info.\n");
 		return ret;
 	}
 
@@ -247,7 +238,8 @@ _fmd_topo(fmd_t *fmd)
 	 */
 	ret = fmd_topo_pci(DIR_SYS_PCI, ptopo);
 	if(ret < 0) {
-		syslog(LOG_NOTICE, "Failed to get pci topology info.\n");
+		
+		wr_log("",WR_LOG_ERROR,"Failed to get pci topology info.\n");
 		return ret;
 	}
 

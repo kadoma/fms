@@ -51,6 +51,7 @@ RPM=/usr/bin/rpmbuild
 RPMFLAGS=-bb
 FMS_SPEC_FILE=fms.spec
 RPM_FMS=$(BRROOTDIR)/usr/sbin/
+LD_SO_CONF_DIR=$(BRROOTDIR)/etc/ld.so.conf.d/
 
 rpm: all
 	rm -rf $(BRROOTDIR)/*
@@ -64,6 +65,7 @@ rpm: all
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
+	mkdir -p $(LD_SO_CONF_DIR)
 	
 	install -cm 755 $(FMD_DIR)/$(PROGRAM)   $(RPM_FMS)
 	install -cm 755 ./tools/fmsadm/fmsadm   $(RPM_FMS)
@@ -73,8 +75,8 @@ rpm: all
 	cp ./lib/libcase/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libesc/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libfmd/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
-	cp ./lib/libfmd_adm/*.so                $(BRROOTDIR)/usr/lib/$(PROJECT)
-	cp ./lib/libfmd_msg/*.so                $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libadm/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libmsg/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libtopo/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./evt_modules/evtlib/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp $(EVT_SRC_DIR)/disk/*.so             $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
@@ -88,5 +90,6 @@ rpm: all
 	cp $(EVT_AGENT_DIR)/inject/*.so         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp ./fms_conf/escdir/*.esc              $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
 	cp ./fms_conf/plugins/*.conf            $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+	cp ./fms_conf/ld.so.conf/*.conf         $(LD_SO_CONF_DIR)
 	cp $(KFM_DIR)/kfm.ko                    $(BRROOTDIR)/$(INSTALL_KFM_DIR)/fms.ko
 	$(RPM) $(RPMFLAGS) $(FMS_SPEC_FILE)

@@ -12,7 +12,6 @@
 #include <malloc.h>
 #include <assert.h>
 #include <string.h>
-#include <syslog.h>
 #include <dirent.h>
 
 #include <fmd_topo.h>

@@ -104,10 +104,53 @@ __handle_fault_event(fmd_event_t *e)
 }
 
 static int
-fmd_log_event() 
+__log_event(fmd_event_t *pevt) 
 {
-	//TODO
-	return 0;
+	int type, fd;
+	char *dir;
+	char *eclass = NULL;
+	char times[26];
+	char buf[512];
+
+	char dev_name[32];
+	int  err_dev_id = 0;
+	time_t evtime;
+	
+	evtime = pevt->ev_create;
+	eclass = pevt->ev_class;
+	
+	strcpy(dev_name, pevt->dev_name);
+	err_dev_id = pevt->ev_err_id;
+
+	if (strncmp(eclass, "ereport.", 8) == 0) {
+		type = FMD_LOG_ERROR;
+		dir = "/var/log/fms/cpumem/serd";
+	} else if (strncmp(eclass, "fault.", 6) == 0) {
+		type = FMD_LOG_FAULT;
+		dir = "/var/log/fms/cpumem/fault";
+	} else if (strncmp(eclass, "list.", 5) == 0) {
+		type = FMD_LOG_LIST;
+		dir = "/var/log/fms/cpumem/list";
+	}
+
+	if ((fd = fmd_log_open(dir, type)) < 0) {
+		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
+			"failed to record log for event: %s\n", eclass);
+		return LIST_LOGED_FAILED;
+	}
+
+	fmd_get_time(times, evtime);
+	memset(buf, 0, sizeof buf);
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t%d\t\n", times, eclass, dev_name, err_dev_id);
+
+	if (fmd_log_write(fd, buf, strlen(buf)) != 0) {
+		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
+			"failed to write log file for event: %s\n", eclass);
+		return LIST_LOGED_FAILED;
+	}
+	fmd_log_close(fd);
+
+	return LIST_LOGED_SUCCESS;
 }
 
 #ifndef TEST_CMEA
@@ -128,7 +171,7 @@ cpumem_handle_event(fmd_t *pfmd, fmd_event_t *e)
 	case AGENT_TOLOG:
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
 			"cpumem agent log event.");
-		action = fmd_log_event(e); 
+		action = __log_event(e); 
 		break;
 	default:
 		action = -1;  // can happen?? 

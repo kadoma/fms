@@ -13,7 +13,6 @@
 #include <malloc.h>
 #include <assert.h>
 #include <string.h>
-#include <syslog.h>
 
 #include <fmd_topo.h>
 #include <fmd_errno.h>

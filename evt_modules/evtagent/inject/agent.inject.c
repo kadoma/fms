@@ -10,6 +10,14 @@
  *	@result:
  *		list.* event
  */
+
+static int
+fmd_log_event(fmd_event_t *pevt) 
+{
+	//TODO
+	return 0;
+}
+
 fmd_event_t *
 inject_handle_event(fmd_t *pfmd, fmd_event_t *event)
 {

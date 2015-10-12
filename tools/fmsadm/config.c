@@ -109,7 +109,7 @@ fmd_add_conf(char *filename, char *mod_name)
 	memset(buffer, 0, PATH_MAX * sizeof (char));
 
 	if ((fp1 = fopen(filename, "r+")) == NULL) {
-		printf("fmadm config: failed to open conf file for %s\n", mod_name);
+		wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
 		return (-1);
 	}
 	if (evtsrc) {
@@ -148,7 +148,7 @@ fmd_add_conf(char *filename, char *mod_name)
 	}
 
 	if ((fp2 = fopen(filename, "w+")) == NULL) {
-		printf("fmadm config: failed to open conf file for %s\n", mod_name);
+		wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
 		return (-1);
 	}
 
@@ -179,7 +179,7 @@ fmd_open_conf(char *mod_name)
 	else if (strstr(mod_name, "agent") != NULL)
 		agent = 1;
 	if ((fp = fopen(filename, "r+")) == NULL) {
-		printf("fmadm config: failed to open conf file for %s\n", mod_name);
+		wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
 		return (-1);
 	}
 
@@ -256,8 +256,7 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
 	if (optind < argc) {
 		strcpy(arg_module, argv[optind]);
 		if (*arg_module == '\0') {
-			(void) fprintf(stderr, "fmadm config: illegal "
-					"argument -- %s\n", argv[optind]);
+			wr_log("",WR_LOG_ERROR,"fmsadm config:illegal argument-- %s\n",argv[optind]);
 			return (FMADM_EXIT_USAGE);
 		}
 	}

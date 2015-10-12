@@ -14,13 +14,12 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <assert.h>
-#include <syslog.h>
 #include <string.h>
 
 #include <sys/types.h>
 #include <sys/fcntl.h>
 #include <linux/limits.h>
-
+#include <logging.h>
 #include <fmd_errno.h>
 #include <fmd_topo.h>
 
@@ -56,11 +55,11 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
 			"topology/physical_package_id");
 	fd = open(path, O_RDONLY);
 	if(fd < 0) {
-		syslog(LOG_ERR, "open");
+		wr_log("",WR_LOG_ERROR,"OPEN %s failed ",path);
 		return NULL;
 	}
 	if(read(fd, &buf, sizeof(buf)) < 0) {
-		syslog(LOG_ERR, "read");
+		wr_log("",WR_LOG_ERROR,"read %s failed ",path);
 		return NULL;
 	}
 	close(fd);
@@ -71,11 +70,11 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
 			"topology/core_id");
 	fd = open(path, O_RDONLY);
 	if(fd < 0) {
-		syslog(LOG_ERR, "open");
+		wr_log("",WR_LOG_ERROR,"OPEN %s failed ",path);
 		return NULL;
 	}
 	if(read(fd, &buf, sizeof(buf)) < 0) {
-		syslog(LOG_ERR, "read");
+		wr_log("",WR_LOG_ERROR,"read %s failed ",path);
 		return NULL;
 	}
 	close(fd);
@@ -140,7 +139,7 @@ fmd_topo_walk_cpu(const char *dir, int nodeid, fmd_topo_t *ptopo)
 		snprintf(path, sizeof(path), "%s/%s", dir, p);
 		pcpu = fmd_topo_read_cpu(path, nodeid, atoi(p + 3));
 		if(pcpu == NULL) {
-			syslog(LOG_NOTICE, "CPU %d Maybe OFFLINE!\n", atoi(p + 3));
+			wr_log("",WR_LOG_ERROR,"CPU %d Maybe OFFLINE!  ",atoi(p+3));
 			continue;
 		}
 		list_add(&pcpu->list, &ptopo->list_cpu);

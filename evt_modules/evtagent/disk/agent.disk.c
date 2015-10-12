@@ -12,6 +12,8 @@
 #include <fcntl.h>
 #include <evt_agent.h>
 #include <fmd_event.h>
+#include <unistd.h>
+
 #include <fmd_api.h>
 #include "logging.h"
 #include "fmd_module.h"

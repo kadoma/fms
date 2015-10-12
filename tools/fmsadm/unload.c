@@ -32,13 +32,13 @@ int unload_module(fmd_adm_t *adm,char* path)
 {
 
 	if((strstr(path,".so")) == NULL){
-		printf("%s is not illegal input ,module end with .so\n",path);	
+		wr_log("",WR_LOG_ERROR,"%s:illegal input module end with .so\n",path);	
 		return (-1);
 	}
 	
 	if((strstr(path,"adm_src.so")) != NULL){
-		printf("module :is adm module , can not unload \n");
-		return (-1);
+		wr_log("",WR_LOG_ERROR,"%s: adm module can not unload -- %s\n");
+                return (-1);
 	}	
 
 	if(fmd_adm_unload_module(adm,path) != 0)

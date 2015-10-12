@@ -1,7 +1,7 @@
 Name: fms
 Summary: fault management system
 Version: 2.0
-Release: 1
+Release: 3
 Vendor: INSPUR
 License: INSPUR SOFTWARE LICENSE.
 URL: www.inspur.com
@@ -23,18 +23,23 @@ INSPUR fault management system.
 	rm -rf $RPM_BUILD_ROOT
 
 %pre
+	
 %post
 	/bin/chmod 755 /usr/sbin/fmd
-
+	ldconfig
+	
 %preun
-
+		
+%postun
+	ldconfig
+	
 %files
 
 %defattr(-,root,root)
 /usr/sbin/*
 /var/log/*
-#/etc/*
 /lib/*
 /usr/lib/fms/*
+/etc/ld.so.conf.d/*
 
 %changelog

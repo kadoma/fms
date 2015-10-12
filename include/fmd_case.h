@@ -48,5 +48,8 @@ typedef struct _fmd_case_{
 
 }fmd_case_t;
 
+#include "fmd_event.h"
+
+extern int fmd_case_insert(fmd_event_t *pevt);
 
 #endif // fmd_case.h

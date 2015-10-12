@@ -15,13 +15,12 @@
 #include <malloc.h>
 #include <assert.h>
 #include <string.h>
-#include <syslog.h>
 
 #include <fmd_topo.h>
 #include <fmd_errno.h>
 #include <storage.h>
 #include <network.h>
-
+#include <logging.h>
 #define PCI_CLASS_REVISION      0x08              /* High 24 bits are class, low 8 revision */
 #define PCI_VENDOR_ID           0x00    /* 16 bits */
 #define PCI_DEVICE_ID           0x02    /* 16 bits */
@@ -413,7 +412,7 @@ fmd_topo_pci(const char *dir, fmd_topo_t *ptopo)
 	/* network */
 	ret = fmd_topo_net(DIR_SYS_NET, ptopo);
 	if(ret < 0) {
-		syslog(LOG_NOTICE, "Failed to get network topology info.\n");
+		wr_log("",WR_LOG_ERROR,"Failed to get network topology info.");
 		return ret;
 	}
 

@@ -141,6 +141,10 @@ main(int argc, char *argv[])
 	const struct cmd *cp;
 	const char *p;
 	int  err;
+	
+	wr_log_logrotate(0);
+        wr_log_init("./adm.log");
+        wr_log_set_loglevel(WR_LOG_ERROR);
 
 	if ((p = strrchr(argv[0], '/')) == NULL)
 		g_pname = argv[0];
@@ -156,8 +160,7 @@ main(int argc, char *argv[])
 	}
 
 	if (cp->cmd_name == NULL) {
-		(void) fprintf(stderr, "%s: illegal subcommand -- %s\n",
-		    g_pname, argv[optind]);
+		wr_log("",WR_LOG_ERROR,"%s: illegal subcommand -- %s\n",g_pname,argv[optind]);
 		return (usage(stderr));
 	}
 

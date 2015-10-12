@@ -9,9 +9,10 @@ TARGET=libtopo.so
 CFLAGS = -g -Wall -O0\
 	-Wno-unused-function \
     	-Wno-unused-variable\
-	-I../../include
+	-I../../include \
+	-L /usr/lib/fms
 
-LDFLAGS = -shared -fpic -ldl -lpthread
+LDFLAGS = -shared -fpic -ldl -lpthread -lfmd
 
 LIBDIR=/usr/lib/fms
 

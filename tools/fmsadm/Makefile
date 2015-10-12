@@ -11,9 +11,9 @@ CFLAGS= -g -Wall -O0 \
 	-Wno-unused-function \
     	-Wno-unused-variable \
 	-L/usr/lib/fms \
-	-L/usr/lib
+	-L/usr/lib 
 
-LDFLAGS= -ldl -lpthread -lrt -ladm -lmsg
+LDFLAGS= -ldl -lpthread -lrt -ladm -lmsg -lfmd
 
 SRCS = $(wildcard *.c)
 

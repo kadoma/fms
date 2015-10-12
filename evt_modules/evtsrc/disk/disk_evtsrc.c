@@ -80,7 +80,7 @@ disk_probe(evtsrc_module_t * emp)
         fullpathtmp[sizeof(fullpathtmp)-1] = '\0';
 
 		// the same disk, check  only  once
-        if(strcmp(fullpathtmp,result)!=0)
+        if(result == NULL || strcmp(fullpathtmp,result)!=0)
         {
             fullpath = fullpathtmp;
 			if(DoesSmartWork(fullpath) == 1)

@@ -12,9 +12,10 @@ SRCS = $(wildcard *.c)
 CFLAGS= -Wall -g -O0 \
 	-Wno-unused-function \
     	-Wno-unused-variable\
-	-I../../include
+	-I../../include \
+	-L /usr/lib/fms/
 
-LDFLAGS = -lpthread -ldl
+LDFLAGS = -lpthread -ldl 
 
 
 all: 

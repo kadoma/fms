@@ -8,4 +8,5 @@ char* smarttempcmd(const char *path, char *cmdresult);
 char* smarthealthycmd(const char *path,char *cmdresult);
 char* smartokcmd(const char *path,char *cmdresult);
 char* badblockscmd(const char *path, char *cmdresult);
+char* getsectorscmd(const char *path, char *cmdresult);
 #endif

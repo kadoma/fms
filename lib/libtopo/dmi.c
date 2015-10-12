@@ -15,7 +15,6 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <assert.h>
-#include <syslog.h>
 #include <string.h>
 
 #include <sys/types.h>

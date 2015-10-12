@@ -7,6 +7,7 @@
 #include "fmd_event.h"
 #include "logging.h"
 
+extern void put_to_agents(fmd_event_t *p_evt);
 
 /* global reference */
 fmd_t fmd;
@@ -68,6 +69,9 @@ fmd_case_create(fmd_event_t *pevt)
 	pcreate = (fmd_case_t *)def_calloc(sizeof(fmd_case_t), 1);
 
 	pcreate->dev_name = strdup(pevt->dev_name);
+	// wanglei add
+	//pcreate->last_eclass = strdup(pevt->ev_class);
+	//sprintf(pcreate->last_eclass,"%s",pevt->ev_class);
 	pcreate->err_id  =  pevt->ev_err_id;
 
 	pcreate->cs_flag = CASE_CREATE;
@@ -136,7 +140,6 @@ fmd_case_add(fmd_case_t *pcase, fmd_event_t *pevt)
 	
 	list_add(&pevt->ev_list, &pcase->cs_event);
 	strcpy(pcase->last_eclass, pevt->ev_class);
-
 	if(fmd_case_canfire(pcase, pevt->ev_class))
 	{
 		fmd_case_fire(pevt, pcase);

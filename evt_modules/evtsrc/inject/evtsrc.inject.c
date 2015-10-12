@@ -36,8 +36,8 @@
  *
  * TODO nvlist operations
  */
-struct list_head *
-inject_probe(evtsrc_module_t *emp, nvlist_t *pnv)
+static struct list_head *
+inject_probe(evtsrc_module_t *emp)
 {
 	char 			*buff = NULL;
 	struct mq_attr 	attr;

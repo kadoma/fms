@@ -7,8 +7,7 @@
 
 #include "wrap.h"
 #include "list.h"
-#include "fmd_case.h"
-#include "fmd.h"
+
 
 /* actions */
 #define LIST_ISOLATED	0x01
@@ -59,6 +58,9 @@ typedef struct _fmd_event_{
 	uint64_t             agent_result;
 	char                 *data;  //private data
 }fmd_event_t;
+
+#include "fmd_case.h"
+#include "fmd.h"
 
 extern fmd_event_t * fmd_create_listevent(fmd_event_t *fault, int action);
 extern fmd_event_t * fmd_create_casefault(fmd_t *p_fmd, fmd_case_t *pcase);

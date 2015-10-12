@@ -124,7 +124,7 @@ void *start_agent(void *p)
 {
 	int ret;
 	sigset_t fullset, oldset;
-	agent_module_t *emp;
+//	agent_module_t *emp;
 	agent_modops_t *mops;
 
 	agent_module_t *p_agent_mod = (agent_module_t *)p;
@@ -140,7 +140,7 @@ void *start_agent(void *p)
 	pthread_sigmask(SIG_BLOCK, &fullset, &oldset);
 
 	/* container */
-	emp = (agent_module_t *)pthread_getspecific(key_module);
+	//emp = (agent_module_t *)pthread_getspecific(key_module);
 
 	/* Thread starts working... */
 	while(1) {

@@ -55,7 +55,6 @@ fmd_resv_caselist(fmd_t *pfmd, fmd_acl_t *acl)
 		case_num++;
 	}
 
-printf("hapen = %d \n",case_num);
 	acl->acl_secs = case_num;               /* number of sections */
 	acl->acl_size = case_num * sizeof(faf_case_t) + sizeof(faf_hdr_t);
 }
@@ -73,13 +72,11 @@ fmd_resv_recaselist(fmd_t *pfmd, fmd_acl_t *acl)
                 cp->cs_uuid = cs_uuid;
                 case_num++;
         }
-printf("repaired  = %d \n",case_num);
         acl->acl_secs = case_num;               /* number of sections */
         acl->acl_size = case_num * sizeof(faf_case_t) + sizeof(faf_hdr_t);
 }
 
 
-#if 1
 /**
  * fmd_resv_modlist
  *
@@ -104,7 +101,6 @@ fmd_resv_modlist(fmd_t *pfmd, fmd_acl_t *acl)
 	acl->acl_size = mod_num * sizeof(faf_module_t) + sizeof(faf_hdr_t);
 }
 
-#endif
 
 
 /**
@@ -165,8 +161,7 @@ fmd_get_caselist(fmd_t *pfmd, int *size)
 		else if (cp->cs_flag == CASE_CLOSED)
 			fafc->fafc_state = FAF_CASE_CLOSED;
 		else {
-			printf("FMD: case %p (%ld) has invalid state %u\n",
-				(void *)cp, cp->cs_uuid, cp->cs_flag);
+			wr_log("",WR_LOG_DEBUG,"FMD:case %p(%ld)has invalid state%u\n",cp, cp->cs_uuid, cp->cs_flag);
 			return NULL;
 		}
 		cnt++;
@@ -226,8 +221,8 @@ fmd_get_recaselist(fmd_t *pfmd, int *size)
                 else if (cp->cs_flag == CASE_CLOSED)
                         fafc->fafc_state = FAF_CASE_CLOSED;
                 else {
-                        printf("FMD: case %p (%ld) has invalid state %u\n",
-                                (void *)cp, cp->cs_uuid, cp->cs_flag);
+			wr_log("",WR_LOG_DEBUG,"FMD: case %p (%ld) has invalid state %u\n"
+                                ,(void *)cp, cp->cs_uuid, cp->cs_flag);
                         return NULL;
                 }
                 cnt++;
@@ -311,14 +306,14 @@ adm_probe(evtsrc_module_t *emp)
 
 	if (mqd == -1) {
 		perror("fmadm mq_open");
-		syslog(LOG_ERR, "fmadm mq_open");
+		wr_log("",WR_LOG_DEBUG,"fmsadm mq_open failed");
 		return NULL;
 	}
 
 	buf = malloc(128 * 1024);
 	if (buf == NULL) {
 		perror("fmadm malloc");
-		syslog(LOG_ERR, "fmadm malloc");
+		wr_log("",WR_LOG_DEBUG,"fmsadm malloc failed");
 		mq_close(mqd);
 		return NULL;
 	}
@@ -326,7 +321,7 @@ adm_probe(evtsrc_module_t *emp)
 	/* Determine max. msg size; initial buffer to receive msg */
 	if (mq_getattr(mqd, &attr) == -1) {
 		perror("fmadm mq_getattr");
-		syslog(LOG_ERR, "fmadm mq_getattr");
+		wr_log("",WR_LOG_DEBUG,"fmsadm mq_getattr failed");
 		free(buf);
 		mq_close(mqd);
 		return NULL;
@@ -429,12 +424,13 @@ int check_mod_load(fmd_t *fmd, char *path)
 int evt_load_module(fmd_t *fmd, char *path)
 {
 	if((check_mod_load(fmd,path))== -1){
-		printf("module : %s has loaded \n",path);
+				
+		wr_log("",WR_LOG_DEBUG,"module :%s has loaded ",path);
 		return (-1);
 	}
 	
 	if((fmd_init_module(fmd,path)) == -1){
-		printf("module : %s load failed \n",path);
+		wr_log("",WR_LOG_DEBUG,"%s load failed",path);
 		return -1;
 	}else{
 		struct list_head *pos = NULL;
@@ -451,7 +447,7 @@ int evt_load_module(fmd_t *fmd, char *path)
 int evt_unload_module(fmd_t *fmd, char* module)
 {
 	if(module == NULL){
-		printf("module is null\n");
+		wr_log("",WR_LOG_DEBUG,"module is null");
 		return (-1);
 	}
 	struct list_head *pos,*n;

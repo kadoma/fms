@@ -32,7 +32,7 @@ int load_module(fmd_adm_t *adm,char* path)
 {
 	if(access(path,0))
 	{
-		printf("%s is not exist \n",path);
+		wr_log("",WR_LOG_ERROR,"%s: is not exist \n",path);
 	}
 	if(fmd_adm_load_module(adm,path) != 0)
 		die("FMD:failed to load module");

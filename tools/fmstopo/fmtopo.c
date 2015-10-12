@@ -16,6 +16,7 @@
 #include <dlfcn.h>
 #include <linux/limits.h>
 #include <fmd.h>
+#include <logging.h>
 
 static void
 usage(void)
@@ -49,6 +50,10 @@ main(int argc, char *argv[])
 	void (*print_mem_topo)(fmd_topo_t *);
 	void (*print_disk_topo)(fmd_topo_t *);
 	void (*print_topo_tree)(fmd_topo_t *);
+	
+	wr_log_logrotate(0);
+	wr_log_init("./topo.log");
+	wr_log_set_loglevel(WR_LOG_ERROR);	
 
 	if (argc == 1) {
 		usage();
@@ -59,7 +64,7 @@ main(int argc, char *argv[])
 	sprintf(path, "%s/%s", BASE_DIR, "libtopo.so");
 	handle = dlopen(path, RTLD_LAZY);
 	if (handle == NULL) {
-		syslog(LOG_ERR, "dlopen");
+	wr_log("",WR_LOG_ERROR,"failed dlopen");
 		exit(-1);
 	}
 
@@ -68,7 +73,7 @@ main(int argc, char *argv[])
 	fmd_topo = dlsym(handle, "_fmd_topo");
 	if ((error = dlerror()) != NULL) {
 	
-	syslog(LOG_ERR, "dlsym");
+		wr_log("",WR_LOG_ERROR,"_fmd_topo failed dlsym");
 		exit(-1);
 	}
 	(*fmd_topo)(&fmd);
@@ -77,13 +82,13 @@ main(int argc, char *argv[])
 	dlerror();
 	topo_tree_create = dlsym(handle, "topo_tree_create");
 	if((error = dlerror()) != NULL) {
-		syslog(LOG_ERR, "dlsym");
+		wr_log("",WR_LOG_ERROR,"topo_tree_create failed dlsym");
 		exit(-1);
 	}
 
 	ret = (*topo_tree_create)(&fmd);
 	if(ret < 0) {
-		syslog(LOG_ERR, "topo_tree_create");
+		wr_log("",WR_LOG_ERROR,"failed topo_tree_create");
 		exit(-1);
 	}
 
@@ -91,7 +96,7 @@ main(int argc, char *argv[])
 	dlerror(); 
 	print_cpu_topo = dlsym(handle, "_print_cpu_topo");
 	if ((error = dlerror()) != NULL) {
-		syslog(LOG_ERR, "dlsym");
+		wr_log("",WR_LOG_ERROR,"print_cpu_topo failed dlsym");
 		exit(-1);
 	}
 	#if 0
@@ -99,7 +104,6 @@ main(int argc, char *argv[])
 	dlerror();
 	print_pci_topo = dlsym(handle, "_print_pci_topo");
 	if ((error = dlerror()) != NULL) {
-		syslog(LOG_ERR, "dlsym");
 		exit(-1);
 	}
 	#endif
@@ -107,7 +111,7 @@ main(int argc, char *argv[])
         dlerror();
         print_mem_topo = dlsym(handle, "_print_mem_topo");
         if ((error = dlerror()) != NULL) {
-                syslog(LOG_ERR, "dlsym");
+		wr_log("",WR_LOG_ERROR,"_printf_mem_topo failed dlsym");
                 exit(-1);
         }
 
@@ -115,7 +119,7 @@ main(int argc, char *argv[])
         dlerror();
         print_disk_topo = dlsym(handle, "_print_disk_topo");
         if ((error = dlerror()) != NULL) {
-                syslog(LOG_ERR, "dlsym");
+		wr_log("",WR_LOG_ERROR,"_print_disk_topo failed dlsym");
                 exit(-1);
         }
 
@@ -123,7 +127,7 @@ main(int argc, char *argv[])
 	dlerror();
 	print_topo_tree = dlsym(handle, "print_topo_tree");
 	if ((error = dlerror()) != NULL) {
-		syslog(LOG_ERR, "dlsym");
+		wr_log("",WR_LOG_ERROR,"print_topo_tree failed dlsym");
 		exit(-1);
 	}
 
