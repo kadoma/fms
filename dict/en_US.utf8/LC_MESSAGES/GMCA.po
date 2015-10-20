@@ -1,0 +1,3198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-12 19:06+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# keys: ereport.cpu.unclassified_ce
+#
+msgid "ereport.cpu.unclassified_ce"
+msgstr "GMCA-CACHE-1"
+msgid "GMCA-CACHE-1.class"
+msgstr "ereport.cpu.unclassified_ce"
+msgid "GMCA-CACHE-1.type"
+msgstr "Error"
+msgid "GMCA-CACHE-1.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-1.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-1.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-1.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-1.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-02
+# keys: ereport.cpu.unclassified_ue
+#
+msgid "ereport.cpu.unclassified_ue"
+msgstr "GMCA-CACHE-02"
+msgid "GMCA-CACHE-02.class"
+msgstr "ereport.cpu.unclassified_ue"
+msgid "GMCA-CACHE-02.type"
+msgstr "Error"
+msgid "GMCA-CACHE-02.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-02.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-02.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-02.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-02.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-03
+# keys: ereport.cpu.mrom_parity_ce
+#
+msgid "ereport.cpu.mrom_parity_ce"
+msgstr "GMCA-CACHE-03"
+msgid "GMCA-CACHE-03.class"
+msgstr "ereport.cpu.mrom_parity_ce"
+msgid "GMCA-CACHE-03.type"
+msgstr "Error"
+msgid "GMCA-CACHE-03.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-03.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-03.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-03.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-03.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-04
+# keys: ereport.cpu.mrom_parity_ue
+#
+msgid "ereport.cpu.mrom_parity_ue"
+msgstr "GMCA-CACHE-04"
+msgid "GMCA-CACHE-04.class"
+msgstr "ereport.cpu.mrom_parity_ue"
+msgid "GMCA-CACHE-04.type"
+msgstr "Error"
+msgid "GMCA-CACHE-04.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-04.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-04.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-04.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-04.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-05
+# keys: ereport.cpu.external_ce
+#
+msgid "ereport.cpu.external_ce"
+msgstr "GMCA-CACHE-05"
+msgid "GMCA-CACHE-05.class"
+msgstr "ereport.cpu.external_ce"
+msgid "GMCA-CACHE-05.type"
+msgstr "Error"
+msgid "GMCA-CACHE-05.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-05.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-05.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-05.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-05.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-06
+# keys: ereport.cpu.external_ue
+#
+msgid "ereport.cpu.external_ue"
+msgstr "GMCA-CACHE-06"
+msgid "GMCA-CACHE-06.class"
+msgstr "ereport.cpu.external_ue"
+msgid "GMCA-CACHE-06.type"
+msgstr "Error"
+msgid "GMCA-CACHE-06.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-06.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-06.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-06.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-06.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-07
+# keys: ereport.cpu.frc_ce
+#
+msgid "ereport.cpu.frc_ce"
+msgstr "GMCA-CACHE-07"
+msgid "GMCA-CACHE-07.class"
+msgstr "ereport.cpu.frc_ce"
+msgid "GMCA-CACHE-07.type"
+msgstr "Error"
+msgid "GMCA-CACHE-07.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-07.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-07.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-07.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-07.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-08
+# keys: ereport.cpu.frc_ue
+#
+msgid "ereport.cpu.frc_ue"
+msgstr "GMCA-CACHE-08"
+msgid "GMCA-CACHE-08.class"
+msgstr "ereport.cpu.frc_ue"
+msgid "GMCA-CACHE-08.type"
+msgstr "Error"
+msgid "GMCA-CACHE-08.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-08.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-08.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-08.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-08.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-09
+# keys: ereport.cpu.internal_parity_ce
+#
+msgid "ereport.cpu.internal_parity_ce"
+msgstr "GMCA-CACHE-09"
+msgid "GMCA-CACHE-09.class"
+msgstr "ereport.cpu.internal_parity_ce"
+msgid "GMCA-CACHE-09.type"
+msgstr "Error"
+msgid "GMCA-CACHE-09.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-09.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-09.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-09.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-09.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-10
+# keys: ereport.cpu.internal_parity_ue
+#
+msgid "ereport.cpu.internal_parity_ue"
+msgstr "GMCA-CACHE-10"
+msgid "GMCA-CACHE-10.class"
+msgstr "ereport.cpu.internal_parity_ue"
+msgid "GMCA-CACHE-10.type"
+msgstr "Error"
+msgid "GMCA-CACHE-10.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-10.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-10.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-10.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-10.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-11
+# keys: ereport.cpu.smm_hcav_ce
+#
+msgid "ereport.cpu.smm_hcav_ce"
+msgstr "GMCA-CACHE-11"
+msgid "GMCA-CACHE-11.class"
+msgstr "ereport.cpu.smm_hcav_ce"
+msgid "GMCA-CACHE-11.type"
+msgstr "Error"
+msgid "GMCA-CACHE-11.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-11.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-11.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-11.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-11.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-12
+# keys: ereport.cpu.smm_hcav_ue
+#
+msgid "ereport.cpu.smm_hcav_ue"
+msgstr "GMCA-CACHE-12"
+msgid "GMCA-CACHE-12.class"
+msgstr "ereport.cpu.smm_hcav_ue"
+msgid "GMCA-CACHE-12.type"
+msgstr "Error"
+msgid "GMCA-CACHE-12.severity"
+msgstr "Minor"
+msgid "GMCA-CACHE-12.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-12.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-12.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-12.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-13
+# keys: ereport.cpu.internal_timer_ce
+#
+msgid "ereport.cpu.internal_timer_ce"
+msgstr "GMCA-CACHE-13"
+msgid "GMCA-CACHE-13.class"
+msgstr "ereport.cpu.internal_timer_ce"
+msgid "GMCA-CACHE-13.type"
+msgstr "Error"
+msgid "GMCA-CACHE-13.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-13.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-13.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-13.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-13.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-14
+# keys: ereport.cpu.internal_timer_ue
+#
+msgid "ereport.cpu.internal_timer_ue"
+msgstr "GMCA-CACHE-14"
+msgid "GMCA-CACHE-14.class"
+msgstr "ereport.cpu.internal_timer_ue"
+msgid "GMCA-CACHE-14.type"
+msgstr "Error"
+msgid "GMCA-CACHE-14.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-14.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-14.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-14.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-14.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-15
+# keys: ereport.cpu.internal_unclassified_ce
+#
+msgid "ereport.cpu.internal_unclassified_ce"
+msgstr "GMCA-CACHE-15"
+msgid "GMCA-CACHE-15.class"
+msgstr "ereport.cpu.internal_unclassified_ce"
+msgid "GMCA-CACHE-15.type"
+msgstr "Error"
+msgid "GMCA-CACHE-15.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-15.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-15.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-15.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-15.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-16
+# keys: ereport.cpu.internal_unclassified_ue
+#
+msgid "ereport.cpu.internal_unclassified_ue"
+msgstr "GMCA-CACHE-16"
+msgid "GMCA-CACHE-16.class"
+msgstr "ereport.cpu.internal_unclassified_ue"
+msgid "GMCA-CACHE-16.type"
+msgstr "Error"
+msgid "GMCA-CACHE-16.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-16.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-16.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-16.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-16.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-17
+# keys: ereport.cpu.tmp_high
+#
+msgid "ereport.cpu.tmp_high"
+msgstr "GMCA-CACHE-17"
+msgid "GMCA-CACHE-17.class"
+msgstr "ereport.cpu.tmp_high"
+msgid "GMCA-CACHE-17.type"
+msgstr "Error"
+msgid "GMCA-CACHE-17.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-17.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-17.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-17.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-17.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-18
+# keys: ereport.cpu.tmp_low
+#
+msgid "ereport.cpu.tmp_low"
+msgstr "GMCA-CACHE-18"
+msgid "GMCA-CACHE-18.class"
+msgstr "ereport.cpu.tmp_low"
+msgid "GMCA-CACHE-18.type"
+msgstr "Error"
+msgid "GMCA-CACHE-18.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-18.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-18.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-18.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-18.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-19
+# keys: ereport.cpu.unknown_ce
+#
+msgid "ereport.cpu.unknown_ce"
+msgstr "GMCA-CACHE-19"
+msgid "GMCA-CACHE-19.class"
+msgstr "ereport.cpu.unknown_ce"
+msgid "GMCA-CACHE-19.type"
+msgstr "Error"
+msgid "GMCA-CACHE-19.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-19.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-19.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-19.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-19.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-20
+# keys: event ereport.cpu.unknown_ue
+#
+msgid "event ereport.cpu.unknown_ue"
+msgstr "GMCA-CACHE-20"
+msgid "GMCA-CACHE-20.class"
+msgstr "event ereport.cpu.unknown_ue"
+msgid "GMCA-CACHE-20.type"
+msgstr "Error"
+msgid "GMCA-CACHE-20.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-20.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-20.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-20.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-20.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-21
+# keys: ereport.cpu.mc_ce
+#
+msgid "ereport.cpu.mc_ce"
+msgstr "GMCA-CACHE-21"
+msgid "GMCA-CACHE-21.class"
+msgstr "ereport.cpu.mc_ce"
+msgid "GMCA-CACHE-21.type"
+msgstr "Error"
+msgid "GMCA-CACHE-21.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-21.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-21.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-21.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-21.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-22
+# keys: ereport.cpu.mc_ue
+#
+msgid "ereport.cpu.mc_ue"
+msgstr "GMCA-CACHE-22"
+msgid "GMCA-CACHE-22.class"
+msgstr "ereport.cpu.mc_ue"
+msgid "GMCA-CACHE-22.type"
+msgstr "Error"
+msgid "GMCA-CACHE-22.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-22.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-22.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-22.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-22.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-23
+# keys: ereport.cpu.cache_ce
+#
+msgid "ereport.cpu.cache_ce"
+msgstr "GMCA-CACHE-23"
+msgid "GMCA-CACHE-23.class"
+msgstr "ereport.cpu.cache_ce"
+msgid "GMCA-CACHE-23.type"
+msgstr "Error"
+msgid "GMCA-CACHE-23.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-23.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-23.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-23.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-23.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-24
+# keys: ereport.cpu.cache_ue
+#
+msgid "ereport.cpu.cache_ue"
+msgstr "GMCA-CACHE-24"
+msgid "GMCA-CACHE-24.class"
+msgstr "ereport.cpu.cache_ue"
+msgid "GMCA-CACHE-24.type"
+msgstr "Error"
+msgid "GMCA-CACHE-24.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-24.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-24.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-24.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-24.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-25
+# keys: ereport.cpu.tlb_ce
+#
+msgid "ereport.cpu.tlb_ce"
+msgstr "GMCA-CACHE-25"
+msgid "GMCA-CACHE-25.class"
+msgstr "ereport.cpu.tlb_ce"
+msgid "GMCA-CACHE-25.type"
+msgstr "Error"
+msgid "GMCA-CACHE-25.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-25.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-25.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-25.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-25.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-26
+# keys: ereport.cpu.tlb_ue
+#
+msgid "ereport.cpu.tlb_ue"
+msgstr "GMCA-CACHE-26"
+msgid "GMCA-CACHE-26.class"
+msgstr "ereport.cpu.tlb_ue"
+msgid "GMCA-CACHE-26.type"
+msgstr "Error"
+msgid "GMCA-CACHE-26.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-26.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-26.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-26.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-26.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-27
+# keys: ereport.cpu.bus_ce
+#
+msgid "ereport.cpu.bus_ce"
+msgstr "GMCA-CACHE-27"
+msgid "GMCA-CACHE-27.class"
+msgstr "ereport.cpu.bus_ce"
+msgid "GMCA-CACHE-27.type"
+msgstr "Error"
+msgid "GMCA-CACHE-27.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-27.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-27.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-27.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-27.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-28
+# keys: ereport.cpu.bus_ue
+#
+msgid "ereport.cpu.bus_ue"
+msgstr "GMCA-CACHE-28"
+msgid "GMCA-CACHE-28.class"
+msgstr "ereport.cpu.bus_ue"
+msgid "GMCA-CACHE-28.type"
+msgstr "Error"
+msgid "GMCA-CACHE-28.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-28.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-28.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-28.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-28.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-29
+# keys: ereport.memory.mempage
+#
+msgid "ereport.memory.mempage"
+msgstr "GMCA-CACHE-29"
+msgid "GMCA-CACHE-29.class"
+msgstr "ereport.memory.mempage"
+msgid "GMCA-CACHE-29.type"
+msgstr "Error"
+msgid "GMCA-CACHE-29.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-29.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-29.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-29.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-29.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-30
+# keys: ereport.cpu.pcu_ce
+#
+msgid "ereport.cpu.pcu_ce"
+msgstr "GMCA-CACHE-30"
+msgid "GMCA-CACHE-30.class"
+msgstr "ereport.cpu.pcu_ce"
+msgid "GMCA-CACHE-30.type"
+msgstr "Error"
+msgid "GMCA-CACHE-30.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-30.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-30.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-30.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-30.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-31
+# keys: ereport.cpu.pcu_ue
+#
+msgid "ereport.cpu.pcu_ue"
+msgstr "GMCA-CACHE-31"
+msgid "GMCA-CACHE-31.class"
+msgstr "ereport.cpu.pcu_ue"
+msgid "GMCA-CACHE-31.type"
+msgstr "Error"
+msgid "GMCA-CACHE-31.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-31.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-31.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-31.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-31.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-32
+# keys: ereport.cpu.qpi_ce
+#
+msgid "ereport.cpu.qpi_ce"
+msgstr "GMCA-CACHE-32"
+msgid "GMCA-CACHE-32.class"
+msgstr "ereport.cpu.qpi_ce"
+msgid "GMCA-CACHE-32.type"
+msgstr "Error"
+msgid "GMCA-CACHE-32.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-32.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-32.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-32.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-32.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-33
+# keys: ereport.cpu.qpi_ue
+#
+msgid "ereport.cpu.qpi_ue"
+msgstr "GMCA-CACHE-33"
+msgid "GMCA-CACHE-33.class"
+msgstr "ereport.cpu.qpi_ue"
+msgid "GMCA-CACHE-33.type"
+msgstr "Error"
+msgid "GMCA-CACHE-33.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-33.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-33.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-33.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-33.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-34
+# keys: ereport.cpu.internal_parity_ue_uc
+#
+msgid "ereport.cpu.internal_parity_ue_uc"
+msgstr "GMCA-CACHE-34"
+msgid "GMCA-CACHE-34.class"
+msgstr "ereport.cpu.internal_parity_ue_uc"
+msgid "GMCA-CACHE-34.type"
+msgstr "Error"
+msgid "GMCA-CACHE-34.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-34.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-34.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-34.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-34.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-35
+# keys: ereport.cpu.smm_hcav_ce_uc
+#
+msgid "ereport.cpu.smm_hcav_ce_uc"
+msgstr "GMCA-CACHE-35"
+msgid "GMCA-CACHE-35.class"
+msgstr "ereport.cpu.smm_hcav_ce_uc"
+msgid "GMCA-CACHE-35.type"
+msgstr "Error"
+msgid "GMCA-CACHE-35.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-35.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-35.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-35.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-35.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-36
+# keys: ereport.cpu.smm_hcav_ue_uc
+#
+msgid "ereport.cpu.smm_hcav_ue_uc"
+msgstr "GMCA-CACHE-36"
+msgid "GMCA-CACHE-36.class"
+msgstr "ereport.cpu.smm_hcav_ue_uc"
+msgid "GMCA-CACHE-36.type"
+msgstr "Error"
+msgid "GMCA-CACHE-36.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-36.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-36.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-36.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-36.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-01
+# keys: ereport.cpu.intel.l0dtlb
+#
+msgid "ereport.cpu.intel.l0dtlb"
+msgstr "GMCA-TLB-01"
+msgid "GMCA-TLB-01.class"
+msgstr "ereport.cpu.intel.l0dtlb"
+msgid "GMCA-TLB-01.type"
+msgstr "Error"
+msgid "GMCA-TLB-01.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-01.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-01.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-01.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-01.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-02
+# keys: ereport.cpu.intel.l1dtlb
+#
+msgid "ereport.cpu.intel.l1dtlb"
+msgstr "GMCA-TLB-02"
+msgid "GMCA-TLB-02.class"
+msgstr "ereport.cpu.intel.l1dtlb"
+msgid "GMCA-TLB-02.type"
+msgstr "Error"
+msgid "GMCA-TLB-02.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-02.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-02.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-02.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-02.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-03
+# keys: ereport.cpu.intel.l2dtlb
+#
+msgid "ereport.cpu.intel.l2dtlb"
+msgstr "GMCA-TLB-03"
+msgid "GMCA-TLB-03.class"
+msgstr "ereport.cpu.intel.l2dtlb"
+msgid "GMCA-TLB-03.type"
+msgstr "Error"
+msgid "GMCA-TLB-03.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-03.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-03.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-03.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-03.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-04
+# keys: ereport.cpu.intel.l0itlb
+#
+msgid "ereport.cpu.intel.l0itlb"
+msgstr "GMCA-TLB-04"
+msgid "GMCA-TLB-04.class"
+msgstr "ereport.cpu.intel.l0itlb"
+msgid "GMCA-TLB-04.type"
+msgstr "Error"
+msgid "GMCA-TLB-04.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-04.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-04.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-04.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-04.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-05
+# keys: ereport.cpu.intel.l1itlb
+#
+msgid "ereport.cpu.intel.l1itlb"
+msgstr "GMCA-TLB-05"
+msgid "GMCA-TLB-05.class"
+msgstr "ereport.cpu.intel.l1itlb"
+msgid "GMCA-TLB-05.type"
+msgstr "Error"
+msgid "GMCA-TLB-05.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-05.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-05.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-05.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-05.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-06
+# keys: ereport.cpu.intel.l2itlb
+#
+msgid "ereport.cpu.intel.l2itlb"
+msgstr "GMCA-TLB-06"
+msgid "GMCA-TLB-06.class"
+msgstr "ereport.cpu.intel.l2itlb"
+msgid "GMCA-TLB-06.type"
+msgstr "Error"
+msgid "GMCA-TLB-06.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-06.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-06.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-06.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-06.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-07
+# keys: ereport.cpu.intel.l0tlb
+#
+msgid "ereport.cpu.intel.l0tlb"
+msgstr "GMCA-TLB-07"
+msgid "GMCA-TLB-07.class"
+msgstr "ereport.cpu.intel.l0tlb"
+msgid "GMCA-TLB-07.type"
+msgstr "Error"
+msgid "GMCA-TLB-07.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-07.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-07.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-07.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-07.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-08
+# keys: ereport.cpu.intel.l1tlb
+#
+msgid "ereport.cpu.intel.l1tlb"
+msgstr "GMCA-TLB-08"
+msgid "GMCA-TLB-08.class"
+msgstr "ereport.cpu.intel.l1tlb"
+msgid "GMCA-TLB-08.type"
+msgstr "Error"
+msgid "GMCA-TLB-08.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-08.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-08.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-08.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-08.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-09
+# keys: ereport.cpu.intel.l2tlb
+#
+msgid "ereport.cpu.intel.l2tlb"
+msgstr "GMCA-TLB-09"
+msgid "GMCA-TLB-09.class"
+msgstr "ereport.cpu.intel.l2tlb"
+msgid "GMCA-TLB-09.type"
+msgstr "Error"
+msgid "GMCA-TLB-09.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-09.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-09.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-09.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-09.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-10
+# keys: ereport.cpu.intel.dtlb
+#
+msgid "ereport.cpu.intel.dtlb"
+msgstr "GMCA-TLB-10"
+msgid "GMCA-TLB-10.class"
+msgstr "ereport.cpu.intel.dtlb"
+msgid "GMCA-TLB-10.type"
+msgstr "Error"
+msgid "GMCA-TLB-10.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-10.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-10.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-10.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-10.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-11
+# keys: ereport.cpu.intel.itlb
+#
+msgid "ereport.cpu.intel.itlb"
+msgstr "GMCA-TLB-11"
+msgid "GMCA-TLB-11.class"
+msgstr "ereport.cpu.intel.itlb"
+msgid "GMCA-TLB-11.type"
+msgstr "Error"
+msgid "GMCA-TLB-11.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-11.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-11.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-11.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-11.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-12
+# keys: ereport.cpu.intel.tlb
+#
+msgid "ereport.cpu.intel.tlb"
+msgstr "GMCA-TLB-12"
+msgid "GMCA-TLB-12.class"
+msgstr "ereport.cpu.intel.tlb"
+msgid "GMCA-TLB-12.type"
+msgstr "Error"
+msgid "GMCA-TLB-12.severity"
+msgstr "Minor"
+msgid "GMCA-TLB-12.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-12.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-12.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-12.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-13
+# keys: ereport.cpu.intel.l0dtlb_rc
+#
+msgid "ereport.cpu.intel.l0dtlb_rc"
+msgstr "GMCA-TLB-13"
+msgid "GMCA-TLB-13.class"
+msgstr "ereport.cpu.intel.l0dtlb_rc"
+msgid "GMCA-TLB-13.type"
+msgstr "Error"
+msgid "GMCA-TLB-13.severity"
+msgstr "Major"
+msgid "GMCA-TLB-13.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-13.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-13.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-13.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-14
+# keys: ereport.cpu.intel.l1dtlb_rc
+#
+msgid "ereport.cpu.intel.l1dtlb_rc"
+msgstr "GMCA-TLB-14"
+msgid "GMCA-TLB-14.class"
+msgstr "ereport.cpu.intel.l1dtlb_rc"
+msgid "GMCA-TLB-14.type"
+msgstr "Error"
+msgid "GMCA-TLB-14.severity"
+msgstr "Major"
+msgid "GMCA-TLB-14.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-14.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-14.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-14.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-15
+# keys: ereport.cpu.intel.l2dtlb_rc
+#
+msgid "ereport.cpu.intel.l2dtlb_rc"
+msgstr "GMCA-TLB-15"
+msgid "GMCA-TLB-15.class"
+msgstr "ereport.cpu.intel.l2dtlb_rc"
+msgid "GMCA-TLB-15.type"
+msgstr "Error"
+msgid "GMCA-TLB-15.severity"
+msgstr "Major"
+msgid "GMCA-TLB-15.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-15.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-15.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-15.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-16
+# keys: ereport.cpu.intel.l0itlb_rc
+#
+msgid "ereport.cpu.intel.l0itlb_rc"
+msgstr "GMCA-TLB-16"
+msgid "GMCA-TLB-16.class"
+msgstr "ereport.cpu.intel.l0itlb_rc"
+msgid "GMCA-TLB-16.type"
+msgstr "Error"
+msgid "GMCA-TLB-16.severity"
+msgstr "Major"
+msgid "GMCA-TLB-16.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-16.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-16.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-16.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-17
+# keys: ereport.cpu.intel.l1itlb_rc
+#
+msgid "ereport.cpu.intel.l1itlb_rc"
+msgstr "GMCA-TLB-17"
+msgid "GMCA-TLB-17.class"
+msgstr "ereport.cpu.intel.l1itlb_rc"
+msgid "GMCA-TLB-17.type"
+msgstr "Error"
+msgid "GMCA-TLB-17.severity"
+msgstr "Major"
+msgid "GMCA-TLB-17.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-17.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-17.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-17.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-18
+# keys: ereport.cpu.intel.l2itlb_rc
+#
+msgid "ereport.cpu.intel.l2itlb_rc"
+msgstr "GMCA-TLB-18"
+msgid "GMCA-TLB-18.class"
+msgstr "ereport.cpu.intel.l2itlb_rc"
+msgid "GMCA-TLB-18.type"
+msgstr "Error"
+msgid "GMCA-TLB-18.severity"
+msgstr "Major"
+msgid "GMCA-TLB-18.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-18.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-18.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-18.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-19
+# keys: ereport.cpu.intel.l0tlb_rc
+#
+msgid "ereport.cpu.intel.l0tlb_rc"
+msgstr "GMCA-TLB-19"
+msgid "GMCA-TLB-19.class"
+msgstr "ereport.cpu.intel.l0tlb_rc"
+msgid "GMCA-TLB-19.type"
+msgstr "Error"
+msgid "GMCA-TLB-19.severity"
+msgstr "Major"
+msgid "GMCA-TLB-19.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-19.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-19.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-19.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-20
+# keys: ereport.cpu.intel.l1tlb_rc
+#
+msgid "ereport.cpu.intel.l1tlb_rc"
+msgstr "GMCA-TLB-20"
+msgid "GMCA-TLB-20.class"
+msgstr "ereport.cpu.intel.l1tlb_rc"
+msgid "GMCA-TLB-20.type"
+msgstr "Error"
+msgid "GMCA-TLB-20.severity"
+msgstr "Major"
+msgid "GMCA-TLB-20.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-20.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-20.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-20.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-21
+# keys: ereport.cpu.intel.l2tlb_rc
+#
+msgid "ereport.cpu.intel.l2tlb_rc"
+msgstr "GMCA-TLB-21"
+msgid "GMCA-TLB-21.class"
+msgstr "ereport.cpu.intel.l2tlb_rc"
+msgid "GMCA-TLB-21.type"
+msgstr "Error"
+msgid "GMCA-TLB-21.severity"
+msgstr "Major"
+msgid "GMCA-TLB-21.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-21.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-21.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-21.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-22
+# keys: ereport.cpu.intel.dtlb_rc
+#
+msgid "ereport.cpu.intel.dtlb_rc"
+msgstr "GMCA-TLB-22"
+msgid "GMCA-TLB-22.class"
+msgstr "ereport.cpu.intel.dtlb_rc"
+msgid "GMCA-TLB-22.type"
+msgstr "Error"
+msgid "GMCA-TLB-22.severity"
+msgstr "Major"
+msgid "GMCA-TLB-22.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-22.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-22.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-22.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-23
+# keys: ereport.cpu.intel.itlb_rc
+#
+msgid "ereport.cpu.intel.itlb_rc"
+msgstr "GMCA-TLB-23"
+msgid "GMCA-TLB-23.class"
+msgstr "ereport.cpu.intel.itlb_rc"
+msgid "GMCA-TLB-23.type"
+msgstr "Error"
+msgid "GMCA-TLB-23.severity"
+msgstr "Major"
+msgid "GMCA-TLB-23.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-23.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-23.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-23.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-24
+# keys: ereport.cpu.intel.tlb_rc
+#
+msgid "ereport.cpu.intel.tlb_rc"
+msgstr "GMCA-TLB-24"
+msgid "GMCA-TLB-24.class"
+msgstr "ereport.cpu.intel.tlb_rc"
+msgid "GMCA-TLB-24.type"
+msgstr "Error"
+msgid "GMCA-TLB-24.severity"
+msgstr "Major"
+msgid "GMCA-TLB-24.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-24.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-24.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-24.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-25
+# keys: ereport.cpu.intel.l0dtlb_uc
+#
+msgid "ereport.cpu.intel.l0dtlb_uc"
+msgstr "GMCA-TLB-25"
+msgid "GMCA-TLB-25.class"
+msgstr "ereport.cpu.intel.l0dtlb_uc"
+msgid "GMCA-TLB-25.type"
+msgstr "Error"
+msgid "GMCA-TLB-25.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-25.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-25.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-25.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-25.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-26
+# keys: ereport.cpu.intel.l1dtlb_uc
+#
+msgid "ereport.cpu.intel.l1dtlb_uc"
+msgstr "GMCA-TLB-26"
+msgid "GMCA-TLB-26.class"
+msgstr "ereport.cpu.intel.l1dtlb_uc"
+msgid "GMCA-TLB-26.type"
+msgstr "Error"
+msgid "GMCA-TLB-26.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-26.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-26.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-26.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-26.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-27
+# keys: ereport.cpu.intel.l2dtlb_uc
+#
+msgid "ereport.cpu.intel.l2dtlb_uc"
+msgstr "GMCA-TLB-27"
+msgid "GMCA-TLB-27.class"
+msgstr "ereport.cpu.intel.l2dtlb_uc"
+msgid "GMCA-TLB-27.type"
+msgstr "Error"
+msgid "GMCA-TLB-27.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-27.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-27.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-27.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-27.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-28
+# keys: ereport.cpu.intel.l0itlb_uc
+#
+msgid "ereport.cpu.intel.l0itlb_uc"
+msgstr "GMCA-TLB-28"
+msgid "GMCA-TLB-28.class"
+msgstr "ereport.cpu.intel.l0itlb_uc"
+msgid "GMCA-TLB-28.type"
+msgstr "Error"
+msgid "GMCA-TLB-28.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-28.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-28.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-28.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-28.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-29
+# keys: ereport.cpu.intel.l1itlb_uc
+#
+msgid "ereport.cpu.intel.l1itlb_uc"
+msgstr "GMCA-TLB-29"
+msgid "GMCA-TLB-29.class"
+msgstr "ereport.cpu.intel.l1itlb_uc"
+msgid "GMCA-TLB-29.type"
+msgstr "Error"
+msgid "GMCA-TLB-29.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-29.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-29.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-29.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-29.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-30
+# keys: ereport.cpu.intel.l2itlb_uc
+#
+msgid "ereport.cpu.intel.l2itlb_uc"
+msgstr "GMCA-TLB-30"
+msgid "GMCA-TLB-30.class"
+msgstr "ereport.cpu.intel.l2itlb_uc"
+msgid "GMCA-TLB-30.type"
+msgstr "Error"
+msgid "GMCA-TLB-30.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-30.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-30.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-30.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-30.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-31
+# keys: ereport.cpu.intel.l0tlb_uc
+#
+msgid "ereport.cpu.intel.l0tlb_uc"
+msgstr "GMCA-TLB-31"
+msgid "GMCA-TLB-31.class"
+msgstr "ereport.cpu.intel.l0tlb_uc"
+msgid "GMCA-TLB-31.type"
+msgstr "Error"
+msgid "GMCA-TLB-31.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-31.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-31.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-31.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-31.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-32
+# keys: ereport.cpu.intel.l1tlb_uc
+#
+msgid "ereport.cpu.intel.l1tlb_uc"
+msgstr "GMCA-TLB-32"
+msgid "GMCA-TLB-32.class"
+msgstr "ereport.cpu.intel.l1tlb_uc"
+msgid "GMCA-TLB-32.type"
+msgstr "Error"
+msgid "GMCA-TLB-32.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-32.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-32.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-32.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-32.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-33
+# keys: ereport.cpu.intel.l2tlb_uc
+#
+msgid "ereport.cpu.intel.l2tlb_uc"
+msgstr "GMCA-TLB-33"
+msgid "GMCA-TLB-33.class"
+msgstr "ereport.cpu.intel.l2tlb_uc"
+msgid "GMCA-TLB-33.type"
+msgstr "Error"
+msgid "GMCA-TLB-33.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-33.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-33.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-33.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-33.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-34
+# keys: ereport.cpu.intel.dtlb_uc
+#
+msgid "ereport.cpu.intel.dtlb_uc"
+msgstr "GMCA-TLB-34"
+msgid "GMCA-TLB-34.class"
+msgstr "ereport.cpu.intel.dtlb_uc"
+msgid "GMCA-TLB-34.type"
+msgstr "Error"
+msgid "GMCA-TLB-34.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-34.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-34.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-34.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-34.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-35
+# keys: ereport.cpu.intel.itlb_uc
+#
+msgid "ereport.cpu.intel.itlb_uc"
+msgstr "GMCA-TLB-35"
+msgid "GMCA-TLB-35.class"
+msgstr "ereport.cpu.intel.itlb_uc"
+msgid "GMCA-TLB-35.type"
+msgstr "Error"
+msgid "GMCA-TLB-35.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-35.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-35.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-35.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-35.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-36
+# keys: ereport.cpu.intel.tlb_uc
+#
+msgid "ereport.cpu.intel.tlb_uc"
+msgstr "GMCA-TLB-36"
+msgid "GMCA-TLB-36.class"
+msgstr "ereport.cpu.intel.tlb_uc"
+msgid "GMCA-TLB-36.type"
+msgstr "Error"
+msgid "GMCA-TLB-36.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-36.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-36.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-36.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-36.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-01
+# keys: ereport.cpu.intel.gr
+#
+msgid "ereport.cpu.intel.gr"
+msgstr "GMCA-REG-01"
+msgid "GMCA-REG-01.class"
+msgstr "ereport.cpu.intel.gr"
+msgid "GMCA-REG-01.type"
+msgstr "Error"
+msgid "GMCA-REG-01.severity"
+msgstr "Minor"
+msgid "GMCA-REG-01.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-01.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-01.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-01.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-02
+# keys: ereport.cpu.intel.fr
+#
+msgid "ereport.cpu.intel.fr"
+msgstr "GMCA-REG-02"
+msgid "GMCA-REG-02.class"
+msgstr "ereport.cpu.intel.fr"
+msgid "GMCA-REG-02.type"
+msgstr "Error"
+msgid "GMCA-REG-02.severity"
+msgstr "Minor"
+msgid "GMCA-REG-02.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-02.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-02.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-02.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-03
+# keys: ereport.cpu.intel.gr_rc
+#
+msgid "ereport.cpu.intel.gr_rc"
+msgstr "GMCA-REG-03"
+msgid "GMCA-REG-03.class"
+msgstr "ereport.cpu.intel.gr_rc"
+msgid "GMCA-REG-03.type"
+msgstr "Error"
+msgid "GMCA-REG-03.severity"
+msgstr "Major"
+msgid "GMCA-REG-03.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-03.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-03.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-03.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-04
+# keys: ereport.cpu.intel.fr_rc
+#
+msgid "ereport.cpu.intel.fr_rc"
+msgstr "GMCA-REG-04"
+msgid "GMCA-REG-04.class"
+msgstr "ereport.cpu.intel.fr_rc"
+msgid "GMCA-REG-04.type"
+msgstr "Error"
+msgid "GMCA-REG-04.severity"
+msgstr "Major"
+msgid "GMCA-REG-04.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-04.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-04.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-04.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-05
+# keys: ereport.cpu.intel.gr_uc
+#
+msgid "ereport.cpu.intel.gr_uc"
+msgstr "GMCA-REG-05"
+msgid "GMCA-REG-05.class"
+msgstr "ereport.cpu.intel.gr_uc"
+msgid "GMCA-REG-05.type"
+msgstr "Error"
+msgid "GMCA-REG-05.severity"
+msgstr "Critical"
+msgid "GMCA-REG-05.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-05.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-05.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-05.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-06
+# keys: ereport.cpu.intel.fr_uc
+#
+msgid "ereport.cpu.intel.fr_uc"
+msgstr "GMCA-REG-06"
+msgid "GMCA-REG-06.class"
+msgstr "ereport.cpu.intel.fr_uc"
+msgid "GMCA-REG-06.type"
+msgstr "Error"
+msgid "GMCA-REG-06.severity"
+msgstr "Critical"
+msgid "GMCA-REG-06.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-06.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-06.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-06.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-01
+# keys: ereport.cpu.intel.bus_interconnect
+#
+msgid "ereport.cpu.intel.bus_interconnect"
+msgstr "GMCA-BUS-01"
+msgid "GMCA-BUS-01.class"
+msgstr "ereport.cpu.intel.bus_interconnect"
+msgid "GMCA-BUS-01.type"
+msgstr "Error"
+msgid "GMCA-BUS-01.severity"
+msgstr "Minor"
+msgid "GMCA-BUS-01.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-01.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-01.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-01.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-02
+# keys: ereport.cpu.intel.bus_interconnect_memory
+#
+msgid "ereport.cpu.intel.bus_interconnect_memory"
+msgstr "GMCA-BUS-02"
+msgid "GMCA-BUS-02.class"
+msgstr "ereport.cpu.intel.bus_interconnect_memory"
+msgid "GMCA-BUS-02.type"
+msgstr "Error"
+msgid "GMCA-BUS-02.severity"
+msgstr "Minor"
+msgid "GMCA-BUS-02.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-02.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-02.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-02.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-03
+# keys: ereport.cpu.intel.bus_interconnect_io
+#
+msgid "ereport.cpu.intel.bus_interconnect_io"
+msgstr "GMCA-BUS-03"
+msgid "GMCA-BUS-03.class"
+msgstr "ereport.cpu.intel.bus_interconnect_io"
+msgid "GMCA-BUS-03.type"
+msgstr "Error"
+msgid "GMCA-BUS-03.severity"
+msgstr "Minor"
+msgid "GMCA-BUS-03.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-03.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-03.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-03.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-04
+# keys: ereport.cpu.intel.bus_external_memory_rc
+#
+msgid "ereport.cpu.intel.bus_external_memory_rc"
+msgstr "GMCA-BUS-04"
+msgid "GMCA-BUS-04.class"
+msgstr "ereport.cpu.intel.bus_external_memory_rc"
+msgid "GMCA-BUS-04.type"
+msgstr "Error"
+msgid "GMCA-BUS-04.severity"
+msgstr "Major"
+msgid "GMCA-BUS-04.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-04.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-04.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-04.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-05
+# keys: ereport.cpu.intel.bus_external_io_rc
+#
+msgid "ereport.cpu.intel.bus_external_io_rc"
+msgstr "GMCA-BUS-05"
+msgid "GMCA-BUS-05.class"
+msgstr "ereport.cpu.intel.bus_external_io_rc"
+msgid "GMCA-BUS-05.type"
+msgstr "Error"
+msgid "GMCA-BUS-05.severity"
+msgstr "Major"
+msgid "GMCA-BUS-05.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-05.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-05.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-05.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-06
+# keys: ereport.cpu.intel.bus_internal_uc
+#
+msgid "ereport.cpu.intel.bus_internal_uc"
+msgstr "GMCA-BUS-06"
+msgid "GMCA-BUS-06.class"
+msgstr "ereport.cpu.intel.bus_internal_uc"
+msgid "GMCA-BUS-06.type"
+msgstr "Error"
+msgid "GMCA-BUS-06.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-06.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-06.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-06.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-06.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-07
+# keys: ereport.cpu.intel.bus_internal_memory_uc
+#
+msgid "ereport.cpu.intel.bus_internal_memory_uc"
+msgstr "GMCA-BUS-07"
+msgid "GMCA-BUS-07.class"
+msgstr "ereport.cpu.intel.bus_internal_memory_uc"
+msgid "GMCA-BUS-07.type"
+msgstr "Error"
+msgid "GMCA-BUS-07.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-07.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-07.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-07.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-07.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-08
+# keys: ereport.cpu.intel.bus_internal_io_uc
+#
+msgid "ereport.cpu.intel.bus_internal_io_uc"
+msgstr "GMCA-BUS-08"
+msgid "GMCA-BUS-08.class"
+msgstr "ereport.cpu.intel.bus_internal_io_uc"
+msgid "GMCA-BUS-08.type"
+msgstr "Error"
+msgid "GMCA-BUS-08.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-08.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-08.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-08.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-08.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-09
+# keys: ereport.cpu.intel.bus_external_uc
+#
+msgid "ereport.cpu.intel.bus_external_uc"
+msgstr "GMCA-BUS-09"
+msgid "GMCA-BUS-09.class"
+msgstr "ereport.cpu.intel.bus_external_uc"
+msgid "GMCA-BUS-09.type"
+msgstr "Error"
+msgid "GMCA-BUS-09.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-09.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-09.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-09.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-09.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-10
+# keys: ereport.cpu.intel.bus_external_memory_uc
+#
+msgid "ereport.cpu.intel.bus_external_memory_uc"
+msgstr "GMCA-BUS-10"
+msgid "GMCA-BUS-10.class"
+msgstr "ereport.cpu.intel.bus_external_memory_uc"
+msgid "GMCA-BUS-10.type"
+msgstr "Error"
+msgid "GMCA-BUS-10.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-10.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-10.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-10.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-10.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-11
+# keys: ereport.cpu.intel.bus_external_io_uc
+#
+msgid "ereport.cpu.intel.bus_external_io_uc"
+msgstr "GMCA-BUS-11"
+msgid "GMCA-BUS-11.class"
+msgstr "ereport.cpu.intel.bus_external_io_uc"
+msgid "GMCA-BUS-11.type"
+msgstr "Error"
+msgid "GMCA-BUS-11.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-11.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-11.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-11.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-11.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-MEM-01
+# keys: ereport.cpu.intel.quickpath.mem_page_ce
+#
+msgid "ereport.cpu.intel.quickpath.mem_page_ce"
+msgstr "GMCA-MEM-01"
+msgid "GMCA-MEM-01.class"
+msgstr "ereport.cpu.intel.quickpath.mem_page_ce"
+msgid "GMCA-MEM-01.type"
+msgstr "Error"
+msgid "GMCA-MEM-01.severity"
+msgstr "Minor"
+msgid "GMCA-MEM-01.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-MEM-01.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-MEM-01.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-MEM-01.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-MEM-02
+# keys: ereport.cpu.intel.quickpath.mem_page_uc
+#
+msgid "ereport.cpu.intel.quickpath.mem_page_uc"
+msgstr "GMCA-MEM-02"
+msgid "GMCA-MEM-02.class"
+msgstr "ereport.cpu.intel.quickpath.mem_page_uc"
+msgid "GMCA-MEM-02.type"
+msgstr "Error"
+msgid "GMCA-MEM-02.severity"
+msgstr "Critical"
+msgid "GMCA-MEM-02.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-MEM-02.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-MEM-02.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-MEM-02.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-37
+# keys: fault.cpu.intel.l0cache
+#
+msgid "fault.cpu.intel.l0cache"
+msgstr "GMCA-CACHE-37"
+msgid "GMCA-CACHE-37.class"
+msgstr "fault.cpu.intel.l0cache"
+msgid "GMCA-CACHE-37.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-37.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-37.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-37.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-37.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-37.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-38
+# keys: fault.cpu.intel.l1cache
+#
+msgid "fault.cpu.intel.l1cache"
+msgstr "GMCA-CACHE-38"
+msgid "GMCA-CACHE-38.class"
+msgstr "fault.cpu.intel.l1cache"
+msgid "GMCA-CACHE-38.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-38.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-38.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-38.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-38.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-38.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-39
+# keys: fault.cpu.intel.l0dcache
+#
+msgid "fault.cpu.intel.l0dcache"
+msgstr "GMCA-CACHE-39"
+msgid "GMCA-CACHE-39.class"
+msgstr "fault.cpu.intel.l0dcache"
+msgid "GMCA-CACHE-39.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-39.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-39.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-39.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-39.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-39.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-40
+# keys: fault.cpu.intel.l1dcache
+#
+msgid "fault.cpu.intel.l1dcache"
+msgstr "GMCA-CACHE-40"
+msgid "GMCA-CACHE-40.class"
+msgstr "fault.cpu.intel.l1dcache"
+msgid "GMCA-CACHE-40.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-40.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-40.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-40.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-40.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-40.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-41
+# keys: fault.cpu.intel.l0icache
+#
+msgid "fault.cpu.intel.l0icache"
+msgstr "GMCA-CACHE-41"
+msgid "GMCA-CACHE-41.class"
+msgstr "fault.cpu.intel.l0icache"
+msgid "GMCA-CACHE-41.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-41.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-41.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-41.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-41.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-41.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-42
+# keys: fault.cpu.intel.l1icache
+#
+msgid "fault.cpu.intel.l1icache"
+msgstr "GMCA-CACHE-42"
+msgid "GMCA-CACHE-42.class"
+msgstr "fault.cpu.intel.l1icache"
+msgid "GMCA-CACHE-42.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-42.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-42.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-42.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-42.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-42.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-43
+# keys: fault.cpu.intel.dcache
+#
+msgid "fault.cpu.intel.dcache"
+msgstr "GMCA-CACHE-43"
+msgid "GMCA-CACHE-43.class"
+msgstr "fault.cpu.intel.dcache"
+msgid "GMCA-CACHE-43.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-43.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-43.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-43.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-43.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-43.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-44
+# keys: fault.cpu.intel.icache
+#
+msgid "fault.cpu.intel.icache"
+msgstr "GMCA-CACHE-44"
+msgid "GMCA-CACHE-44.class"
+msgstr "fault.cpu.intel.icache"
+msgid "GMCA-CACHE-44.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-44.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-44.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-44.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-44.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-44.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-45
+# keys: fault.cpu.intel.cache
+#
+msgid "fault.cpu.intel.cache"
+msgstr "GMCA-CACHE-45"
+msgid "GMCA-CACHE-45.class"
+msgstr "fault.cpu.intel.cache"
+msgid "GMCA-CACHE-45.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-45.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-45.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-45.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-45.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-45.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-46
+# keys: fault.cpu.intel.l2cache
+#
+msgid "fault.cpu.intel.l2cache"
+msgstr "GMCA-CACHE-46"
+msgid "GMCA-CACHE-46.class"
+msgstr "fault.cpu.intel.l2cache"
+msgid "GMCA-CACHE-46.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-46.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-46.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-46.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-46.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-46.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-47
+# keys: fault.cpu.intel.l2dcache
+#
+msgid "fault.cpu.intel.l2dcache"
+msgstr "GMCA-CACHE-47"
+msgid "GMCA-CACHE-47.class"
+msgstr "fault.cpu.intel.l2dcache"
+msgid "GMCA-CACHE-47.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-47.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-47.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-47.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-47.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-47.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-48
+# keys: fault.cpu.intel.l2icache
+#
+msgid "fault.cpu.intel.l2icache"
+msgstr "GMCA-CACHE-48"
+msgid "GMCA-CACHE-48.class"
+msgstr "fault.cpu.intel.l2icache"
+msgid "GMCA-CACHE-48.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-48.severity"
+msgstr "Major"
+msgid "GMCA-CACHE-48.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-48.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-48.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-48.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-49
+# keys: fault.cpu.intel.l0cache_uc
+#
+msgid "fault.cpu.intel.l0cache_uc"
+msgstr "GMCA-CACHE-49"
+msgid "GMCA-CACHE-49.class"
+msgstr "fault.cpu.intel.l0cache_uc"
+msgid "GMCA-CACHE-49.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-49.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-49.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-49.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-49.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-49.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-50
+# keys: fault.cpu.intel.l1cache_uc
+#
+msgid "fault.cpu.intel.l1cache_uc"
+msgstr "GMCA-CACHE-50"
+msgid "GMCA-CACHE-50.class"
+msgstr "fault.cpu.intel.l1cache_uc"
+msgid "GMCA-CACHE-50.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-50.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-50.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-50.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-50.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-50.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-51
+# keys: fault.cpu.intel.l0dcache_uc
+#
+msgid "fault.cpu.intel.l0dcache_uc"
+msgstr "GMCA-CACHE-51"
+msgid "GMCA-CACHE-51.class"
+msgstr "fault.cpu.intel.l0dcache_uc"
+msgid "GMCA-CACHE-51.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-51.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-51.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-51.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-51.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-51.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-52
+# keys: fault.cpu.intel.l1dcache_uc
+#
+msgid "fault.cpu.intel.l1dcache_uc"
+msgstr "GMCA-CACHE-52"
+msgid "GMCA-CACHE-52.class"
+msgstr "fault.cpu.intel.l1dcache_uc"
+msgid "GMCA-CACHE-52.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-52.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-52.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-52.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-52.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-52.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-53
+# keys: fault.cpu.intel.l0icache_uc
+#
+msgid "fault.cpu.intel.l0icache_uc"
+msgstr "GMCA-CACHE-53"
+msgid "GMCA-CACHE-53.class"
+msgstr "fault.cpu.intel.l0icache_uc"
+msgid "GMCA-CACHE-53.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-53.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-53.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-53.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-53.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-53.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-54
+# keys: fault.cpu.intel.l1icache_uc
+#
+msgid "fault.cpu.intel.l1icache_uc"
+msgstr "GMCA-CACHE-54"
+msgid "GMCA-CACHE-54.class"
+msgstr "fault.cpu.intel.l1icache_uc"
+msgid "GMCA-CACHE-54.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-54.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-54.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-54.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-54.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-54.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-55
+# keys: fault.cpu.intel.dcache_uc
+#
+msgid "fault.cpu.intel.dcache_uc"
+msgstr "GMCA-CACHE-55"
+msgid "GMCA-CACHE-55.class"
+msgstr "fault.cpu.intel.dcache_uc"
+msgid "GMCA-CACHE-55.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-55.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-55.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-55.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-55.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-55.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-56
+# keys: fault.cpu.intel.icache_uc
+#
+msgid "fault.cpu.intel.icache_uc"
+msgstr "GMCA-CACHE-56"
+msgid "GMCA-CACHE-56.class"
+msgstr "fault.cpu.intel.icache_uc"
+msgid "GMCA-CACHE-56.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-56.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-56.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-56.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-56.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-56.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-57
+# keys: fault.cpu.intel.cache_uc
+#
+msgid "fault.cpu.intel.cache_uc"
+msgstr "GMCA-CACHE-57"
+msgid "GMCA-CACHE-57.class"
+msgstr "fault.cpu.intel.cache_uc"
+msgid "GMCA-CACHE-57.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-57.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-57.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-57.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-57.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-57.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-58
+# keys: fault.cpu.intel.l2cache_uc
+#
+msgid "fault.cpu.intel.l2cache_uc"
+msgstr "GMCA-CACHE-58"
+msgid "GMCA-CACHE-58.class"
+msgstr "fault.cpu.intel.l2cache_uc"
+msgid "GMCA-CACHE-58.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-58.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-58.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-58.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-58.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-58.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-59
+# keys: fault.cpu.intel.l2dcache_uc
+#
+msgid "fault.cpu.intel.l2dcache_uc"
+msgstr "GMCA-CACHE-59"
+msgid "GMCA-CACHE-59.class"
+msgstr "fault.cpu.intel.l2dcache_uc"
+msgid "GMCA-CACHE-59.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-59.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-59.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-59.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-59.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-59.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-CACHE-60
+# keys: fault.cpu.intel.l2icache_uc
+#
+msgid "fault.cpu.intel.l2icache_uc"
+msgstr "GMCA-CACHE-60"
+msgid "GMCA-CACHE-60.class"
+msgstr "fault.cpu.intel.l2icache_uc"
+msgid "GMCA-CACHE-60.type"
+msgstr "Fault"
+msgid "GMCA-CACHE-60.severity"
+msgstr "Critical"
+msgid "GMCA-CACHE-60.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-CACHE-60.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-CACHE-60.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-CACHE-60.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-37
+# keys: fault.cpu.intel.l0dtlb
+#
+msgid "fault.cpu.intel.l0dtlb"
+msgstr "GMCA-TLB-37"
+msgid "GMCA-TLB-37.class"
+msgstr "fault.cpu.intel.l0dtlb"
+msgid "GMCA-TLB-37.type"
+msgstr "Fault"
+msgid "GMCA-TLB-37.severity"
+msgstr "Major"
+msgid "GMCA-TLB-37.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-37.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-37.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-37.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-38
+# keys: fault.cpu.intel.l1dtlb
+#
+msgid "fault.cpu.intel.l1dtlb"
+msgstr "GMCA-TLB-38"
+msgid "GMCA-TLB-38.class"
+msgstr "fault.cpu.intel.l1dtlb"
+msgid "GMCA-TLB-38.type"
+msgstr "Fault"
+msgid "GMCA-TLB-38.severity"
+msgstr "Major"
+msgid "GMCA-TLB-38.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-38.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-38.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-38.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-39
+# keys: fault.cpu.intel.l2dtlb
+#
+msgid "fault.cpu.intel.l2dtlb"
+msgstr "GMCA-TLB-39"
+msgid "GMCA-TLB-39.class"
+msgstr "fault.cpu.intel.l2dtlb"
+msgid "GMCA-TLB-39.type"
+msgstr "Fault"
+msgid "GMCA-TLB-39.severity"
+msgstr "Major"
+msgid "GMCA-TLB-39.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-39.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-39.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-39.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-40
+# keys: fault.cpu.intel.l0itlb
+#
+msgid "fault.cpu.intel.l0itlb"
+msgstr "GMCA-TLB-40"
+msgid "GMCA-TLB-40.class"
+msgstr "fault.cpu.intel.l0itlb"
+msgid "GMCA-TLB-40.type"
+msgstr "Fault"
+msgid "GMCA-TLB-40.severity"
+msgstr "Major"
+msgid "GMCA-TLB-40.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-40.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-40.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-40.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-41
+# keys: fault.cpu.intel.l1itlb
+#
+msgid "fault.cpu.intel.l1itlb"
+msgstr "GMCA-TLB-41"
+msgid "GMCA-TLB-41.class"
+msgstr "fault.cpu.intel.l1itlb"
+msgid "GMCA-TLB-41.type"
+msgstr "Fault"
+msgid "GMCA-TLB-41.severity"
+msgstr "Major"
+msgid "GMCA-TLB-41.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-41.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-41.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-41.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-42
+# keys: fault.cpu.intel.l2itlb
+#
+msgid "fault.cpu.intel.l2itlb"
+msgstr "GMCA-TLB-42"
+msgid "GMCA-TLB-42.class"
+msgstr "fault.cpu.intel.l2itlb"
+msgid "GMCA-TLB-42.type"
+msgstr "Fault"
+msgid "GMCA-TLB-42.severity"
+msgstr "Major"
+msgid "GMCA-TLB-42.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-42.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-42.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-42.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-43
+# keys: fault.cpu.intel.l0tlb
+#
+msgid "fault.cpu.intel.l0tlb"
+msgstr "GMCA-TLB-43"
+msgid "GMCA-TLB-43.class"
+msgstr "fault.cpu.intel.l0tlb"
+msgid "GMCA-TLB-43.type"
+msgstr "Fault"
+msgid "GMCA-TLB-43.severity"
+msgstr "Major"
+msgid "GMCA-TLB-43.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-43.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-43.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-43.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-44
+# keys: fault.cpu.intel.l1tlb
+#
+msgid "fault.cpu.intel.l1tlb"
+msgstr "GMCA-TLB-44"
+msgid "GMCA-TLB-44.class"
+msgstr "fault.cpu.intel.l1tlb"
+msgid "GMCA-TLB-44.type"
+msgstr "Fault"
+msgid "GMCA-TLB-44.severity"
+msgstr "Major"
+msgid "GMCA-TLB-44.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-44.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-44.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-44.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-45
+# keys: fault.cpu.intel.l2tlb
+#
+msgid "fault.cpu.intel.l2tlb"
+msgstr "GMCA-TLB-45"
+msgid "GMCA-TLB-45.class"
+msgstr "fault.cpu.intel.l2tlb"
+msgid "GMCA-TLB-45.type"
+msgstr "Fault"
+msgid "GMCA-TLB-45.severity"
+msgstr "Major"
+msgid "GMCA-TLB-45.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-45.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-45.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-45.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-46
+# keys: fault.cpu.intel.dtlb
+#
+msgid "fault.cpu.intel.dtlb"
+msgstr "GMCA-TLB-46"
+msgid "GMCA-TLB-46.class"
+msgstr "fault.cpu.intel.dtlb"
+msgid "GMCA-TLB-46.type"
+msgstr "Fault"
+msgid "GMCA-TLB-46.severity"
+msgstr "Major"
+msgid "GMCA-TLB-46.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-46.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-46.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-46.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-47
+# keys: fault.cpu.intel.itlb
+#
+msgid "fault.cpu.intel.itlb"
+msgstr "GMCA-TLB-47"
+msgid "GMCA-TLB-47.class"
+msgstr "fault.cpu.intel.itlb"
+msgid "GMCA-TLB-47.type"
+msgstr "Fault"
+msgid "GMCA-TLB-47.severity"
+msgstr "Major"
+msgid "GMCA-TLB-47.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-47.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-47.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-47.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-48
+# keys: fault.cpu.intel.tlb
+#
+msgid "fault.cpu.intel.tlb"
+msgstr "GMCA-TLB-48"
+msgid "GMCA-TLB-48.class"
+msgstr "fault.cpu.intel.tlb"
+msgid "GMCA-TLB-48.type"
+msgstr "Fault"
+msgid "GMCA-TLB-48.severity"
+msgstr "Major"
+msgid "GMCA-TLB-48.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-48.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-48.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-48.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-49
+# keys: fault.cpu.intel.l0dtlb_uc
+#
+msgid "fault.cpu.intel.l0dtlb_uc"
+msgstr "GMCA-TLB-49"
+msgid "GMCA-TLB-49.class"
+msgstr "fault.cpu.intel.l0dtlb_uc"
+msgid "GMCA-TLB-49.type"
+msgstr "Fault"
+msgid "GMCA-TLB-49.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-49.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-49.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-49.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-49.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-50
+# keys: fault.cpu.intel.l1dtlb_uc
+#
+msgid "fault.cpu.intel.l1dtlb_uc"
+msgstr "GMCA-TLB-50"
+msgid "GMCA-TLB-50.class"
+msgstr "fault.cpu.intel.l1dtlb_uc"
+msgid "GMCA-TLB-50.type"
+msgstr "Fault"
+msgid "GMCA-TLB-50.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-50.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-50.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-50.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-50.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-51
+# keys: fault.cpu.intel.l2dtlb_uc
+#
+msgid "fault.cpu.intel.l2dtlb_uc"
+msgstr "GMCA-TLB-51"
+msgid "GMCA-TLB-51.class"
+msgstr "fault.cpu.intel.l2dtlb_uc"
+msgid "GMCA-TLB-51.type"
+msgstr "Fault"
+msgid "GMCA-TLB-51.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-51.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-51.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-51.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-51.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-52
+# keys: fault.cpu.intel.l0itlb_uc
+#
+msgid "fault.cpu.intel.l0itlb_uc"
+msgstr "GMCA-TLB-52"
+msgid "GMCA-TLB-52.class"
+msgstr "fault.cpu.intel.l0itlb_uc"
+msgid "GMCA-TLB-52.type"
+msgstr "Fault"
+msgid "GMCA-TLB-52.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-52.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-52.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-52.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-52.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-53
+# keys: fault.cpu.intel.l1itlb_uc
+#
+msgid "fault.cpu.intel.l1itlb_uc"
+msgstr "GMCA-TLB-53"
+msgid "GMCA-TLB-53.class"
+msgstr "fault.cpu.intel.l1itlb_uc"
+msgid "GMCA-TLB-53.type"
+msgstr "Fault"
+msgid "GMCA-TLB-53.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-53.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-53.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-53.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-53.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-54
+# keys: fault.cpu.intel.l2itlb_uc
+#
+msgid "fault.cpu.intel.l2itlb_uc"
+msgstr "GMCA-TLB-54"
+msgid "GMCA-TLB-54.class"
+msgstr "fault.cpu.intel.l2itlb_uc"
+msgid "GMCA-TLB-54.type"
+msgstr "Fault"
+msgid "GMCA-TLB-54.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-54.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-54.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-54.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-54.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-55
+# keys: fault.cpu.intel.l0tlb_uc
+#
+msgid "fault.cpu.intel.l0tlb_uc"
+msgstr "GMCA-TLB-55"
+msgid "GMCA-TLB-55.class"
+msgstr "fault.cpu.intel.l0tlb_uc"
+msgid "GMCA-TLB-55.type"
+msgstr "Fault"
+msgid "GMCA-TLB-55.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-55.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-55.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-55.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-55.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-56
+# keys: fault.cpu.intel.l1tlb_uc
+#
+msgid "fault.cpu.intel.l1tlb_uc"
+msgstr "GMCA-TLB-56"
+msgid "GMCA-TLB-56.class"
+msgstr "fault.cpu.intel.l1tlb_uc"
+msgid "GMCA-TLB-56.type"
+msgstr "Fault"
+msgid "GMCA-TLB-56.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-56.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-56.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-56.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-56.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-57
+# keys: fault.cpu.intel.l2tlb_uc
+#
+msgid "fault.cpu.intel.l2tlb_uc"
+msgstr "GMCA-TLB-57"
+msgid "GMCA-TLB-57.class"
+msgstr "fault.cpu.intel.l2tlb_uc"
+msgid "GMCA-TLB-57.type"
+msgstr "Fault"
+msgid "GMCA-TLB-57.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-57.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-57.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-57.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-57.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-58
+# keys: fault.cpu.intel.dtlb_uc
+#
+msgid "fault.cpu.intel.dtlb_uc"
+msgstr "GMCA-TLB-58"
+msgid "GMCA-TLB-58.class"
+msgstr "fault.cpu.intel.dtlb_uc"
+msgid "GMCA-TLB-58.type"
+msgstr "Fault"
+msgid "GMCA-TLB-58.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-58.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-58.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-58.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-58.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-59
+# keys: fault.cpu.intel.itlb_uc
+#
+msgid "fault.cpu.intel.itlb_uc"
+msgstr "GMCA-TLB-59"
+msgid "GMCA-TLB-59.class"
+msgstr "fault.cpu.intel.itlb_uc"
+msgid "GMCA-TLB-59.type"
+msgstr "Fault"
+msgid "GMCA-TLB-59.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-59.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-59.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-59.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-59.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-TLB-60
+# keys: fault.cpu.intel.tlb_uc
+#
+msgid "fault.cpu.intel.tlb_uc"
+msgstr "GMCA-TLB-60"
+msgid "GMCA-TLB-60.class"
+msgstr "fault.cpu.intel.tlb_uc"
+msgid "GMCA-TLB-60.type"
+msgstr "Fault"
+msgid "GMCA-TLB-60.severity"
+msgstr "Critical"
+msgid "GMCA-TLB-60.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-TLB-60.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-TLB-60.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-TLB-60.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-07
+# keys: fault.cpu.intel.gr
+#
+msgid "fault.cpu.intel.gr"
+msgstr "GMCA-REG-07"
+msgid "GMCA-REG-07.class"
+msgstr "fault.cpu.intel.gr"
+msgid "GMCA-REG-07.type"
+msgstr "Fault"
+msgid "GMCA-REG-07.severity"
+msgstr "Major"
+msgid "GMCA-REG-07.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-07.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-07.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-07.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-08
+# keys: fault.cpu.intel.fr
+#
+msgid "fault.cpu.intel.fr"
+msgstr "GMCA-REG-08"
+msgid "GMCA-REG-08.class"
+msgstr "fault.cpu.intel.fr"
+msgid "GMCA-REG-08.type"
+msgstr "Fault"
+msgid "GMCA-REG-08.severity"
+msgstr "Major"
+msgid "GMCA-REG-08.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-08.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-08.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-08.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-09
+# keys: fault.cpu.intel.gr_uc
+#
+msgid "fault.cpu.intel.gr_uc"
+msgstr "GMCA-REG-09"
+msgid "GMCA-REG-09.class"
+msgstr "fault.cpu.intel.gr_uc"
+msgid "GMCA-REG-09.type"
+msgstr "Fault"
+msgid "GMCA-REG-09.severity"
+msgstr "Critical"
+msgid "GMCA-REG-09.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-09.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-09.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-09.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-REG-10
+# keys: fault.cpu.intel.fr_uc
+#
+msgid "fault.cpu.intel.fr_uc"
+msgstr "GMCA-REG-10"
+msgid "GMCA-REG-10.class"
+msgstr "fault.cpu.intel.fr_uc"
+msgid "GMCA-REG-10.type"
+msgstr "Fault"
+msgid "GMCA-REG-10.severity"
+msgstr "Critical"
+msgid "GMCA-REG-10.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-REG-10.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-REG-10.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-REG-10.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-12
+# keys: fault.cpu.intel.bus_interconnect
+#
+msgid "fault.cpu.intel.bus_interconnect"
+msgstr "GMCA-BUS-12"
+msgid "GMCA-BUS-12.class"
+msgstr "fault.cpu.intel.bus_interconnect"
+msgid "GMCA-BUS-12.type"
+msgstr "Fault"
+msgid "GMCA-BUS-12.severity"
+msgstr "Major"
+msgid "GMCA-BUS-12.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-12.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-12.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-12.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-13
+# keys: fault.cpu.intel.bus_interconnect_memory
+#
+msgid "fault.cpu.intel.bus_interconnect_memory"
+msgstr "GMCA-BUS-13"
+msgid "GMCA-BUS-13.class"
+msgstr "fault.cpu.intel.bus_interconnect_memory"
+msgid "GMCA-BUS-13.type"
+msgstr "Fault"
+msgid "GMCA-BUS-13.severity"
+msgstr "Major"
+msgid "GMCA-BUS-13.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-13.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-13.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-13.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-14
+# keys: fault.cpu.intel.bus_interconnect_io
+#
+msgid "fault.cpu.intel.bus_interconnect_io"
+msgstr "GMCA-BUS-14"
+msgid "GMCA-BUS-14.class"
+msgstr "fault.cpu.intel.bus_interconnect_io"
+msgid "GMCA-BUS-14.type"
+msgstr "Fault"
+msgid "GMCA-BUS-14.severity"
+msgstr "Major"
+msgid "GMCA-BUS-14.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-14.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-14.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-14.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-15
+# keys: fault.cpu.intel.bus_external_memory
+#
+msgid "fault.cpu.intel.bus_external_memory"
+msgstr "GMCA-BUS-15"
+msgid "GMCA-BUS-15.class"
+msgstr "fault.cpu.intel.bus_external_memory"
+msgid "GMCA-BUS-15.type"
+msgstr "Fault"
+msgid "GMCA-BUS-15.severity"
+msgstr "Major"
+msgid "GMCA-BUS-15.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-15.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-15.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-15.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-16
+# keys: fault.cpu.intel.bus_external_io
+#
+msgid "fault.cpu.intel.bus_external_io"
+msgstr "GMCA-BUS-16"
+msgid "GMCA-BUS-16.class"
+msgstr "fault.cpu.intel.bus_external_io"
+msgid "GMCA-BUS-16.type"
+msgstr "Fault"
+msgid "GMCA-BUS-16.severity"
+msgstr "Major"
+msgid "GMCA-BUS-16.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-16.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-16.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-16.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-17
+# keys: fault.cpu.intel.bus_internal_uc
+#
+msgid "fault.cpu.intel.bus_internal_uc"
+msgstr "GMCA-BUS-17"
+msgid "GMCA-BUS-17.class"
+msgstr "fault.cpu.intel.bus_internal_uc"
+msgid "GMCA-BUS-17.type"
+msgstr "Fault"
+msgid "GMCA-BUS-17.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-17.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-17.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-17.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-17.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-18
+# keys: fault.cpu.intel.bus_internal_memory_uc
+#
+msgid "fault.cpu.intel.bus_internal_memory_uc"
+msgstr "GMCA-BUS-18"
+msgid "GMCA-BUS-18.class"
+msgstr "fault.cpu.intel.bus_internal_memory_uc"
+msgid "GMCA-BUS-18.type"
+msgstr "Fault"
+msgid "GMCA-BUS-18.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-18.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-18.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-18.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-18.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-19
+# keys: fault.cpu.intel.bus_internal_io_uc
+#
+msgid "fault.cpu.intel.bus_internal_io_uc"
+msgstr "GMCA-BUS-19"
+msgid "GMCA-BUS-19.class"
+msgstr "fault.cpu.intel.bus_internal_io_uc"
+msgid "GMCA-BUS-19.type"
+msgstr "Fault"
+msgid "GMCA-BUS-19.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-19.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-19.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-19.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-19.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-20
+# keys: fault.cpu.intel.bus_external_uc
+#
+msgid "fault.cpu.intel.bus_external_uc"
+msgstr "GMCA-BUS-20"
+msgid "GMCA-BUS-20.class"
+msgstr "fault.cpu.intel.bus_external_uc"
+msgid "GMCA-BUS-20.type"
+msgstr "Fault"
+msgid "GMCA-BUS-20.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-20.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-20.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-20.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-20.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-21
+# keys: fault.cpu.intel.bus_external_memory_uc
+#
+msgid "fault.cpu.intel.bus_external_memory_uc"
+msgstr "GMCA-BUS-21"
+msgid "GMCA-BUS-21.class"
+msgstr "fault.cpu.intel.bus_external_memory_uc"
+msgid "GMCA-BUS-21.type"
+msgstr "Fault"
+msgid "GMCA-BUS-21.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-21.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-21.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-21.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-21.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-BUS-22
+# keys: fault.cpu.intel.bus_external_io_uc
+#
+msgid "fault.cpu.intel.bus_external_io_uc"
+msgstr "GMCA-BUS-22"
+msgid "GMCA-BUS-22.class"
+msgstr "fault.cpu.intel.bus_external_io_uc"
+msgid "GMCA-BUS-22.type"
+msgstr "Fault"
+msgid "GMCA-BUS-22.severity"
+msgstr "Critical"
+msgid "GMCA-BUS-22.description"
+msgstr "A level 0 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-BUS-22.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-BUS-22.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-BUS-22.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-MEM-03
+# keys: fault.cpu.intel.quickpath.mem_page_ce
+#
+msgid "fault.cpu.intel.quickpath.mem_page_ce"
+msgstr "GMCA-MEM-03"
+msgid "GMCA-MEM-03.class"
+msgstr "fault.cpu.intel.quickpath.mem_page_ce"
+msgid "GMCA-MEM-03.type"
+msgstr "Fault"
+msgid "GMCA-MEM-03.severity"
+msgstr "Major"
+msgid "GMCA-MEM-03.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-MEM-03.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-MEM-03.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-MEM-03.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-MEM-04
+# keys: fault.cpu.intel.quickpath.mem_page_uc
+#
+msgid "fault.cpu.intel.quickpath.mem_page_uc"
+msgstr "GMCA-MEM-04"
+msgid "GMCA-MEM-04.class"
+msgstr "fault.cpu.intel.quickpath.mem_page_uc"
+msgid "GMCA-MEM-04.type"
+msgstr "Fault"
+msgid "GMCA-MEM-04.severity"
+msgstr "Critical"
+msgid "GMCA-MEM-04.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-MEM-04.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-MEM-04.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-MEM-04.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-LIST-01
+# keys: list.cpu.intel.cpu-offline
+#
+msgid "list.cpu.intel.cpu-offline"
+msgstr "GMCA-LIST-01"
+msgid "GMCA-LIST-01.class"
+msgstr "list.cpu.intel.cpu-offline"
+msgid "GMCA-LIST-01.type"
+msgstr "List"
+msgid "GMCA-LIST-01.severity"
+msgstr "Critical"
+msgid "GMCA-LIST-01.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-LIST-01.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-LIST-01.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-LIST-01.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-LIST-02
+# keys: list.cpu.intel.kexec
+#
+msgid "list.cpu.intel.kexec"
+msgstr "GMCA-LIST-02"
+msgid "GMCA-LIST-02.class"
+msgstr "list.cpu.intel.kexec"
+msgid "GMCA-LIST-02.type"
+msgstr "List"
+msgid "GMCA-LIST-02.severity"
+msgstr "Critical"
+msgid "GMCA-LIST-02.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-LIST-02.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-LIST-02.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-LIST-02.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+#
+# code: GMCA-LIST-03
+# keys: list.cpu.intel.mem-page-retire
+#
+msgid "list.cpu.intel.mem-page-retire"
+msgstr "GMCA-LIST-03"
+msgid "GMCA-LIST-03.class"
+msgstr "list.cpu.intel.mem-page-retire"
+msgid "GMCA-LIST-03.type"
+msgstr "List"
+msgid "GMCA-LIST-03.severity"
+msgstr "Critical"
+msgid "GMCA-LIST-03.description"
+msgstr "A level 1 cache on this cpu is faulty. Refer to http://sun.com/msg/GMCA-8000-47 for more information."
+msgid "GMCA-LIST-03.response"
+msgstr "The system will attempt to offline this cpu to remove it from service."
+msgid "GMCA-LIST-03.impact"
+msgstr "Performance of this system may be affected."
+msgid "GMCA-LIST-03.action"
+msgstr "Schedule a repair procedure to replace the affected CPU. Use 'fmadm faulty' to identify the module."
+

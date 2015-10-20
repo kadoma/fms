@@ -5,13 +5,13 @@
 #include <syslog.h>
 
 #include "wrap.h"
-#include "logging.h"
 
-#define RING_SIZE 12800
+
+#define RING_SIZE 128
 
 typedef struct _ring_{
-    sem_t              ring_full;
-    sem_t              ring_empty;
+    sem_t              ring_contain;
+    sem_t              ring_vaild;
     pthread_mutex_t    ring_lock;
     int                front;
     int                rear;
@@ -24,8 +24,8 @@ ring_init(ring_t *ring)
 {
     // init all front rear count item.
     memset(ring, 0, sizeof(ring_t));
-    sem_init(&ring->ring_full, 0, 0);
-    sem_init(&ring->ring_empty, 0, RING_SIZE);
+    sem_init(&ring->ring_contain, 0, 0);   //now contain nums 
+    sem_init(&ring->ring_vaild, 0, RING_SIZE); // now can vaild nums
     pthread_mutex_init(&ring->ring_lock, NULL);
     return 0;
 }
@@ -33,20 +33,13 @@ ring_init(ring_t *ring)
 static inline int
 ring_stat(ring_t *ring)
 {
-
-    if(ring->count == 0)
-        return 0;
-    else if(ring->count == RING_SIZE)
-        return 1;
-    else
-        return -1;
+	return ring->count;
 }
 
 static inline int
 ring_add(ring_t *ring, void *p)
 {
-    if(ring_stat(ring) == 1){
-        syslog(LOG_ERR, "ring is full, Add new faild");
+    if(ring_stat(ring) == RING_SIZE){
         return -1;
     }
 
@@ -62,7 +55,6 @@ ring_del(ring_t *ring)
 {
     if(ring_stat(ring) == 0)
 	{
-        syslog(LOG_ERR, "ring is null, get item is failed.");
         return NULL;
     }
 

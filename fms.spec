@@ -29,7 +29,10 @@ INSPUR fault management system.
 	ldconfig
 	
 %preun
-		
+	systemctl stop fmd.service
+	echo 1 > /proc/sys/fm/unload
+	rmmod kfm
+	
 %postun
 	ldconfig
 	

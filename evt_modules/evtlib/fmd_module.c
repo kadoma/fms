@@ -97,15 +97,6 @@ fmd_module_load(fmd_t *p_fmd)
 
         char so_full_path[128] = {0};
         sprintf(so_full_path, "%s/%s", SO_DIR, p_entry->d_name);
-
-/*
-        struct stat statbuf;
-        lstat(so_full_path, &statbuf);
-        if(!(S_ISREG(statbuf.st_mode)))
-        {
-            continue;
-        }
-*/
         char *p = strrchr(p_entry->d_name, '.');
         if((p == NULL)||(strcmp(p, ".so") != 0))
             continue;

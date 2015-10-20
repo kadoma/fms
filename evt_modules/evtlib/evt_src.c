@@ -63,10 +63,7 @@ fmd_queue_dispatch(evtsrc_module_t *evt_mod_p, fmd_event_t *pevt)
 
     ring_t *ring = &p_queue->queue_ring;
 	
-	wr_log("", WR_LOG_DEBUG, "src add to ring, count is [%d].", ring->count);
-
-    //sem_wait(&ring->ring_empty);
-
+    sem_wait(&ring->ring_vaild);
     pthread_mutex_lock(&ring->ring_lock);
 	if(pevt->ev_class != NULL)
     	ring_add(ring, pevt);
@@ -74,7 +71,8 @@ fmd_queue_dispatch(evtsrc_module_t *evt_mod_p, fmd_event_t *pevt)
 		wr_log("", WR_LOG_ERROR, "event list dispatch node is null.");
     pthread_mutex_unlock(&ring->ring_lock);
 
-    //sem_post(&ring->ring_full);
+    sem_post(&ring->ring_contain);
+	wr_log("", WR_LOG_DEBUG, "src add to ring, count is [%d].", ring->count);
     return NULL;
 
 }
@@ -167,19 +165,15 @@ evtsrc_start(void *p)
     evt_mod_p = (evtsrc_module_t *)pthread_getspecific(key_module);
     timer = &evt_mod_p->timer;
 
+	wr_log("", WR_LOG_DEBUG, "start event deteck thread [%s].", evt_mod_p->module.mod_name);
     while(1){
         pthread_mutex_lock(&timer->timer_lock);
 		
-		wr_log("",WR_LOG_DEBUG,"time is wait......" );
-		
+		wr_log("",WR_LOG_DEBUG,"deteck thread waitting signal." );
         pthread_cond_wait(&timer->cond_signal, &timer->timer_lock);
-		
-		wr_log("event deteck start signal.",WR_LOG_DEBUG,"time is now, start deteck...." );
-
         pthread_mutex_unlock(&timer->timer_lock);
 
         do_evtsrc();
-		sleep(1);
     }
 
     return NULL;
@@ -243,6 +237,7 @@ evtsrc_init(evtsrc_modops_t *mod_ops_p, char* full_path, fmd_t *p_fmd)
     //set ops link to module struct
     evt_mod_p->mops = mod_ops_p;
 	evt_mod_p->module.p_fmd = p_fmd;
+	evt_mod_p->module.mod_name = full_path;
 
 
     // read config file, path for read conf file

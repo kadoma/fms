@@ -1,3 +1,14 @@
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    fm_diskspacedect.c
+ * Author:      Inspur OS Team 
+                	guomeisi@inspur.com
+ * Date:        2015-08-04
+ * Description: check if disk space is sufficient.
+ *
+ ************************************************************/
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

@@ -1,3 +1,14 @@
+/************************************************************
+ * Copyright (C) inspur Inc. <http://www.inspur.com>
+ * FileName:    fm_badblockdect.c
+ * Author:      Inspur OS Team 
+                	guomeisi@inspur.com
+ * Date:        2015-08-04
+ * Description: check if disk has badblock.
+ *
+ ************************************************************/
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,13 +22,13 @@
 
 /* ////////////////////////////////////////////////////////
  * disk_badblocks_check
- *     check   if  disk have badblocks
+ *     check   if  disk has badblock
  *     use "badblocks tool".
  *  
  *  path: (eg:/dev/sda   /dev/sdb......)
  *
  *  return value
- *   1       if disk have badblocks
+ *   1       if disk has badblock
  *   0       disk`s blocks are good
  *   -1      other error
  * ////////////////////////////////////////////////////////  */
@@ -25,6 +36,7 @@ int
 disk_badblocks_check(const char *path)
 {
         FILE *fstream = NULL;
+		FILE *fstreamtxt = NULL;
 		FILE *linenum = NULL;
 		FILE *sectorsnum = NULL;
 		FILE *bbtxt;			/* /tmp/badblockinfo.txt */
@@ -36,25 +48,32 @@ disk_badblocks_check(const char *path)
 		memset(bufsectors,0,sizeof(bufsectors));
 			
 		char* cmd = NULL;
+		char* cmdtxt = NULL;
 		char* cmdsectors = NULL;
 		char cmdresult[PATH_MAX];
-		cmd = badblockscmd(path, cmdresult);		
-        	
+		char cmdsecresult[PATH_MAX];
+		char cmdtxtresult[PATH_MAX];
+
+
+		/* Read badblocks info from /tmp/badblockinfo.txt */
+		if ((bbtxt = fopen("/tmp/badblockinfo.txt", "r")) == NULL) {
+			cmdtxt = badblockstxt(cmdtxtresult);
+			fstreamtxt = popen(cmdtxt,"r");
+			if(fstreamtxt == NULL)
+       		{
+            	fprintf(stderr,"execute command failed: %s",strerror(errno));
+        	}
+			bbtxt = fstreamtxt;
+		}
+		return 0;
+		
+		cmd = badblockscmd(path, cmdresult);		     	
         fstream = popen(cmd,"r");
         if(fstream == NULL)
        	{
             fprintf(stderr,"execute command failed: %s",strerror(errno));
         }	
 		pclose(fstream);
-
-
-		/* Read badblocks info from /tmp/badblockinfo.txt */
-		if ((bbtxt = fopen("/tmp/badblockinfo.txt", "r")) == NULL) {
-			perror("/tmp/badblockinfo.txt");
-			wr_log("badblock", WR_LOG_ERROR, "open /tmp/badblockinfo.txt error.");
-			return -1;
-		}
-
 	
 		// if disk have badblocks
 		if (fgets(buff, LINE_MAX, bbtxt) != NULL){
@@ -63,7 +82,7 @@ disk_badblocks_check(const char *path)
 			char* cmdcount = "sed -n '$=' /tmp/badblockinfo.txt";
 			//get the sum of disk sectors
 			
-			cmdsectors = getsectorscmd(path, (char *)cmdresult);
+			cmdsectors = getsectorscmd(path, cmdsecresult);
 
         	char *resultline = "";
 			char *resultsectors = "";
@@ -79,18 +98,36 @@ disk_badblocks_check(const char *path)
         	if(fgets(bufline, sizeof(bufline),linenum) != NULL)
         	{
                 resultline = bufline;
+			}else{
+				return 0;  //  there aren`t bad blocks
 			}
-			if(fgets(bufsectors, sizeof(bufsectors),sectorsnum) != NULL)
-        	{
-                resultsectors = bufsectors;
+			
+			if(fgets(bufsectors, sizeof(bufsectors),sectorsnum) != NULL){
+				resultsectors = bufsectors;
+		
+				if((atoi(resultsectors))!=0 &&((atoi(resultline))/(atoi(resultsectors)))> 0.1) { /* disk`s badblocks rate > 10%,  badblocks error */
+					pclose(linenum);
+					pclose(sectorsnum);
+					pclose(bbtxt);
+					return 1;
+				}else{
+					if((atoi(resultline))> 10){
+					pclose(linenum);
+					pclose(sectorsnum);
+					pclose(bbtxt);
+					return 1;
+					}
+				}				
+			}else{
+				if((atoi(resultline))> 10){
+					pclose(linenum);
+					pclose(sectorsnum);
+					pclose(bbtxt);
+					return 1;
+				}
 			}
-
-			if(((atoi(resultline))/(atoi(resultsectors)))> 0.1) { /* disk`s badblocks rate > 10%,  badblocks error */
-				pclose(bbtxt);
-				return 1;
-			}
-
 		}
 		pclose(bbtxt);
+		pclose(fstreamtxt);
 		return 0;
 }

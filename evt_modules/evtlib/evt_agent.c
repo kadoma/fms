@@ -66,15 +66,15 @@ agent_ring_put(fmd_t *p_fmd, fmd_event_t *pevt)
 
 	ring_t *ring = &p_queue->queue_ring;
 
-	//sem_wait(&ring->ring_empty);
-
+	sem_wait(&ring->ring_vaild);
 	pthread_mutex_lock(&ring->ring_lock);
 
-	ring_add(ring, pevt);
+	int ret = ring_add(ring, pevt);
+	if(ret == -1)
+		wr_log("", WR_LOG_ERROR,"ring is full, Add new faild");
 
 	pthread_mutex_unlock(&ring->ring_lock);
-
-	//sem_post(&ring->ring_full);
+	sem_post(&ring->ring_contain);
 	return 0;
 }
 
@@ -91,27 +91,24 @@ do_agent(ring_t *ring)
 	/* consumer all events in the ring buffer */
 	while(ring_stat(ring) != 0)
 	{
-		//sem_wait(&ring->ring_full);
-		
+		sem_wait(&ring->ring_contain);
 		pthread_mutex_lock(&ring->ring_lock);
 		
 		evt = (fmd_event_t *)ring_del(ring);
+		if(evt == NULL)
+			wr_log("", WR_LOG_ERROR, "ring is null, get item is failed.");
 		
 		pthread_mutex_unlock(&ring->ring_lock);
-		
-		//sem_post(&ring->ring_empty);
+		sem_post(&ring->ring_vaild);
 		if(evt == NULL){
 			wr_log("agent do ring", WR_LOG_ERROR, "agent do ring is null.");
 			exit(-1);
 		}
 
-		wr_log("", WR_LOG_DEBUG, "agent get evet and print.[%s]", evt->ev_class);
-		sleep(1);
-//		continue;
-		
+		wr_log("", WR_LOG_DEBUG, "agent get evet and print.[%s]", evt->ev_class);		
 		eresult = mops->evt_handle(pfmd, evt);
 		if(eresult == NULL){
-			wr_log("handle agent", WR_LOG_ERROR, "evt handle result is null.");
+			wr_log("handle agent", WR_LOG_ERROR, "event process list and log event.");
 			return 0;
 		}
 		//put to queue again
@@ -143,6 +140,7 @@ void *start_agent(void *p)
 	//emp = (agent_module_t *)pthread_getspecific(key_module);
 
 	/* Thread starts working... */
+	wr_log("", WR_LOG_DEBUG, "[%s] agent module thread start...", p_agent_mod->module.mod_name);
 	while(1) {
 		do_agent(ring);
 	}
@@ -194,6 +192,7 @@ agent_init(agent_modops_t *agent_ops, char *so_path, fmd_t *p_fmd)
 
 	/* setup mops */
 	p_agent_mod->mops = agent_ops;
+	p_agent_mod->module.mod_name = so_path;
 
 	/* setup ring */
 	ring = (ring_t *)def_calloc(sizeof(ring_t), 1);

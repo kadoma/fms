@@ -2,9 +2,9 @@
  * Copyright (C) inspur Inc. <http://www.inspur.com>
  * FileName:    disk_evtsr.c
  * Author:      Inspur OS Team 
-                guomeisi@inspur.com
- * Date:        20xx-xx-xx
- * Description: 
+                	guomeisi@inspur.com
+ * Date:        2015-08-04
+ * Description: disk error evtsrc module.
  *
  ************************************************************/
 
@@ -54,15 +54,17 @@ disk_probe(evtsrc_module_t * emp)
 
 	p_fmd = emp->module.p_fmd;
 
-	char *diskname = NULL;//for disk space insufficient
 	char *fullpath = NULL;
 	char fullpathtmp[9];
 	char *result = NULL;
 	FILE *fstream = NULL;
+	FILE *fstreamsmart = NULL;
     char buff[LINE_MAX];
     memset(buff,0,sizeof(buff));
 	char* cmd = NULL;
+	char* cmdsmarton = NULL;
 	char cmdresult[FMS_PATH_MAX] = {0};
+	char smartonresult[FMS_PATH_MAX] = {0};
 	
 	/* get disk`s name */
 	cmd = disknamecmd(cmdresult);  
@@ -83,38 +85,48 @@ disk_probe(evtsrc_module_t * emp)
         if(result == NULL || strcmp(fullpathtmp,result)!=0)
         {
             fullpath = fullpathtmp;
-			if(DoesSmartWork(fullpath) == 1)
-			{
-				if(disk_unhealthy_check(fullpath)== 1){
-					memset(fullclass, 0, sizeof(fullclass));
-					sprintf(fullclass,"%s.io.disk.unhealthy", FM_EREPORT_CLASS);
-					ena = fullpath;
-					nvl = nvlist_alloc();
-					if (nvl == NULL) {
-						fprintf(stderr,"DISK: out of memory\n");
-						return NULL;
-					}
-					if ( disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
-						nvlist_free(nvl);
-						nvl = NULL;
-					}
-				}
 
-				if(disk_temperature_check(fullpath)== 1){
-					memset(fullclass, 0, sizeof(fullclass));
-					sprintf(fullclass,"%s.io.disk.over-temperature", FM_EREPORT_CLASS);
-					ena = fullpath;
-					nvl = nvlist_alloc();
-					if(nvl == NULL){
-						fprintf(stderr,"DISK: out of memory\n");
-						return NULL;
-					}
-					if(disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
-						nvlist_free(nvl);
-						nvl = NULL;
-					}
+			if(DoesSmartWork(fullpath) != 1 )
+			{
+				//open  smartctl  tool  ,  -s  on  
+				cmdsmarton =  smartoncmd(fullpath, smartonresult);
+				fstreamsmart = popen(cmdsmarton,"r");
+    			if(fstreamsmart == NULL)
+    			{
+       				wr_log("",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+    			}	
+				pclose(fstreamsmart);
+			}
+			if(disk_unhealthy_check(fullpath)== 1){
+				memset(fullclass, 0, sizeof(fullclass));
+				sprintf(fullclass,"%s.io.disk.unhealthy", FM_EREPORT_CLASS);
+				ena = fullpath;
+				nvl = nvlist_alloc();
+				if (nvl == NULL) {
+					fprintf(stderr,"DISK: out of memory\n");
+					return NULL;
+				}
+				if ( disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
+					nvlist_free(nvl);
+					nvl = NULL;
 				}
 			}
+				
+			if(disk_temperature_check(fullpath)== 1){
+				memset(fullclass, 0, sizeof(fullclass));
+				sprintf(fullclass,"%s.io.disk.over-temperature", FM_EREPORT_CLASS);
+				ena = fullpath;
+				nvl = nvlist_alloc();
+				if(nvl == NULL){
+					fprintf(stderr,"DISK: out of memory\n");
+					return NULL;
+				}
+				if(disk_fm_event_post(head, nvl, fullclass, ena) != 0 ) {
+					nvlist_free(nvl);
+					nvl = NULL;
+				}
+			}
+			
 			if (disk_badblocks_check(fullpath) == 1){		
 				memset(fullclass, 0, sizeof(fullclass));
 				sprintf(fullclass,"%s.io.disk.badblocks", FM_EREPORT_CLASS);

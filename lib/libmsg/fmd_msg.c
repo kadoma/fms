@@ -102,20 +102,20 @@ static pthread_rwlock_t fmd_msg_rwlock = PTHREAD_RWLOCK_INITIALIZER;
 static const char FMD_MSG_DOMAIN[] = "FMD";
 static const char FMD_MSG_TEMPLATE[] = "syslog-msgs-message-template";
 static const char FMD_MSG_URLBASE[] = "http://sun.com/msg/";
-static const char FMD_MSG_BINDINGBASE[] = "/usr/libs/fm/dict/";
+static const char FMD_MSG_BINDINGBASE[] = "/usr/lib/fms/dict/";
 static const char FMD_MSG_MISSING[] = "-";
 
 static const char *const fmd_msg_etype_items[] = {
-	".cpu.intel.",		/* key for FMD_MSG_ITEM_ECLASS_GMCA */
-	".io.scsi.disk.",	/* key for FMD_MSG_ITEM_ECLASS_SCSI */
-	".io.ata.disk.",	/* key for FMD_MSG_ITEM_ECLASS_ATA */
-	".io.sata.disk.",	/* key for FMD_MSG_ITEM_ECLASS_SATA */
-	".ipmi.",		/* key for FMD_MSG_ITEM_ECLASS_IPMI */
-	".io.mpio.",		/* key for FMD_MSG_ITEM_ECLASS_MPIO */
-	".io.network.",		/* key for FMD_MSG_ITEM_ECLASS_NETWORK */
-	".io.pcie.",		/* key for FMD_MSG_ITEM_ECLASS_PCIE */
-	".service.",		/* key for FMD_MSG_ITEM_ECLASS_SERVICE */
-	".topo.",		/* key for FMD_MSG_ITEM_ECLASS_TOPO */
+    "cpu",                 /* key for FMD_MSG_ITEM_ECLASS_GMCA */
+    ".io.scsi.disk.",    /* key for FMD_MSG_ITEM_ECLASS_SCSI */
+    ".io.ata.disk.",    /* key for FMD_MSG_ITEM_ECLASS_ATA */
+    ".io.sata.disk.",    /* key for FMD_MSG_ITEM_ECLASS_SATA */
+    ".ipmi.",        /* key for FMD_MSG_ITEM_ECLASS_IPMI */
+    ".io.mpio.",        /* key for FMD_MSG_ITEM_ECLASS_MPIO */
+    ".io.network.",        /* key for FMD_MSG_ITEM_ECLASS_NETWORK */
+    ".io.pcie.",        /* key for FMD_MSG_ITEM_ECLASS_PCIE */
+    ".service.",        /* key for FMD_MSG_ITEM_ECLASS_SERVICE */
+    ".topo.",        /* key for FMD_MSG_ITEM_ECLASS_TOPO */
 };
 
 void

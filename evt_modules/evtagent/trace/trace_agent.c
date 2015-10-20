@@ -43,7 +43,7 @@ fmd_log_event(fmd_event_t *pevt)
 	} else if (strncmp(eclass, "fault.", 6) == 0) {
 		type = FMD_LOG_FAULT;
 		dir = "/var/log/fms/trace/fault";
-	} else if (strncmp(eclass, "list.", 5) == 0) {
+	} else if (pevt->ev_flag == AGENT_TOLIST) {
 		type = FMD_LOG_LIST;
 		dir = "/var/log/fms/trace/list";
 	}
@@ -85,15 +85,7 @@ trace_handle_event(fmd_t *pfmd, fmd_event_t *event)
 	wr_log("", WR_LOG_DEBUG, "trace agent ev_handle fault event to list event.");
 	int ret = 0;
 	
-	if(event->ev_flag == AGENT_TOLOG)
-	{
-		ret = fmd_log_event(event);
-		if(ret == 0)
-		{
-			wr_log("", WR_LOG_ERROR, "trace log sucess.");
-			return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
-		}
-	}
+	fmd_log_event(event);
 
 	if(event->ev_flag == AGENT_TODO)
 	{
@@ -102,9 +94,8 @@ trace_handle_event(fmd_t *pfmd, fmd_event_t *event)
 			wr_log("", WR_LOG_ERROR, "trace log agent todo success.");
 		return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
 	}
-
+	
 	return NULL;
-
 }
 
 
@@ -116,7 +107,7 @@ static agent_modops_t trace_ops = {
 fmd_module_t *
 fmd_module_init(char *path, fmd_t *p_fmd)
 {
-	wr_log("trace agent", WR_LOG_DEBUG, "call fmd init agent.");
+	wr_log("trace agent", WR_LOG_DEBUG, "trace agent thread init");
 	return (fmd_module_t *)agent_init(&trace_ops, path, p_fmd);
 }
 

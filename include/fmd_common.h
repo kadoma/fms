@@ -36,4 +36,6 @@ void fmd_load_esc();
 
 void fmd_queue_load(fmd_t *fmd);
 
+int modprobe_kfm(void);
+
 #endif  /* __FMD_COMMON_H__ */

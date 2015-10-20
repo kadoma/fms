@@ -1,10 +1,10 @@
 /************************************************************
  * Copyright (C) inspur Inc. <http://www.inspur.com>
  * FileName:    unload.c
- * Author:      Inspur OS Team 
+ * Author:      Inspur OS Team
                 wang.leibj@inspur.com
  * Date:        2015-09-30
- * Description: unload specified fault manager module 
+ * Description: unload specified fault manager module
  *
  ************************************************************/
 
@@ -24,26 +24,26 @@
 
 static void usage(void)
 {
-	fputs("Usage: fmadm unload <module>\n"
-	      , stderr);
+    fputs("Usage: fmadm unload <module>\n"
+          , stderr);
 }
 
 int unload_module(fmd_adm_t *adm,char* path)
 {
 
-	if((strstr(path,".so")) == NULL){
-		wr_log("",WR_LOG_ERROR,"%s:illegal input module end with .so\n",path);	
-		return (-1);
-	}
-	
-	if((strstr(path,"adm_src.so")) != NULL){
-		wr_log("",WR_LOG_ERROR,"%s: adm module can not unload -- %s\n");
-                return (-1);
-	}	
+    if((strstr(path,".so")) == NULL){
+        wr_log("",WR_LOG_ERROR,"%s:illegal input module end with .so\n",path);
+        return (-1);
+    }
 
-	if(fmd_adm_unload_module(adm,path) != 0)
-		die("FMD:failed to load module");
-	return 0;	
+    if((strstr(path,"adm_src.so")) != NULL){
+        wr_log("",WR_LOG_ERROR,"%s: adm module can not unload -- %s\n");
+                return (-1);
+    }
+
+    if(fmd_adm_unload_module(adm,path) != 0)
+        die("FMD:failed to load module");
+    return 0;
 }
 
 /*
@@ -57,7 +57,7 @@ cmd_unload(fmd_adm_t *adm, int argc, char *argv[])
 {
     if (argc != 2) {
         usage();
-	return (FMADM_EXIT_USAGE);
+    return (FMADM_EXIT_USAGE);
     }
 
     int rt = unload_module(adm,argv[1]);

@@ -1,35 +1,6 @@
-event ereport.cpu.unclassified_ce
-event ereport.cpu.unclassified_ue
-event ereport.cpu.mrom_parity_ce
-event ereport.cpu.mrom_parity_ue
-event ereport.cpu.external_ce
-event ereport.cpu.external_ue
-event ereport.cpu.frc_ce
-event ereport.cpu.frc_ue
-event ereport.cpu.internal_parity_ce
-event ereport.cpu.internal_parity_ue
-event ereport.cpu.smm_hcav_ce
-event ereport.cpu.smm_hcav_ue
-event ereport.cpu.internal_timer_ce
-event ereport.cpu.internal_timer_ue
-event ereport.cpu.internal_unclassified_ce
-event ereport.cpu.internal_unclassified_ue
-event ereport.cpu.tmp_high
-event ereport.cpu.tmp_low
-event ereport.cpu.unknown_ce
-event ereport.cpu.unknown_ue
 
-fault ereport.cpu.mc_ce
-fault ereport.cpu.mc_ue
+event ereport.trace.unknown_ue
 
-engine ereport.cpu.cache_ce {N=6, T=1}
-engine ereport.cpu.cache_ue {N=3, T=72}
-engine ereport.cpu.tlb_ce {N=24, T=72}
-engine ereport.cpu.tlb_ue {N=3, T=72}
-engine ereport.cpu.bus_ce {N=5, T=1}
-engine ereport.cpu.bus_ue {N=3, T=72}
-engine ereport.memory.mempage {N=10, T=72}
-engine ereport.cpu.pcu_ce {N=24, T=72}
-engine ereport.cpu.pcu_ue {N=3, T=72}
-engine ereport.cpu.qpi_ce {N=24, T=72}
-engine ereport.cpu.qpi_ue {N=3, T=72}
+fault ereport.trace.mc_ce
+
+engine ereport.trace.cache_ce {N=6, T=1}

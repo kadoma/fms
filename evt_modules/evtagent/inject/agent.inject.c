@@ -12,7 +12,7 @@
  */
 
 static int
-fmd_log_event(fmd_event_t *pevt) 
+fmd_log_event_inject(fmd_event_t *pevt) 
 {
 	//TODO
 	return 0;
@@ -24,7 +24,7 @@ inject_handle_event(fmd_t *pfmd, fmd_event_t *event)
 	wr_log("", WR_LOG_DEBUG, "inject agent ev_handle fault event to list event.");
 	fmd_event_t *pevt = NULL;
 	
-	int ret = fmd_log_event(event);
+	int ret = fmd_log_event_inject(event);
 	if(ret == 0)
 		pevt = fmd_create_listevent(event, LIST_LOGED_SUCCESS);
 	else

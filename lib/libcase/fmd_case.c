@@ -43,10 +43,18 @@ fmd_case_canfire(fmd_case_t *pcase, char *ev_class)
 	struct fmd_serd_type *pserd = NULL;
 
 	pserd = fmd_query_serd(ev_class);
+	if(pserd == NULL)
+	{	
+		wr_log("", WR_LOG_ERROR, "not find the serd config for counts.check your conf file.");
+		goto out;
+	}
+	
 	if((pserd->N == pcase->cs_count) && (pserd->T >= (time(NULL) - pcase->cs_create)))
 	{
 		return 1;
 	}
+
+out:
 	return 0;
 }
 
@@ -71,8 +79,8 @@ fmd_case_create(fmd_event_t *pevt)
 	pcreate->dev_name = strdup(pevt->dev_name);
 	// wanglei add
 	//pcreate->last_eclass = strdup(pevt->ev_class);
-	//sprintf(pcreate->last_eclass,"%s",pevt->ev_class);
-	pcreate->err_id  =  pevt->ev_err_id;
+	sprintf(pcreate->last_eclass,"%s",pevt->ev_class);
+	pcreate->err_id = pevt->ev_err_id;
 
 	pcreate->cs_flag = CASE_CREATE;
 	pcreate->cs_create = time(NULL);
@@ -142,6 +150,7 @@ fmd_case_add(fmd_case_t *pcase, fmd_event_t *pevt)
 	strcpy(pcase->last_eclass, pevt->ev_class);
 	if(fmd_case_canfire(pcase, pevt->ev_class))
 	{
+		fmd_create_fault(pevt);
 		fmd_case_fire(pevt, pcase);
 	}
 
@@ -173,7 +182,7 @@ fmd_case_insert(fmd_event_t *pevt)
 	struct list_head *fmd_event = &fmd.fmd_esc.list_event;
 
 	struct list_head *pos;
-	
+
 	// repaired event.
 	list_for_each(pos, fmd_rep_case)
 	{
@@ -183,23 +192,22 @@ fmd_case_insert(fmd_event_t *pevt)
 			wr_log("", WR_LOG_DEBUG, "have repaired and again occur");
 			list_add(&pevt->ev_list, &p_rep_case->cs_event);
 			p_rep_case->cs_count ++;
-			fmd_case_fire(pevt, p_rep_case);
-			goto DONE;
+			if(difftime(time(NULL), p_rep_case->cs_last_fire) > 60*1)
+				fmd_case_fire(pevt, p_rep_case);
 		}
 	}
 
+	// must fault event
 	list_for_each(pos, fmd_fault)
 	{
 		fmd_fault_type_t *p_fault = list_entry(pos, fmd_fault_type_t, list);
-		if((strncmp(p_fault->eclass, pevt->ev_class, strlen(pevt->ev_class)-1) == 0)
-														||(pevt->ev_flag == AGENT_TODO))
+		if(strncmp(p_fault->eclass, pevt->ev_class, strlen(pevt->ev_class)-1) == 0)
 		{
-			wr_log("",WR_LOG_DEBUG, "fault event turn to case........");
+			wr_log("",WR_LOG_DEBUG, "fault event turn to case event.");
 			fmd_case_t *p_fault_case = fmd_case_create(pevt);
 			list_add(&p_fault_case->cs_list, fmd_case);
 			list_add(&pevt->ev_list, &p_fault_case->cs_event);
-			pevt->ev_flag = AGENT_TODO;
-			put_to_agents(pevt);
+			fmd_create_fault(pevt);
 			goto DONE;
 		}			
 	}
@@ -218,7 +226,8 @@ fmd_case_insert(fmd_event_t *pevt)
 				{
 					wr_log("", WR_LOG_DEBUG, "serd case exist and add.");
 					fmd_case_add(pcase, pevt);
-					goto LOG;
+					pevt->ev_flag = AGENT_TOLOG;
+					goto DONE;
 				}
 			}
 			//not find exist , and create new one
@@ -226,17 +235,13 @@ fmd_case_insert(fmd_event_t *pevt)
 			fmd_case_t *p_new_case = fmd_case_create(pevt);
 			list_add(&p_new_case->cs_list, fmd_case);
 			fmd_case_add(p_new_case, pevt);
-			goto LOG;
+			break;
 		}
 	}
-
-LOG:
-	wr_log("", WR_LOG_DEBUG, "event dispatch to agent.");
-	pevt->ev_flag = AGENT_TOLOG;
-	put_to_agents(pevt);
-	return 0;
 	
+	pevt->ev_flag = AGENT_TOLOG;
 DONE:
 	wr_log("", WR_LOG_DEBUG, "event dispatch to agent.");
+	put_to_agents(pevt);
 	return 0;
 }

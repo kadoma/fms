@@ -7,6 +7,20 @@
 #include "fmd_api.h"
 #include "fmd.h"
 
+void
+fmd_create_fault(fmd_event_t *pevt)
+{
+	char *p = NULL;
+	char eclass[128] = {0};
+
+	strcpy(eclass, pevt->ev_class);
+	p = strchr(eclass, '.');
+    sprintf(pevt->ev_class, "fault%s", p);
+	
+	pevt->ev_flag = AGENT_TODO;
+	return;
+}
+
 fmd_event_t *
 fmd_create_ereport(fmd_t *pfmd, const char *eclass, char *id, nvlist_t *p_nvl)
 {

@@ -1,23 +1,17 @@
 /*
  * fmadm.h
  *
- *  Created on: Oct 13, 2010
- *	Author: liubin
- *
- *  Description:
- *  	fmadm.h
- *
  */
 
-#ifndef	_FMADM_H
-#define	_FMADM_H
+#ifndef    _FMADM_H
+#define    _FMADM_H
 
 #include <fmd_adm.h>
 #include <stdio.h>
 
-#define	FMADM_EXIT_SUCCESS	0
-#define	FMADM_EXIT_ERROR	1
-#define	FMADM_EXIT_USAGE	2
+#define    FMADM_EXIT_SUCCESS    0
+#define    FMADM_EXIT_ERROR    1
+#define    FMADM_EXIT_USAGE    2
 
 extern void note(const char *format, ...);
 extern void warn(const char *format, ...);
@@ -36,5 +30,5 @@ extern int cmd_load(fmd_adm_t *, int, char *[]);
 //extern int cmd_reset(fmd_adm_t *, int, char *[]);
 //extern int cmd_rotate(fmd_adm_t *, int, char *[]);
 extern int cmd_unload(fmd_adm_t *, int, char *[]);
-#endif	/* _FMADM_H */
+#endif    /* _FMADM_H */
 

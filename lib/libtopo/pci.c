@@ -1,7 +1,7 @@
 /************************************************************
  * Copyright (C) inspur Inc. <http://www.inspur.com>
  * FileName:    pci.c
- * Author:      Inspur OS Team 
+ * Author:      Inspur OS Team
                 wang.leibj@inspur.com
  * Date:        2015-08-16
  * Description: get pci infomation function
@@ -184,28 +184,28 @@
 #define PCI_CB_SUBSYSTEM_ID     0x42
 
 struct pci_dev {
-	uint16_t vendor_id, device_id;		/* Identity of the device */
-	uint8_t config[256];			/* non-root users can only use first 64 bytes */
+    uint16_t vendor_id, device_id;        /* Identity of the device */
+    uint8_t config[256];            /* non-root users can only use first 64 bytes */
 };
 
 
 static uint16_t
 get_conf_word(struct pci_dev *pdev, unsigned int pos)
 {
-	if (pos > sizeof(pdev->config))
-		return 0;
+    if (pos > sizeof(pdev->config))
+        return 0;
 
-	return pdev->config[pos] | (pdev->config[pos + 1] << 8);
+    return pdev->config[pos] | (pdev->config[pos + 1] << 8);
 }
 
-#if 0 
+#if 0
 static uint8_t
 get_conf_byte(struct pci_dev *pdev, unsigned int pos)
 {
-	if (pos > sizeof(pdev->config))
-		return 0;
+    if (pos > sizeof(pdev->config))
+        return 0;
 
-	return pdev->config[pos];
+    return pdev->config[pos];
 }
 
 #endif
@@ -219,69 +219,69 @@ void
 fmd_scan_pci_dev(struct pci_dev *pdev, topo_pci_t *ppci, fmd_topo_t *ptopo)
 {
 
-	pdev->device_id = get_conf_word(pdev, PCI_DEVICE_ID);
-	uint16_t dclass = get_conf_word(pdev, PCI_CLASS_DEVICE);
-	switch (dclass >> 8) {
-		case PCI_BASE_CLASS_STORAGE:
-			ppci->pci_topoclass = TOPO_STORAGE;
-			if (dclass == PCI_CLASS_STORAGE_SCSI)
-				ppci->dev_icon = "scsi";
-			else if (dclass == PCI_CLASS_STORAGE_IDE)
-				ppci->dev_icon = "ide";
-			break;
-		case PCI_BASE_CLASS_NETWORK:
-			ppci->pci_topoclass = TOPO_NETWORK;
-			break;
-		case PCI_BASE_CLASS_MEMORY:
-			ppci->pci_topoclass = TOPO_MEMORY;
-			break;
-		case PCI_BASE_CLASS_BRIDGE:
-			ppci->pci_topoclass = TOPO_BRIDGE;
-			if (dclass == PCI_CLASS_BRIDGE_HOST)
-				ppci->dev_icon = "host";
-			else if (dclass == PCI_CLASS_BRIDGE_ISA)
-				ppci->dev_icon = "isa";
-			else if (dclass == PCI_CLASS_BRIDGE_PCI)
-				ppci->dev_icon = "pci";
-			break;
-		case PCI_BASE_CLASS_DISPLAY:
-			ppci->pci_topoclass = TOPO_DISPLAY;
-			break;
-		case PCI_BASE_CLASS_SYSTEM:
-			ppci->pci_topoclass = TOPO_SYSTEM;
-			break;
-		case PCI_BASE_CLASS_INPUT:
-			ppci->pci_topoclass = TOPO_INPUT;
-			break;
-		case PCI_BASE_CLASS_PROCESSOR:
-			ppci->pci_topoclass = TOPO_PROCESSOR;
-			break;
-		default:
-			ppci->pci_topoclass = TOPO_GENERIC;
-			break;
-	}
+    pdev->device_id = get_conf_word(pdev, PCI_DEVICE_ID);
+    uint16_t dclass = get_conf_word(pdev, PCI_CLASS_DEVICE);
+    switch (dclass >> 8) {
+        case PCI_BASE_CLASS_STORAGE:
+            ppci->pci_topoclass = TOPO_STORAGE;
+            if (dclass == PCI_CLASS_STORAGE_SCSI)
+                ppci->dev_icon = "scsi";
+            else if (dclass == PCI_CLASS_STORAGE_IDE)
+                ppci->dev_icon = "ide";
+            break;
+        case PCI_BASE_CLASS_NETWORK:
+            ppci->pci_topoclass = TOPO_NETWORK;
+            break;
+        case PCI_BASE_CLASS_MEMORY:
+            ppci->pci_topoclass = TOPO_MEMORY;
+            break;
+        case PCI_BASE_CLASS_BRIDGE:
+            ppci->pci_topoclass = TOPO_BRIDGE;
+            if (dclass == PCI_CLASS_BRIDGE_HOST)
+                ppci->dev_icon = "host";
+            else if (dclass == PCI_CLASS_BRIDGE_ISA)
+                ppci->dev_icon = "isa";
+            else if (dclass == PCI_CLASS_BRIDGE_PCI)
+                ppci->dev_icon = "pci";
+            break;
+        case PCI_BASE_CLASS_DISPLAY:
+            ppci->pci_topoclass = TOPO_DISPLAY;
+            break;
+        case PCI_BASE_CLASS_SYSTEM:
+            ppci->pci_topoclass = TOPO_SYSTEM;
+            break;
+        case PCI_BASE_CLASS_INPUT:
+            ppci->pci_topoclass = TOPO_INPUT;
+            break;
+        case PCI_BASE_CLASS_PROCESSOR:
+            ppci->pci_topoclass = TOPO_PROCESSOR;
+            break;
+        default:
+            ppci->pci_topoclass = TOPO_GENERIC;
+            break;
+    }
 
-	if (dclass == PCI_CLASS_BRIDGE_PCI) {
-//		ppci->pci_subdomain = get_conf_word(pdev, PCI_PRIMARY_BUS);
-		ppci->pci_subdomain = 0;
-		ppci->pci_subbus = get_conf_word(pdev, PCI_SECONDARY_BUS);
-	}
+    if (dclass == PCI_CLASS_BRIDGE_PCI) {
+//        ppci->pci_subdomain = get_conf_word(pdev, PCI_PRIMARY_BUS);
+        ppci->pci_subdomain = 0;
+        ppci->pci_subbus = get_conf_word(pdev, PCI_SECONDARY_BUS);
+    }
 
-	/* add to list */
-	char tmp[] = "pci";
-	if((ppci->dev_icon != NULL)&&(strcmp(tmp,ppci->dev_icon) == 0))
-	
-	//if (ppci->dev_icon == "pci")
-		list_add(&ppci->list, &ptopo->list_pci_bridge);	/* pci bridge */
-	else if (ppci->pci_topoclass == TOPO_STORAGE)
-		/* storage */
-		fmd_topo_walk_storage(ppci, ptopo);
-	else
-		list_add(&ppci->list, &ptopo->list_pci);	/* pci & host bridge */
+    /* add to list */
+    char tmp[] = "pci";
+    if((ppci->dev_icon != NULL)&&(strcmp(tmp,ppci->dev_icon) == 0))
+
+    //if (ppci->dev_icon == "pci")
+        list_add(&ppci->list, &ptopo->list_pci_bridge);    /* pci bridge */
+    else if (ppci->pci_topoclass == TOPO_STORAGE)
+        /* storage */
+        fmd_topo_walk_storage(ppci, ptopo);
+    else
+        list_add(&ppci->list, &ptopo->list_pci);    /* pci & host bridge */
 #if 0
-	/* TODO: one list can't add into two or more lists. */
-	if (ppci->dev_icon == "host")
-		list_add(&ppci->list, &ptopo->list_pci_host);	/* host bridge */
+    /* TODO: one list can't add into two or more lists. */
+    if (ppci->dev_icon == "host")
+        list_add(&ppci->list, &ptopo->list_pci_host);    /* host bridge */
 #endif
 }
 
@@ -295,58 +295,58 @@ fmd_scan_pci_dev(struct pci_dev *pdev, topo_pci_t *ppci, fmd_topo_t *ptopo)
 void
 fmd_topo_walk_pci(const char *dir, const char *file, fmd_topo_t *ptopo)
 {
-	char filename[50], *fptr;
-	char devicepath[100];
-	char *delims = ":.";
-	char *token = NULL;
-	int fd = 0;
-	uint32_t p[4], *ptr;
-	topo_pci_t *ppci = NULL;
-	struct pci_dev pdev;
+    char filename[50], *fptr;
+    char devicepath[100];
+    char *delims = ":.";
+    char *token = NULL;
+    int fd = 0;
+    uint32_t p[4], *ptr;
+    topo_pci_t *ppci = NULL;
+    struct pci_dev pdev;
 
-	/* malloc */
-	ppci = (topo_pci_t *)malloc(sizeof (topo_pci_t));
-	assert(ppci != NULL);
-	memset(ppci, 0, sizeof (topo_pci_t));
+    /* malloc */
+    ppci = (topo_pci_t *)malloc(sizeof (topo_pci_t));
+    assert(ppci != NULL);
+    memset(ppci, 0, sizeof (topo_pci_t));
 
-	memset(filename, 0, 50 * sizeof (char));
-	memset(devicepath, 0, 100 * sizeof (char));
-	memset(&pdev, 0, sizeof (struct pci_dev));
-	memset(p, 0, 4 * sizeof (uint32_t));
+    memset(filename, 0, 50 * sizeof (char));
+    memset(devicepath, 0, 100 * sizeof (char));
+    memset(&pdev, 0, sizeof (struct pci_dev));
+    memset(p, 0, 4 * sizeof (uint32_t));
 
-	strcpy(filename, file);
-	sprintf(devicepath, "%s/%s/config", dir, file);
+    strcpy(filename, file);
+    sprintf(devicepath, "%s/%s/config", dir, file);
 
-	ptr = p;
-	fptr = filename;
-	while ((token = strsep(&fptr, delims)) != NULL)
-		*ptr++ = (uint32_t)strtol(token, NULL, 16);
-	ppci->pci_system = 0;
-	ppci->pci_chassis = p[0];	/* FIXME: pci domain */
-	ppci->pci_board = 0;		/* motherboard: 0 */
-	ppci->pci_hostbridge = p[1];	/* bus */
-	ppci->pci_slot = p[2];		/* slot */
-	ppci->pci_func = p[3];		/* func */
-	
-	if ((fd = open(devicepath, O_RDONLY)) < 0) {
-		perror("fmd topo open pci config");
-		return;
-	}
+    ptr = p;
+    fptr = filename;
+    while ((token = strsep(&fptr, delims)) != NULL)
+        *ptr++ = (uint32_t)strtol(token, NULL, 16);
+    ppci->pci_system = 0;
+    ppci->pci_chassis = p[0];    /* FIXME: pci domain */
+    ppci->pci_board = 0;        /* motherboard: 0 */
+    ppci->pci_hostbridge = p[1];    /* bus */
+    ppci->pci_slot = p[2];        /* slot */
+    ppci->pci_func = p[3];        /* func */
 
-	if (read(fd, pdev.config, 64) == 64) {
-		if (read(fd, pdev.config + 64, sizeof(pdev.config) - 64) != sizeof(pdev.config) - 64)
-			memset(pdev.config + 64, 0, sizeof(pdev.config) - 64);
-	}
-	close(fd);
+    if ((fd = open(devicepath, O_RDONLY)) < 0) {
+        perror("fmd topo open pci config");
+        return;
+    }
 
-	fmd_scan_pci_dev(&pdev, ppci, ptopo);
+    if (read(fd, pdev.config, 64) == 64) {
+        if (read(fd, pdev.config + 64, sizeof(pdev.config) - 64) != sizeof(pdev.config) - 64)
+            memset(pdev.config + 64, 0, sizeof(pdev.config) - 64);
+    }
+    close(fd);
+
+    fmd_scan_pci_dev(&pdev, ppci, ptopo);
 }
 
 
 /**
  * fmd_topo_walk_subpci
- *	exclude /sys/bus/pci/devices subdevices, then include to
- *	pci bridge device tree.
+ *    exclude /sys/bus/pci/devices subdevices, then include to
+ *    pci bridge device tree.
  *
  * @param
  * @return
@@ -354,30 +354,30 @@ fmd_topo_walk_pci(const char *dir, const char *file, fmd_topo_t *ptopo)
 void
 fmd_topo_walk_subpci(fmd_topo_t *ptopo)
 {
-	struct list_head *pos = NULL;
-	topo_pci_t *bpci = NULL;
+    struct list_head *pos = NULL;
+    topo_pci_t *bpci = NULL;
 
-	list_for_each(pos, &ptopo->list_pci_bridge) {
-		bpci = list_entry(pos, topo_pci_t, list);
+    list_for_each(pos, &ptopo->list_pci_bridge) {
+        bpci = list_entry(pos, topo_pci_t, list);
 
-		struct list_head *ppos = NULL;
-		topo_pci_t *spci = NULL;
-		list_for_each(ppos, &ptopo->list_pci) {
-			spci = list_entry(ppos, topo_pci_t, list);
+        struct list_head *ppos = NULL;
+        topo_pci_t *spci = NULL;
+        list_for_each(ppos, &ptopo->list_pci) {
+            spci = list_entry(ppos, topo_pci_t, list);
 
-			if ((spci->pci_hostbridge == bpci->pci_subbus)
-			&& (spci->pci_chassis == bpci->pci_subdomain)) { 
-				spci->pci_chassis = bpci->pci_chassis;
-				spci->pci_hostbridge = bpci->pci_hostbridge;
-				spci->pci_subslot = spci->pci_slot;
-				spci->pci_subfunc = spci->pci_func;
-				spci->pci_slot = bpci->pci_slot;
-				spci->pci_func = bpci->pci_func;
-				spci->pci_subdomain = bpci->pci_subdomain;
-				spci->pci_subbus = bpci->pci_subbus;
-			}
-		}
-	}
+            if ((spci->pci_hostbridge == bpci->pci_subbus)
+            && (spci->pci_chassis == bpci->pci_subdomain)) {
+                spci->pci_chassis = bpci->pci_chassis;
+                spci->pci_hostbridge = bpci->pci_hostbridge;
+                spci->pci_subslot = spci->pci_slot;
+                spci->pci_subfunc = spci->pci_func;
+                spci->pci_slot = bpci->pci_slot;
+                spci->pci_func = bpci->pci_func;
+                spci->pci_subdomain = bpci->pci_subdomain;
+                spci->pci_subbus = bpci->pci_subbus;
+            }
+        }
+    }
 }
 
 
@@ -390,33 +390,33 @@ fmd_topo_walk_subpci(fmd_topo_t *ptopo)
 int
 fmd_topo_pci(const char *dir, fmd_topo_t *ptopo)
 {
-	struct dirent *dp;
-	const char *p;
-	DIR *dirp;
-	int ret = 0;
+    struct dirent *dp;
+    const char *p;
+    DIR *dirp;
+    int ret = 0;
 
-	if ((dirp = opendir(dir)) == NULL){
-		return OPENDIR_FAILED; /* failed to open directory; just skip it */
-	}
-	while ((dp = readdir(dirp)) != NULL) {
-		if (dp->d_name[0] == '.')
-			continue; /* skip "." and ".." */
+    if ((dirp = opendir(dir)) == NULL){
+        return OPENDIR_FAILED; /* failed to open directory; just skip it */
+    }
+    while ((dp = readdir(dirp)) != NULL) {
+        if (dp->d_name[0] == '.')
+            continue; /* skip "." and ".." */
 
-		p = dp->d_name;
+        p = dp->d_name;
 
-		(void) fmd_topo_walk_pci(dir, p, ptopo);
-	}
+        (void) fmd_topo_walk_pci(dir, p, ptopo);
+    }
 
-	(void) closedir(dirp);
+    (void) closedir(dirp);
 
-	/* network */
-	ret = fmd_topo_net(DIR_SYS_NET, ptopo);
-	if(ret < 0) {
-		wr_log("",WR_LOG_ERROR,"Failed to get network topology info.");
-		return ret;
-	}
+    /* network */
+    ret = fmd_topo_net(DIR_SYS_NET, ptopo);
+    if(ret < 0) {
+        wr_log("",WR_LOG_ERROR,"Failed to get network topology info.");
+        return ret;
+    }
 
-	(void) fmd_topo_walk_subpci(ptopo);
+    (void) fmd_topo_walk_subpci(ptopo);
 
-	return FMD_SUCCESS;
+    return FMD_SUCCESS;
 }

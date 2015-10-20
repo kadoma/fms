@@ -27,11 +27,11 @@ put_to_agent(fmd_event_t *event, agent_module_t *pm)
 {
 	ring_t *ring = pm->ring;
 
-	sem_wait(&ring->ring_empty);
+	sem_wait(&ring->ring_vaild);
 	pthread_mutex_lock(&ring->ring_lock);
 	ring_add(ring, event);
 	pthread_mutex_unlock(&ring->ring_lock);
-	sem_post(&ring->ring_full);
+	sem_post(&ring->ring_contain);
 
 	return 0;
 }
@@ -140,17 +140,13 @@ fmd_case_close(fmd_event_t *pevt)
 			list_del(&pcase->cs_list);
 			list_add(&pcase->cs_list, &fmd.list_repaired_case);
 			list_add(&pevt->ev_list, &pcase->cs_event);
-			
-			wr_log("", WR_LOG_NORMAL, "case had been processed, delete and add...................");
+			wr_log("", WR_LOG_NORMAL, "case had been processed, delete and add.");
+			pevt->ev_flag = AGENT_TOLIST;
+			put_to_agents(pevt);
 			return 0;
 		}
 	}
-
-	if(pevt->ev_refs >= 2){
-		def_free(pevt->ev_class);
-		def_free(pevt);
-		return 0;
-	}
+	
 	wr_log("", WR_LOG_ERROR, "event close error.");
 	return -1;
 }
@@ -160,7 +156,7 @@ int
 fmd_proc_event(fmd_event_t *p_event)
 {
 	int ret= event_disp_dest(p_event);
-	wr_log("dispatch event", WR_LOG_DEBUG, "dispatch event is %d.", ret);
+	wr_log("dispatch event", WR_LOG_DEBUG, "dispatch event is %d type.", ret);
 	if(ret == -1)
 		wr_log("proc event", WR_LOG_ERROR, "unknow event and lost.");
 
@@ -188,16 +184,18 @@ RETRY:
 
     while(ring_stat(p_ring) != 0)
     {
+    	sem_wait(&p_ring->ring_contain);
+		wr_log("", WR_LOG_DEBUG, "queue start wait ring contain.");
         pthread_mutex_lock(&p_ring->ring_lock);
         evt = (fmd_event_t *)ring_del(p_ring);
         pthread_mutex_unlock(&p_ring->ring_lock);
 
+		sem_post(&p_ring->ring_vaild);
+		wr_log("", WR_LOG_DEBUG, "queue start wait ring contain. event is [%s]", evt->ev_class);
         if(evt != NULL)
         	fmd_proc_event(evt);
-		sleep(1);
 		wr_log("", WR_LOG_DEBUG, "queue stat count is [%d]", p_ring->count);
     }
-	sleep(1);
 	goto RETRY;
 	
 }

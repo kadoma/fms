@@ -17,6 +17,8 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <dlfcn.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "wrap.h"
 #include "logging.h"
@@ -26,7 +28,6 @@ void
 fmd_timer_fire(fmd_timer_t *ptimer)
 {
     pthread_mutex_lock(&ptimer->timer_lock);
-	wr_log("", WR_LOG_DEBUG, "fmd time fire again....");
     pthread_cond_signal(&ptimer->cond_signal);
 	wr_log("", WR_LOG_DEBUG, "fmd time fire again ok ....");
     pthread_mutex_unlock(&ptimer->timer_lock);
@@ -278,6 +279,14 @@ rv_b2daemon()
 
     setpgrp( );
     return;
+}
+
+int
+modprobe_kfm(void)
+{
+	system("/sbin/insmod /lib/modules/`uname -r`/kernel/fm/kfm.ko 1>/dev/null 2>/dev/null");
+	
+	return 0;
 }
 
 void usage() 

@@ -24,46 +24,34 @@ trace_probe(evtsrc_module_t *emp)
 	
     nvlist_t 	*nvl = NULL;
     struct list_head *head = nvlist_head_alloc();
-
-	//char *disk = NULL;
-/*
+	/*
 	//event list
 	nvl = nvlist_alloc();
 	sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.cpu.unknown_ue");
+    strcpy(nvl->value, "ereport.trace.unknown_ue");
     nvl->dev_id = 0x02;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 3;	
-*/
+	nvl->node_num = 1;	
+
 	//fault
 	nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.cpu.mc_ce");
+    strcpy(nvl->value, "ereport.trace.mc_ce");
     nvl->dev_id = 0x01;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 3;
-/*
+	nvl->node_num = 2;
+*/
 	//serd
 	nvl = nvlist_alloc();
 	sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.cpu.bus_ce");
+    strcpy(nvl->value, "ereport.trace.qpi_ue");
     nvl->dev_id = 0x01;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
 	nvl->node_num = 3;
-*/
-/*
-	//direct fault out of agent conf 
-	nvl = nvlist_alloc();
-    sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "fault.cpu.internal");
-    nvl->dev_id = 0x04;
-    nvl->data=strdup("a private pointer.");
-    nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 4;
-*/
+
     return head;
 }
 

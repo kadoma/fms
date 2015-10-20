@@ -1,10 +1,10 @@
 /************************************************************
  * Copyright (C) inspur Inc. <http://www.inspur.com>
  * FileName:    load.c
- * Author:      Inspur OS Team 
+ * Author:      Inspur OS Team
                 wang.leibj@inspur.com
  * Date:        2015-09-25
- * Description: load specified fault manager module 
+ * Description: load specified fault manager module
  *
  ************************************************************/
 
@@ -24,24 +24,24 @@
 
 static void usage(void)
 {
-	fputs("Usage: fmadm modinfo\n"
-	      , stderr);
+    fputs("Usage: fmadm modinfo\n"
+          , stderr);
 }
 
 int get_module_info(fmd_adm_t *adm)
 {
-	if(fmd_adm_mod_iter(adm) != 0)
-		die("FMD:failed to load module");
-	struct list_head *pos = NULL;
-	fmd_adm_modinfo_t  *mp = NULL;
-	printf("fmd load module:\n");
-	list_for_each(pos,&adm->mod_list){
-		mp = list_entry(pos,fmd_adm_modinfo_t,mod_list);
-		faf_module_t *fafm =  NULL;
-		fafm = &mp->fafm;
-		printf("%s\n",fafm->mod_path);
-	}
-	return 0;	
+    if(fmd_adm_mod_iter(adm) != 0)
+        die("FMD:failed to load module");
+    struct list_head *pos = NULL;
+    fmd_adm_modinfo_t  *mp = NULL;
+    printf("fmd load module:\n");
+    list_for_each(pos,&adm->mod_list){
+        mp = list_entry(pos,fmd_adm_modinfo_t,mod_list);
+        faf_module_t *fafm =  NULL;
+        fafm = &mp->fafm;
+        printf("%s\n",fafm->mod_path);
+    }
+    return 0;
 }
 
 /*
@@ -54,7 +54,7 @@ cmd_modinfo(fmd_adm_t *adm, int argc, char *argv[])
 {
     if (argc != 1) {
         usage();
-	return (FMADM_EXIT_SUCCESS);
+    return (FMADM_EXIT_SUCCESS);
     }
 
     int rt = get_module_info(adm);

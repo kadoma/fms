@@ -145,19 +145,19 @@ _stat_esc(void)
 	struct fmd_fault_type *pfault = NULL;
 	struct fmd_event_type *pevent = NULL;
 
-	wr_log("", WR_LOG_DEBUG, "print esc file......");
-	
+	wr_log("", WR_LOG_DEBUG, "print esc file serd .\n");
 	list_for_each(pos, &pesc->list_serd) {
 		pserd = list_entry(pos, struct fmd_serd_type, list);
 		wr_log("", WR_LOG_DEBUG ,"serd eclass is %s", pserd->eclass);
 	}
 
+	wr_log("", WR_LOG_DEBUG, "print esc file fault. \n");
 	list_for_each(pos, &pesc->list_fault) {
 		pfault = list_entry(pos, struct fmd_fault_type, list);
 		wr_log("", WR_LOG_DEBUG, "fault eclass is %s", pfault->eclass);
 	}
 
-
+	wr_log("", WR_LOG_DEBUG, "print esc file event. \n");
 	list_for_each(pos, &pesc->list_event) {
 		pevent = list_entry(pos, struct fmd_event_type, list);
 		wr_log("", WR_LOG_DEBUG, "event eclass is %s", pevent->eclass);

@@ -386,12 +386,12 @@ static struct genl_ops kfm_genl_ops[] = {
 static int __init 
 kfm_genl_register(void)
 {
-
+// kernel 3.10.0-229 centos 7.1
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,1,1)			/* for kanas (kernel 4.1.1) */
 	return genl_register_family_with_ops_groups(&kfm_genl_family, 
 											kfm_genl_ops,
 											kfm_mcgrps);
-#else    /* for centos 7 (kernel 3.10.0) */
+#else    /* for centos 7.0 (kernel 3.10.0) */
 	{
 		int ret = 0, i;
 		

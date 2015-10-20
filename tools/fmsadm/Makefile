@@ -13,7 +13,7 @@ CFLAGS= -g -Wall -O0 \
 	-L/usr/lib/fms \
 	-L/usr/lib 
 
-LDFLAGS= -ldl -lpthread -lrt -ladm -lmsg -lfmd
+LDFLAGS= -ldl -lpthread -lrt -ladm -ldict -lfmd
 
 SRCS = $(wildcard *.c)
 

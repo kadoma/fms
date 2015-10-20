@@ -42,8 +42,9 @@
 #define LIST_LOGED_SUCCESS  0x0104
 #define LIST_LOGED_FAILED  0x0105
 
-#define AGENT_TODO         0x0106
-#define AGENT_TOLOG        0x0107
+#define AGENT_TODO         0x0106  //action  fault file
+#define AGENT_TOLOG        0x0107   // to log serd file
+#define AGENT_TOLIST       0X0108   // to log list file     
 
 typedef struct _fmd_event_{
 	uint64_t 			ev_flag;       // agent todo some , to log.
@@ -64,5 +65,6 @@ typedef struct _fmd_event_{
 
 extern fmd_event_t * fmd_create_listevent(fmd_event_t *fault, int action);
 extern fmd_event_t * fmd_create_casefault(fmd_t *p_fmd, fmd_case_t *pcase);
+extern void fmd_create_fault(fmd_event_t *pevt);
 
 #endif // fmd_event.h
