@@ -51,5 +51,5 @@ Rely on the fault database, and the hardware failure rate;
 accurate failure prediction and hardware evaluation.
 Predictive Failure  Analysis(PFA)
 
-![image](https://github.com/kadoma/fms/tree/master/fms_conf/doc/fault1.jpg)
-![image](https://github.com/kadoma/fms/tree/master/fms_conf/doc/fault2.jpg)
+![image](https://github.com/kadoma/fms/blob/master/fms_conf/doc/fault1.jpg)
+![image](https://github.com/kadoma/fms/blob/master/fms_conf/doc/fault2.jpg)
