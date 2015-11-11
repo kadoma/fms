@@ -87,12 +87,12 @@ _print_mem_topo(fmd_topo_t *pptopo)
 
     /* traverse mem */
     printf("           MEMORY \n");
-    printf("node  socket  controller  dimm\n");
+    printf("node  socket  controller  dimm    size\n");
     list_for_each(pos,&pptopo->list_mem){
         pmem = list_entry(pos,topo_mem_t,list);
 
-        printf("%3d%7d%9d%10d\n",pmem->mem_chassis,
-            pmem->mem_socket,pmem->mem_controller,pmem->mem_dimm);
+        printf("  %-7d%-9d%-9d%-7d%ld\n",pmem->mem_chassis,
+            pmem->mem_socket,pmem->mem_controller,pmem->mem_dimm,pmem->end-pmem->start);
     }/* list_for_each */
 }
 
@@ -191,7 +191,6 @@ _fmd_topo(fmd_t *fmd)
     if(ret < 0) {
 /* Only for DEBUG */
 /* Maybe SMP-Arch */
-        fmd_debug;
         fmd_topo_walk_cpu("/sys/devices/system/cpu", 0, ptopo);
     }
 

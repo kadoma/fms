@@ -192,7 +192,7 @@ print_topo_thread(core_t *cp)
     /* traverse thread */
     list_for_each(pos, &cp->ht_head) {
         tp = list_entry(pos, thread_t, list);
-        printf("|       |       |       |--thread %d     |       |       |       |\n", tp->tnode->tn_value);
+        printf("|       |       |       |--thread %-3d   |       |       |       |\n", tp->tnode->tn_value);
     }
 }
 
@@ -204,7 +204,7 @@ print_topo_dimm(memcontroller_t *mcp)
     /* traverse dimm */
     list_for_each(pos, &mcp->dimm_head) {
         dp = list_entry(pos, dimm_t, list);
-        printf("|       |       |       |-- dimm%d       |       |       |       |\n", dp->tnode->tn_value);
+        printf("|       |       |   -- dimm%-4d:%10ld      |       |       |\n", dp->tnode->tn_value,dp->size);
     }
 }
 
@@ -219,7 +219,7 @@ print_topo_core(chip_t *chp)
     list_for_each(pos, &chp->core_head) {
         cp = list_entry(pos, core_t, list);
         printf("|       |       |-------------------------------|       |       |\n");
-        printf("|       |       | core%d                         |       |       |\n", cp->tnode->tn_value);
+        printf("|       |       | core%-3d                       |       |       |\n", cp->tnode->tn_value);
         printf("|       |       |       |---------------|       |       |       |\n");
         print_topo_thread(cp);
         printf("|       |       |       |---------------|       |       |       |\n");
@@ -233,10 +233,8 @@ print_topo_core(chip_t *chp)
             mcp = list_entry(ppos, memcontroller_t, list);
 
             printf("|       |       |-------------------------------|       |       |\n");
-            printf("|       |       |memory-controller%d             |       |       |\n", mcp->tnode->tn_value);
-            printf("|       |       |       |---------------|       |       |       |\n");
+            printf("|       |       |memory-controller%-3d           |       |       |\n", mcp->tnode->tn_value);
             print_topo_dimm(mcp);
-            printf("|       |       |       |---------------|       |       |       |\n");
             printf("|       |       |-------------------------------|       |       |\n");
         }
     }
@@ -304,7 +302,7 @@ print_topo_motherboard(motherboard_t *mb)
     list_for_each(pos, &mb->chip_head) {
         chp = list_entry(pos, chip_t, list);
         printf("|       |-----------------------------------------------|       |\n");
-        printf("|       | socket%d                                       |       |\n", chp->tnode->tn_value);
+        printf("|       | socket%-3d                                     |       |\n", chp->tnode->tn_value);
         print_topo_core(chp);
         printf("|       |-----------------------------------------------|       |\n");
         printf("|                                                               |\n");
@@ -334,7 +332,7 @@ static void
 print_topo_chassis(chassis_t *csp)
 {
     printf("|---------------------------------------------------------------|\n");
-    printf("| node%d                                                         |\n", csp->tnode->tn_value);
+    printf("| node%-3d                                                       |\n", csp->tnode->tn_value);
     print_topo_motherboard(csp->mb);
     printf("|---------------------------------------------------------------|\n");
      printf("\n");
@@ -739,6 +737,7 @@ fmd_topo_tree(fmd_topo_t *ptp)
         if (pmctl->dimm == NULL) {        /* dimm list head */
             pmctl->dimm = topo_dimm_alloc();
             pmctl->dimm->tnode->tn_value = pmem->mem_dimm;
+            pmctl->dimm->size = pmem->end - pmem->start;
             pdm = pmctl->dimm;
             list_add(&pdm->list, &pmctl->dimm_head);
         } else {
@@ -756,6 +755,7 @@ fmd_topo_tree(fmd_topo_t *ptp)
             if (pdm == NULL) {    /* dimm not found */
                 pdm = topo_dimm_alloc();
                 pdm->tnode->tn_value = pmem->mem_dimm;
+                pdm->size = pmem->end - pmem->start;
                 list_add(&pdm->list, &pmctl->dimm_head);
             }
         }

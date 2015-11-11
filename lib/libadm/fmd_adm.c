@@ -171,8 +171,7 @@ fmd_adm_get_list(fmd_adm_t *ap,char* cmd)
     int len = strlen(cmd);
     //char cmd[] = "GET CASELIST";
 
-//    printf("FMD ADM: Clnt is about to send message for getting caselist.\n");
-int ret = 0;
+    int ret = 0;
     ret = mq_send(mqd, (void *)cmd, len * sizeof (char), 0);
 //    sleep(1);
     if (ret < 0) {
@@ -236,84 +235,6 @@ fmd_adm_alloc_mod(void)
         return mod;
 }
 
-
-#if 0
-static void
-fmd_adm_case_url(fmd_adm_caseinfo_t *aci)
-{
-    faf_case_t *fafc = NULL;
-    uint64_t rscid;
-    //uint64_t state;
-    uint64_t topoclass;
-
-    fafc = &aci->fafc;
-    rscid = fafc->fafc_rscid;
-    //state = fafc->fafc_state;
-    topoclass = rscid & 0x1f;
-
-    if (topoclass == TOPO_PROCESSOR) {
-        uint32_t chassis, socket, core, thread;
-        chassis = (rscid >> 48) & 0x0ff;
-        socket = (rscid >> 32) & 0x0ff;
-        core = (rscid >> 24) & 0x0ff;
-        thread = (rscid >> 16) & 0x0ff;
-
-        sprintf(aci->aci_fru, "cpu://chassis=%d/motherboard=0/ \
-            socket=%d/core=%d/thread=%d",
-            chassis, socket, core, thread);
-        sprintf(aci->aci_asru, "cpu:///cpuid=%d", 0/*cpuid*/);
-    } else if ((topoclass == TOPO_BRIDGE) ||
-           (topoclass == TOPO_NETWORK)) {
-        uint32_t chassis, hostbridge, slot, func;
-        uint32_t subdomain, subbus, subslot, subfunc;
-        chassis = (rscid >> 48) & 0x0ff;
-        hostbridge = (rscid >> 32) & 0x0ff;
-        slot = (rscid >> 24) & 0x0ff;
-        func = (rscid >> 20) & 0x0f;
-        subdomain = (rscid >> 18) & 0x03;
-        subbus = (rscid >> 10) & 0x0ff;
-        subslot = (rscid >> 7) & 0x07;
-        subfunc = (rscid >> 5) & 0x03;
-
-        sprintf(aci->aci_fru, "hc://chassis=%d/motherboard=0/ \
-            hostbridge=%d/slot=%d/func=%d/subdomain=%d/ \
-            subbus=%d/subslot=%d/subfunc=%d",
-            chassis, hostbridge, slot, func,
-            subdomain, subbus, subslot, subfunc);
-        sprintf(aci->aci_asru, "pci:///pci_name=%s", aci->aci_fru/*pciname*/);
-    } else if (topoclass == TOPO_STORAGE) {
-        uint32_t chassis, hostbridge, slot, func;
-        uint32_t host, channel, target, lun;
-        chassis = (rscid >> 48) & 0x0ff;
-        hostbridge = (rscid >> 32) & 0x0ff;
-        slot = (rscid >> 24) & 0x0ff;
-        func = (rscid >> 20) & 0x0f;
-        host = (rscid >> 17) & 0x07;
-        channel = (rscid >> 14) & 0x07;
-        target = (rscid >> 11) & 0x07;
-        lun = (rscid >> 8) & 0x07;
-
-        sprintf(aci->aci_fru, "hc://chassis=%d/motherboard=0/ \
-            hostbridge=%d/slot=%d/func=%d/host=%d/ \
-            channel=%d/target=%d/lun=%d",
-            chassis, hostbridge, slot, func,
-            host, channel, target, lun);
-        sprintf(aci->aci_asru, "storage:///storage_name=%s", aci->aci_fru/*storagename*/);
-    } else if (topoclass == TOPO_MEMORY) {
-        uint32_t chassis, socket, controller, dimm;
-        chassis = (rscid >> 48) & 0x0ff;
-        socket = (rscid >> 32) & 0x0ff;
-        controller = (rscid >> 24) & 0x0ff;
-        dimm = (rscid >> 16) & 0x0ff;
-
-        sprintf(aci->aci_fru, "hc://chassis=%d/motherboard=0/ \
-            socket=%d/memory-controller=%d/dimm=%d",
-            chassis, socket, controller, dimm);
-        sprintf(aci->aci_asru, "mem:///physic_address=%s",aci->aci_fru/*address*/);
-    }
-}
-#endif
-
 static int
 fmd_adm_get_caseinfo(fmd_adm_t *ap)
 {
@@ -328,7 +249,6 @@ fmd_adm_get_caseinfo(fmd_adm_t *ap)
 
     if (secnum == 0)
         return (-1);    /* receive nothing */
-
     for (i = 1; i < secnum + 1; i++) {
         fmd_adm_caseinfo_t *aci = fmd_adm_alloc_aci();
         memcpy(&aci->fafc, fafc, sizeof (faf_case_t));
@@ -336,13 +256,13 @@ fmd_adm_get_caseinfo(fmd_adm_t *ap)
         /* create url */
 //        fmd_adm_case_url(aci);
         sprintf(aci->aci_fru,"%s",fafc->fafc_fault);
-
         list_add(&aci->aci_list, &ap->cs_list);
 
+ //       fafc = (void *)(tmp + fafh->fafh_hdrsize + i * sizeof (faf_case_t));
         fafc = (void *)(ap->adm_buf + fafh->fafh_hdrsize + i * sizeof (faf_case_t));
     }
 
-    return (0);
+    return secnum;
 }
 
 static int
@@ -378,18 +298,29 @@ fmd_adm_get_modinfo(fmd_adm_t *ap)
  * list of UUIDs, sort them, then obtain the case information for each.
  */
 int
-fmd_adm_case_iter(fmd_adm_t *ap,char* type)
+fmd_adm_case_iter(fmd_adm_t *ap)
 {
     int ret = 0;
+    int num = 20;
+    int index = 0;
     char cmd[32];
-    sprintf(cmd,"GET CASELIST :%s",type);
-    ret = fmd_adm_get_list(ap,cmd);
 
-    if (ret != 0)
-        return (fmd_adm_set_errno(ap, EPROTO));
+    while ((num > 0 && index == 0) || num == 20){
 
-    if (fmd_adm_get_caseinfo(ap) != 0)
-        return (-1);
+        sprintf(cmd,"GET CASELIST:%d",FAF_NUM*index);
+        index++;
+
+        ret = fmd_adm_get_list(ap,cmd);
+        if (ret < 0)
+            return (fmd_adm_set_errno(ap, EPROTO));
+
+        num = fmd_adm_get_caseinfo(ap);
+
+        sleep(1);
+
+        if (num < 0)
+            return (-1);
+    }
 
     return (0);
 }
@@ -417,22 +348,41 @@ fmd_adm_mod_iter(fmd_adm_t *ap)
 
 int
 fmd_adm_load_module(fmd_adm_t *ap ,char *path){
-    char cmd[128];
-    sprintf(cmd,"LOAD :%s",path);
-
+    char cmd[128] = "LOAD:";
+    strcpy(cmd+5,path);
     if((fmd_adm_get_list(ap,cmd)) != 0)
         return (fmd_adm_set_errno(ap, EPROTO));
+
+    if(strstr((char*)ap->adm_buf,"LOAD:") != NULL){
+        return (-1);
+    }
+
     printf("%s\n",(char*)ap->adm_buf);
+
+    if(strstr(ap->adm_buf,"failed") != 0){
+        printf("please view /var/log/fms/fms.log for load failed reason\n");
+        return (-1);
+    }
     return 0;
 }
 
 int
 fmd_adm_unload_module(fmd_adm_t *ap ,char *path){
-    char cmd[128];
-    sprintf(cmd,"UNLOAD :%s",path);
+    char cmd[128]= "UNLOAD:";
+    strcpy(cmd+7,path);
 
     if((fmd_adm_get_list(ap,cmd)) != 0)
         return (fmd_adm_set_errno(ap, EPROTO));
+
+    if(strstr((char*)ap->adm_buf,"UNLOAD:") != NULL){
+        return (-1);
+    }
+
     printf("%s\n",(char*)ap->adm_buf);
-        return 0;
+
+    if(strstr(ap->adm_buf,"failed")!= 0){
+        printf("please view /var/log/fms/fms.log for unload failed  reason\n");
+        return (-1);
+    }
+    return 0;
 }

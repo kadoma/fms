@@ -6,7 +6,7 @@ OUTPUT=$(BASEPATH)
 
 TARGET=fmd
 
-LDFLAGS= -lpthread -ldl -lfmd -levt -lcase -lesc
+LDFLAGS= -lpthread -ldl -lfmd -levt -lcase -lesc -ldict
 
 CFLAGS= -g -O0 -Wall\
 	-Wno-unused-function \

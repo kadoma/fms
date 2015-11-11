@@ -16,6 +16,8 @@ event ereport.cpu.internal_unclassified_ce
 event ereport.cpu.internal_unclassified_ue
 event ereport.cpu.tmp_high
 event ereport.cpu.tmp_low
+event ereport.cpu.mem_ce
+event ereport.cpu.mem_ue
 event ereport.cpu.unknown_ce
 event ereport.cpu.unknown_ue
 
@@ -28,7 +30,7 @@ engine ereport.cpu.tlb_ce {N=24, T=72}
 engine ereport.cpu.tlb_ue {N=3, T=72}
 engine ereport.cpu.bus_ce {N=5, T=1}
 engine ereport.cpu.bus_ue {N=3, T=72}
-engine ereport.memory.mempage {N=10, T=72}
+engine ereport.cpu.mempage {N=10, T=72}
 engine ereport.cpu.pcu_ce {N=24, T=72}
 engine ereport.cpu.pcu_ue {N=3, T=72}
 engine ereport.cpu.qpi_ce {N=24, T=72}

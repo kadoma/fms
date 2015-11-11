@@ -41,6 +41,7 @@ typedef struct topo_rank {
 
 /* memory dimm */
 typedef struct topo_dimm{
+    uint64_t size;
 	tnode_t *tnode;
 //	rank_t *rank;
 	struct list_head list;

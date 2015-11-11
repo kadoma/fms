@@ -187,14 +187,21 @@ dump_mce(struct mce *m, unsigned recordlen, struct fms_cpumem **fc, int *fc_num)
 		
 		resolveaddr(m->addr, &cm[i]);
 
-		if(cm[i].flags & FMS_CPUMEM_PAGE_ERROR){
+		if(mm[i].flags & FMS_CPUMEM_PAGE_ERROR){
+			cm[i].flags |= FMS_CPUMEM_PAGE_ERROR;
 		    /* int ps = getpagesize();	 kernel PAGE_SHIFT 12 */	
 			cm[i].maddr = m->addr & ~((u64)PAGE_SIZE-1);
 			cm[i].fid = cm[i].maddr;
 		} else {
-			cm[i].fid = (mm[i].id | (cpu << 31));
+			cm[i].fid = (mm[i].id | (cpu << 32));
 		}
 		strcpy(cm[i].fname, mm[i].name);
+
+		if (strcmp(mm[i].name, "cpu") == 0) {
+			cm[i].dev_id = cpu;
+		} else if (strcmp(mm[i].name, "memory") == 0) { 
+			/* todo....   dimm or physical id */
+		}
 		
 		strncpy(cm[i].mnemonic, mm[i].mnemonic, FMS_PATH_MAX - 1);
 		xfree(mm[i].mnemonic);
@@ -217,7 +224,7 @@ process_mcefd()
 	int i, j;
 	char fullclass[FMS_PATH_MAX];
 	nvlist_t *nvl;
-	struct list_head *head = nvlist_head_alloc();
+	struct list_head *head = NULL;
 	
 	if (md.recordlen == 0) {
 		wr_log(CMES_LOG_DOMAIN, WR_LOG_WARNING, "no data in mce record");
@@ -241,7 +248,8 @@ process_mcefd()
 		    (flags & (1 << MCE_OVERFLOW)))
 			wr_log(CMES_LOG_DOMAIN, WR_LOG_WARNING, "MCE buffer is overflowed.");
 	}
-	
+
+	head = nvlist_head_alloc();
 	for (i = 0; i < count; i++) {
 		struct mce *mce = (struct mce *)(md.buf + i*md.recordlen);
 		struct fms_cpumem *fc = NULL;
@@ -281,7 +289,6 @@ process_mcefd()
 			}
 			if (cpumem_fm_event_post(head, nvl, fullclass, cm) != 0 ) {
 				nvlist_free(nvl);
-				nvl = NULL;
 			} 
 		}
 
@@ -440,13 +447,15 @@ cpumem_fm_event_post(struct list_head *head, nvlist_t *nvl,
 		char *fullclass, struct fms_cpumem *cm)
 {
 	sprintf(nvl->name, cm->fname);
+    nvl->dev_id = cm->dev_id;
 	strcpy(nvl->value, fullclass);
-	nvl->dev_id = cm->fid;
+	nvl->evt_id = cm->fid;
 	nvl->data = cm;
 	
 	nvlist_add_nvlist(head, nvl);
 
-	wr_log(CMES_LOG_DOMAIN, WR_LOG_DEBUG, "post %s", fullclass);
+	wr_log(CMES_LOG_DOMAIN, WR_LOG_DEBUG, "post %s, dev_id: %llx", 
+		fullclass, nvl->dev_id);
 
 	return 0;
 }

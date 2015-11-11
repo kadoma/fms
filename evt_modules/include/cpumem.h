@@ -77,8 +77,13 @@ struct fms_cpumem {
 	int8_t	mem_ch;		/* memory channel */
 	int32_t clevel;	/* cache level*/
 	int32_t ctype;		/* cache type*/
-	char fname[FMS_CPUMEM_MSG_NAME_LEN]; /* fault name */
-	uint64_t fid; /* fault id */
+	char fname[FMS_CPUMEM_MSG_NAME_LEN]; /* fault device name */
+
+	/* fault device id, CPU: processor id; MEM: todo */
+	uint64_t dev_id;
+
+	/* fault event id, {high 32 bit, CPU id}{low 32 bit, determined by the hardware features} */
+	uint64_t fid;
 	enum cputype cputype;
 };
 

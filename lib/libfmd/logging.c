@@ -11,6 +11,8 @@
 #include <locale.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 #include "logging.h"
 
@@ -116,9 +118,10 @@ _wr_log(const char *domain,
             basename++;
         else
             basename = file;
-        fprintf(logfile, "%s %s [%s:%d:%s] %s: ",
+        fprintf(logfile, "%s %s tid[%ld] [%s:%d:%s] %s: ",
             timestr,
             level_strings[level],
+            syscall(__NR_gettid),
             basename,
             line,
             function,

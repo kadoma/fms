@@ -63,18 +63,36 @@ int
 agent_ring_put(fmd_t *p_fmd, fmd_event_t *pevt)
 {
 	fmd_queue_t *p_queue = &p_fmd->fmd_queue;
+	list_repaired *plist_repaired = &p_queue->queue_repaired_list;
+	struct list_head *prepaired_head = &plist_repaired->list_repaired_head;
 
-	ring_t *ring = &p_queue->queue_ring;
+    pthread_mutex_lock(&plist_repaired->evt_repaired_lock);
+	
+    struct list_head *pos;
 
-	sem_wait(&ring->ring_vaild);
-	pthread_mutex_lock(&ring->ring_lock);
+    list_for_each(pos, prepaired_head)
+    {
+		fmd_event_t *p_event = list_entry(pos, fmd_event_t, ev_repaired_list);
+		if((p_event->dev_name == pevt->dev_name) &&(p_event->dev_id == pevt->dev_id)
+			 && (p_event->evt_id == pevt->evt_id) && (p_event->agent_result == pevt->agent_result))
+		{
+			p_event->ev_create = pevt->ev_create;
+			p_event->ev_refs = pevt->ev_refs;
+			def_free(pevt->dev_name);
+	        def_free(pevt->ev_class);
+	        def_free(pevt->data);
+	        def_free(pevt);
+			wr_log("agent", WR_LOG_DEBUG, " **** list case event change." );
+			
+			return 0;
+		}
 
-	int ret = ring_add(ring, pevt);
-	if(ret == -1)
-		wr_log("", WR_LOG_ERROR,"ring is full, Add new faild");
+	}
+	list_add_tail(&pevt->ev_repaired_list, &plist_repaired->list_repaired_head);
+    
+    pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
+    sem_post(&plist_repaired->evt_repaired_sem);
 
-	pthread_mutex_unlock(&ring->ring_lock);
-	sem_post(&ring->ring_contain);
 	return 0;
 }
 
@@ -105,15 +123,17 @@ do_agent(ring_t *ring)
 			exit(-1);
 		}
 
-		wr_log("", WR_LOG_DEBUG, "agent get evet and print.[%s]", evt->ev_class);		
+		wr_log("", WR_LOG_DEBUG, "agent get event and print.[%s]", evt->ev_class);		
 		eresult = mops->evt_handle(pfmd, evt);
 		if(eresult == NULL){
-			wr_log("handle agent", WR_LOG_ERROR, "event process list and log event.");
+			wr_log("handle agent", WR_LOG_DEBUG, "event process serd/fault and log event.");
 			return 0;
 		}
-		//put to queue again
+		//put to master queue again
+		wr_log("", WR_LOG_NORMAL, "event list put to ring.[%s]", eresult->ev_class);
 		agent_ring_put(pfmd, eresult);
 	}
+    sleep(1);
 	return 0;
 }
 
@@ -160,10 +180,10 @@ pthread_init(agent_module_t *p_agent_mod)
 		exit(errno);
 	}
 
-	ret = pthread_create(&pid, &attr, start_agent, (void *)p_agent_mod);
-	if(ret < 0) {
-		wr_log("agent", WR_LOG_ERROR, "agent thread is error calloc .");
-		exit(errno);
+    ret = pthread_create(&pid, &attr, start_agent, (void *)p_agent_mod);
+    if(ret < 0) {
+        wr_log("agent", WR_LOG_ERROR, "agent thread is error calloc .");
+        exit(errno);
 	}
 
 	pthread_attr_destroy(&attr);
@@ -177,6 +197,7 @@ pthread_init(agent_module_t *p_agent_mod)
 fmd_module_t *
 agent_init(agent_modops_t *agent_ops, char *so_path, fmd_t *p_fmd)
 {
+    char * mod_name = strdup(so_path);//wanghuan 
 	fmd_module_t *p_fmd_module = NULL;
 	ring_t *ring;
 	struct list_head *pos;
@@ -192,8 +213,8 @@ agent_init(agent_modops_t *agent_ops, char *so_path, fmd_t *p_fmd)
 
 	/* setup mops */
 	p_agent_mod->mops = agent_ops;
-	p_agent_mod->module.mod_name = so_path;
-
+	//p_agent_mod->module.mod_name = so_path;
+    p_agent_mod->module.mod_name = mod_name;//wanghuan
 	/* setup ring */
 	ring = (ring_t *)def_calloc(sizeof(ring_t), 1);
 

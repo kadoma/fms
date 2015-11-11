@@ -20,56 +20,73 @@
 #include "logging.h"
 #include "fmd_module.h"
 #include "fmd_log.h"
+#include "fm_disk.h"
 
 #include "wrap.h"
 
 
 static int
-__disk_log_event(fmd_event_t *pevt)
+disk_log_event(fmd_event_t *pevt)
 {
+	struct fms_disk *fms_disk;
 	int type, fd;
+	int tsize, ecsize, bufsize;
 	char *dir;
 	char *eclass = NULL;
 	char times[26];
-	char buf[512];
+	char buf[128];
 
 	char dev_name[32];
+	char dev_detail[32];
 	time_t evttime;
 
 	evttime = pevt->ev_create;
 	eclass = pevt->ev_class;
 
 	strcpy(dev_name, pevt->dev_name);
+	
+	fms_disk = (struct fms_disk*)pevt->data;
+	sprintf(dev_detail, fms_disk->detail);
 
-	if (strncmp(eclass, "ereport.", 8) == 0) {
-		type = FMD_LOG_ERROR;
-		dir = "/var/log/fms/disk/serd";
-	} else if (strncmp(eclass, "fault.", 6) == 0) {
-		type = FMD_LOG_FAULT;
-		dir = "/var/log/fms/disk/fault";
-	} else if (strncmp(eclass, "list.", 5) == 0) {
-		type = FMD_LOG_LIST;
+
+	if(pevt->event_type == EVENT_LIST)
+	{
 		dir = "/var/log/fms/disk/list";
+		type = FMD_LOG_LIST;
+        
+	}else if(pevt->event_type == EVENT_FAULT)
+	{
+		dir = "/var/log/fms/disk/fault";
+		type = FMD_LOG_FAULT;
+        
+	}else{
+		dir = "/var/log/fms/disk/serd";
+		type = FMD_LOG_ERROR;
 	}
+
 
 	if ((fd = fmd_log_open(dir, type)) < 0) {
 		wr_log("disk_agent", WR_LOG_ERROR,
-			"failed to record log for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
+			"FMD:failed to record log for event: %s\n", eclass);
+		return -1;
 	}
 
 	fmd_get_time(times, evttime);
-	memset(buf, 0, sizeof buf);
-	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t,please take action.\n", times, eclass, dev_name);
+	memset(buf, 0, 128);
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t%s\n", times, eclass, dev_name,dev_detail);
 
-	if (fmd_log_write(fd, buf, strlen(buf)) != 0) {
-		wr_log("disk agent", WR_LOG_ERROR,
-			"failed to write log file for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
+	tsize = strlen(times) + 1;
+	ecsize = strlen(eclass) + 1;
+	bufsize = tsize + ecsize + 3*sizeof(uint64_t) + 11;
+
+	if (fmd_log_write(fd, buf, bufsize) != 0) {
+		wr_log("disk_agent", WR_LOG_ERROR,
+			"FMD: failed to write log file for event: %s\n", eclass);
+		return -1;
 	}
 	fmd_log_close(fd);
 
-	return LIST_LOGED_SUCCESS;
+	return 0;
 	
 }
 
@@ -80,31 +97,24 @@ __disk_log_event(fmd_event_t *pevt)
  *		list.* event
  */
 fmd_event_t *
-disk_handle_event(fmd_t *pfmd, fmd_event_t *e)
+disk_handle_event(fmd_t *pfmd, fmd_event_t *event)
 {
-	fmd_debug;
+	wr_log("disk_agent", WR_LOG_DEBUG, "disk agent ev_handle fault event to list event.");
 
-	int action = 0;
-	uint64_t ev_flag;
-	ev_flag = e->ev_flag;
-	switch (ev_flag) {
-	case AGENT_TODO:
-		wr_log("disk agent handle", WR_LOG_DEBUG,
-			"disk agent handle fault event.");
-		//action = __handle_disk_fault_event(e);
-		break;
-	case AGENT_TOLOG:
-		wr_log("disk agent record log", WR_LOG_DEBUG,
-			"disk agent record log event.");
-		action = __disk_log_event(e);
-		break;
-	default:
-		action = -1;
-		wr_log("disk agent ", WR_LOG_ERROR,
-			"unknown handle event flag");
+	if(event->ev_flag == AGENT_TODO)
+	{
+        //todo some
+        wr_log("disk_agent", WR_LOG_NORMAL, "disk agent to do something and return list event.");
+        event->event_type = EVENT_LIST;
+        // to log list event
+        disk_log_event(event);
+        return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
 	}
+    
+	// every fault, ereport ,serd to log.
+	disk_log_event(event);
 
-	return (fmd_event_t *)fmd_create_listevent(e, action);
+	return NULL;
 }
 
 
@@ -116,7 +126,7 @@ static agent_modops_t disk_mops = {
 fmd_module_t *
 fmd_module_init(char *path, fmd_t *pfmd)
 {
-	fmd_debug;
+	wr_log("disk_agent", WR_LOG_DEBUG, "disk_agent thread init");
 	return (fmd_module_t *)agent_init(&disk_mops, path, pfmd);
 }
 

@@ -5,13 +5,13 @@ bank=2
 level=1
 type=1
 
-max_num=5
+max_num=7
 i=0
 
 # insmod mce
 modprobe mce-inject
 
-while [[ $i<$max_num ]]
+while [ $i -lt $max_num ]
 do
    error=$(($(echo $RANDOM) % 9))
    status=$(printf "0x%08x%08x" $[0x90000000] $[0x100 + ($error << 4) + ($type << 2) + $level])
@@ -21,7 +21,7 @@ do
    echo "mce-inject cpu error"  
    echo $mce | mce-inject  1>/dev/null 2>/dev/null
 
-   sleep 2
+   sleep 1
    let i++
 done
 

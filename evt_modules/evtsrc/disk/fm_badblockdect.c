@@ -61,22 +61,27 @@ disk_badblocks_check(const char *path)
 			fstreamtxt = popen(cmdtxt,"r");
 			if(fstreamtxt == NULL)
        		{
-            	fprintf(stderr,"execute command failed: %s",strerror(errno));
+				wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+				return 0;
         	}
-			bbtxt = fstreamtxt;
+			pclose(fstreamtxt);
+		}else{
+			fclose(bbtxt);
 		}
-		return 0;
+		
+		
 		
 		cmd = badblockscmd(path, cmdresult);		     	
         fstream = popen(cmd,"r");
         if(fstream == NULL)
        	{
-            fprintf(stderr,"execute command failed: %s",strerror(errno));
+            wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+			return 0;
         }	
 		pclose(fstream);
 	
 		// if disk have badblocks
-		if (fgets(buff, LINE_MAX, bbtxt) != NULL){
+		if ((bbtxt = fopen("/tmp/badblockinfo.txt", "r"))!= NULL){
 
 			// get the count of disk`s badblocks 
 			char* cmdcount = "sed -n '$=' /tmp/badblockinfo.txt";
@@ -90,15 +95,25 @@ disk_badblocks_check(const char *path)
         	linenum = popen(cmdcount,"r");
 			sectorsnum = popen(cmdsectors,"r");
 		
-        	if(linenum == NULL || sectorsnum == NULL)
+        	if(linenum == NULL)
         	{
-                fprintf(stderr,"execute command failed: %s",strerror(errno));
+                wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+				return 0;
         	}	
+			if(sectorsnum == NULL)
+        	{
+                wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+				return 0;
+        	}
+
 		
         	if(fgets(bufline, sizeof(bufline),linenum) != NULL)
         	{
                 resultline = bufline;
 			}else{
+				pclose(linenum);
+				pclose(sectorsnum);
+				fclose(bbtxt);
 				return 0;  //  there aren`t bad blocks
 			}
 			
@@ -108,26 +123,36 @@ disk_badblocks_check(const char *path)
 				if((atoi(resultsectors))!=0 &&((atoi(resultline))/(atoi(resultsectors)))> 0.1) { /* disk`s badblocks rate > 10%,  badblocks error */
 					pclose(linenum);
 					pclose(sectorsnum);
-					pclose(bbtxt);
+					fclose(bbtxt);
 					return 1;
 				}else{
 					if((atoi(resultline))> 10){
-					pclose(linenum);
-					pclose(sectorsnum);
-					pclose(bbtxt);
-					return 1;
+						pclose(linenum);
+						pclose(sectorsnum);
+						fclose(bbtxt);
+						return 1;
+					}else{
+						pclose(linenum);
+						pclose(sectorsnum);
+						fclose(bbtxt);
+						return 0;
 					}
 				}				
 			}else{
 				if((atoi(resultline))> 10){
 					pclose(linenum);
 					pclose(sectorsnum);
-					pclose(bbtxt);
+					fclose(bbtxt);
 					return 1;
+				}else{
+					pclose(linenum);
+					pclose(sectorsnum);
+					fclose(bbtxt);
+					return 0;
 				}
 			}
+		}else{
+			wr_log("stderr",WR_LOG_ERROR,"open file failed: %s",strerror(errno));
+			return 0;
 		}
-		pclose(bbtxt);
-		pclose(fstreamtxt);
-		return 0;
 }

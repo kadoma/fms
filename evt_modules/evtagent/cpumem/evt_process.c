@@ -61,6 +61,8 @@ cmea_evt_processing(char *evt_type, struct cmea_evt_data *edata, void *data)
 	for (i = 0; g_evt_handler[i].evt_type; i++) {
 		etype = g_evt_handler[i].evt_type;
 		if (strncmp(etype, evt_type, strlen(etype)) == 0) {
+			wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
+				"handle cpuemem event type[%s]", evt_type);
 			return g_evt_handler[i].handler(edata, data);
 		}
 	}
@@ -226,31 +228,38 @@ __handle_cache(struct cmea_evt_data *edata, void *data)
 	switch (edata->cpu_action) {
 	case 1:
 		/* flush cache */
+		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "flush cpu %d cache", fc->cpu);
 		memset(&cache, 0, sizeof cache);
 		cache.cpu = fc->cpu;
 		ret = kfm_cache_flush(&cache);
 		break;
 	case 2:
 		/* cpu offline */
+		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "CPU offline, cpu: %u, level: %d, type: %d", 
+			fc->cpu, fc->clevel, fc->ctype);
+		
 		ret = cpu_offine_on_cache(fc->cpu, fc->clevel, fc->ctype);
 		break;
 	default:
 		return -1;
 	}
 	
-//	dump_evt(data);
 	return ret;
 }
 
 static int 
 evt_handle_cache(struct cmea_evt_data *edata, void *data)
 {
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "handle cache fault");
+	
 	return __handle_cache(edata, data);
 }
 
 static int 
 evt_handle_tlb(struct cmea_evt_data *edata, void *data)
 {
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "handle tlb fault");
+	
 	return __handle_cache(edata, data);
 }
 
@@ -320,9 +329,12 @@ evt_handle_mempage(struct cmea_evt_data *edata, void *data)
 	int ret = 0;
 	struct fms_cpumem *fc;
 
-	if(!data)
+	if(!data) {
+		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
+			"data is null in handle mempage");
 		return -1;
-
+	}
+	
 	fc = (struct fms_cpumem*)data;
 
 	if(fc->flags & FMS_CPUMEM_PAGE_ERROR) {

@@ -93,6 +93,7 @@ __handle_fault_event(fmd_event_t *e)
 	if(!evt_type) {
 		return LIST_REPAIRED_FAILED;
 	}
+	evt_type++;
 
 	memset(&edata, 0, sizeof edata);
 	edata.cpu_action = e->ev_refs;
@@ -113,44 +114,45 @@ __log_event(fmd_event_t *pevt)
 	char buf[512];
 
 	char dev_name[32];
-	int  err_dev_id = 0;
+	uint64_t dev_id = 0;
 	time_t evtime;
 	
 	evtime = pevt->ev_create;
 	eclass = pevt->ev_class;
 	
 	strcpy(dev_name, pevt->dev_name);
-	err_dev_id = pevt->ev_err_id;
+	dev_id = pevt->dev_id;
 
-	if (strncmp(eclass, "ereport.", 8) == 0) {
-		type = FMD_LOG_ERROR;
-		dir = "/var/log/fms/cpumem/serd";
-	} else if (strncmp(eclass, "fault.", 6) == 0) {
+	if (pevt->event_type == EVENT_FAULT) {
 		type = FMD_LOG_FAULT;
 		dir = "/var/log/fms/cpumem/fault";
-	} else if (strncmp(eclass, "list.", 5) == 0) {
+	} else if (pevt->event_type == EVENT_LIST) {
 		type = FMD_LOG_LIST;
 		dir = "/var/log/fms/cpumem/list";
+	} else {
+		type = FMD_LOG_ERROR;
+		dir = "/var/log/fms/cpumem/serd";
 	}
 
 	if ((fd = fmd_log_open(dir, type)) < 0) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
 			"failed to record log for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
+		return -1;
 	}
 
 	fmd_get_time(times, evtime);
 	memset(buf, 0, sizeof buf);
-	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t%d\t\n", times, eclass, dev_name, err_dev_id);
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t%llx\t\n", times, eclass, dev_name, 
+		(long long unsigned int)dev_id);
 
 	if (fmd_log_write(fd, buf, strlen(buf)) != 0) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
 			"failed to write log file for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
+		return -1;
 	}
 	fmd_log_close(fd);
 
-	return LIST_LOGED_SUCCESS;
+	return 0;
 }
 
 #ifndef TEST_CMEA
@@ -159,27 +161,38 @@ fmd_event_t *
 cpumem_handle_event(fmd_t *pfmd, fmd_event_t *e)
 {
 	int action = 0;
+	int ret = 0;
 	uint64_t ev_flag;
 
 	ev_flag = e->ev_flag;
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
+		"handle event, class: %s  flag: %08x,", 
+		e->ev_class, ev_flag);
+
+	__log_event(e); 
+	
 	switch (ev_flag) {
 	case AGENT_TODO:
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
 			"cpumem agent handle fault event.");
-		action = __handle_fault_event(e);
+		ret = __handle_fault_event(e);
+		e->event_type = EVENT_LIST;
+		__log_event(e);
+		action = 1;
 		break;
-	case AGENT_TOLOG:
+	}
+
+	if(!action) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
 			"cpumem agent log event.");
-		action = __log_event(e); 
-		break;
-	default:
-		action = -1;  // can happen?? 
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR,
-			"unknown handle event flag");
+		return NULL;
 	}
 	
-	return (fmd_event_t *)fmd_create_listevent(e, action);
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
+			"handle event result: %08x", 
+			ret);
+	
+	return (fmd_event_t *)fmd_create_listevent(e, ret);
 }
 
 static agent_modops_t cpumem_mops = {

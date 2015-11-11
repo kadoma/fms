@@ -29,7 +29,7 @@ fmd_timer_fire(fmd_timer_t *ptimer)
 {
     pthread_mutex_lock(&ptimer->timer_lock);
     pthread_cond_signal(&ptimer->cond_signal);
-	wr_log("", WR_LOG_DEBUG, "fmd time fire again ok ....");
+    wr_log("", WR_LOG_DEBUG, "fmd time fire again ok ....");
     pthread_mutex_unlock(&ptimer->timer_lock);
 }
 
@@ -70,7 +70,6 @@ fmd_load_esc()
         exit(-1);
     }
 
-    fmd_debug;
     dlerror();
     __stat_esc = dlsym(handle, "_stat_esc");
     if((error = dlerror()) != NULL){
@@ -96,47 +95,47 @@ fmd_load_esc()
 int
 analy_start_para(int argc, char **argv, int *debug, int *run_mode)
 {
-	int ch = 0;
-	while ((ch = getopt(argc, argv, "vd")) != -1) 
-	{
-		switch(ch) 
-		{
-			case 'v':
-				printf("%s version: %u.%u.%u\n",argv[0], 2,0,0);
-				return -1;
-			case 'd':
-				*debug = 1;
-				break;
-			default:
-				usage();
-				return -1;
-		}
-	}
-	argc -= optind;
-	argv += optind;
-	if(argc == 1) 
-	{
-		if (strcasecmp(argv[0], "start")==0)
-		{
-			*run_mode = FMD_START;
-		} 
-		else if (strcasecmp(argv[0], "stop")==0) 
-		{
-			*run_mode = FMD_STOP;
-		}
-		else
-		{
-			usage();
-			return -1;
-		}
-	}
-	else if (argc != 0) 
-	{
-		usage();
-		return -1;
-	}
-	
-	return 0;
+    int ch = 0;
+    while ((ch = getopt(argc, argv, "vd")) != -1) 
+    {
+        switch(ch) 
+        {
+            case 'v':
+                printf("%s version: %u.%u.%u\n",argv[0], 2,0,0);
+                return -1;
+            case 'd':
+                *debug = 1;
+                break;
+            default:
+                usage();
+                return -1;
+        }
+    }
+    argc -= optind;
+    argv += optind;
+    if(argc == 1) 
+    {
+        if (strcasecmp(argv[0], "start")==0)
+        {
+            *run_mode = FMD_START;
+        } 
+        else if (strcasecmp(argv[0], "stop")==0) 
+        {
+            *run_mode = FMD_STOP;
+        }
+        else
+        {
+            usage();
+            return -1;
+        }
+    }
+    else if (argc != 0) 
+    {
+        usage();
+        return -1;
+    }
+    
+    return 0;
 }
 
 
@@ -284,9 +283,9 @@ rv_b2daemon()
 int
 modprobe_kfm(void)
 {
-	system("/sbin/insmod /lib/modules/`uname -r`/kernel/fm/kfm.ko 1>/dev/null 2>/dev/null");
-	
-	return 0;
+    system("/sbin/insmod /lib/modules/`uname -r`/kernel/fm/kfm.ko 1>/dev/null 2>/dev/null");
+    
+    return 0;
 }
 
 void usage() 

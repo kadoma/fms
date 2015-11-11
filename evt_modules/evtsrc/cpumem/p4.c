@@ -24,7 +24,7 @@
 
 /* decode mce for P4/Xeon and Core2 family */
 
-static void decode_memory_controller(u32 mca, u32 status, struct mc_msg *mm);
+static void decode_memory_controller(u32 mca, u64 status, struct mc_msg *mm);
 
 static char * 
 get_TT_str(__u8 t)
@@ -175,7 +175,7 @@ fms_decode_base_mca(int no, struct mc_msg *mm, u64 status)
 		return ;
 	
 	asprintf(&mm->mnemonic, "%s%s", msg[no], FMS_MCI_STATUS_UC(status));
-	strcpy(mm->name, msg[no]);
+	strcpy(mm->name, "cpu");
 }
 
 static int 
@@ -256,8 +256,8 @@ decode_mca(u64 status, u64 misc, int cpu, int socket,
 		asprintf(&mm[mn].desc, "%s Generic cache hierarchy error", level);
 		mm[mn].clevel = levelnum;
 		mm[mn].ctype = -1;
-		strcpy(mm[mn].name, "gcache");
-		mm[mn].id = mca & 3;
+		strcpy(mm[mn].name, "cpu");
+		mm[mn].id = (mca & 3) | 0xC;  /* cache type: unknown {1100}=0xC*/
 	} else if (test_prefix(4, mca)) {
 		unsigned levelnum, typenum;
 		char *level, *type;
@@ -273,7 +273,7 @@ decode_mca(u64 status, u64 misc, int cpu, int socket,
 		asprintf(&mm[mn].mnemonic, "tlb%s", FMS_MCI_STATUS_UC(status));
 		mm[mn].clevel = levelnum;
 		mm[mn].ctype = typenum;
-		strcpy(mm[mn].name, "tlb");
+		strcpy(mm[mn].name, "cpu");
 		mm[mn].id = mca & (TLB_TT_MASK | TLB_LL_MASK);
 	} else if (test_prefix(8, mca)) {
 		unsigned typenum = (mca & CACHE_TT_MASK) >> CACHE_TT_SHIFT;
@@ -289,17 +289,17 @@ decode_mca(u64 status, u64 misc, int cpu, int socket,
 		asprintf(&mm[mn].mnemonic, "cache%s", FMS_MCI_STATUS_UC(status));
 		mm[mn].clevel = levelnum;
 		mm[mn].ctype = typenum;
-		strcpy(mm[mn].name, "cache");
+		strcpy(mm[mn].name, "cpu");
 		mm[mn].id = mca & (CACHE_TT_MASK | CACHE_LL_MASK);
 	} else if (test_prefix(10, mca)) {
 		if (mca == 0x400) {
 			asprintf(&mm[mn].desc, "Internal Timer error");
 			asprintf(&mm[mn].mnemonic, "internal_timer%s", FMS_MCI_STATUS_UC(status));
-			strcpy(mm[mn].name, "internal_timer");
+			strcpy(mm[mn].name, "cpu");
 		} else {
 			asprintf(&mm[mn].desc, "Internal unclassified error: %x", mca & 0xffff);
 			asprintf(&mm[mn].mnemonic, "internal_unclassified%s", FMS_MCI_STATUS_UC(status));
-			strcpy(mm[mn].name, "internal_unclassified");
+			strcpy(mm[mn].name, "cpu");
 		}	
 	} else if (test_prefix(11, mca)) {
 		char *level, *pp, *rrrr, *ii, *timeout;
@@ -318,7 +318,7 @@ decode_mca(u64 status, u64 misc, int cpu, int socket,
 //			fms_get_RRRR_str((mca & BUS_RRRR_MASK) >> BUS_RRRR_SHIFT), 
 //			FMS_MCI_STATUS_UC(status));
 		asprintf(&mm[mn].mnemonic, "bus%s", FMS_MCI_STATUS_UC(status));
-		strcpy(mm[mn].name, "bus");
+		strcpy(mm[mn].name, "cpu");
 		mm[mn].id = mca & BUS_LL_MASK;
 		
 		/* IO MCA - reported as bus/interconnect with specific PP,T,RRRR,II,LL values
@@ -347,7 +347,7 @@ decode_mca(u64 status, u64 misc, int cpu, int socket,
 		if(!mm) {
 			asprintf(&mm[mn].desc,"Unknown Error %x", mca);
 			asprintf(&mm[mn].mnemonic, "unknown%s", FMS_MCI_STATUS_UC(status));
-			strcpy(mm[mn].name, "unknown");
+			strcpy(mm[mn].name, "cpu");
 		} else 
 			--mm;
 	}
@@ -374,7 +374,7 @@ decode_thermal(struct mce *log, int cpu, struct mc_msg *mm, int *mm_num)
 		return ;
 	}
 
-	strcpy(mm->name, "tmp");
+	strcpy(mm->name, "cpu");
 	if (log->status & 1) {
 		asprintf(&mm[mn].mnemonic, "tmp_high");
 		asprintf(&mm[mn].desc, "Processor %d heated above trip temperature. Throttling enabled.", cpu);
@@ -432,7 +432,7 @@ static char *fms_mmm_mnemonic[] __unused = {
 };
 
 static void 
-decode_memory_controller(u32 mca, u32 status, struct mc_msg *mm)
+decode_memory_controller(u32 mca, u64 status, struct mc_msg *mm)
 {
 	char channel[30];
 	__u8 ch;
@@ -457,10 +457,10 @@ decode_memory_controller(u32 mca, u32 status, struct mc_msg *mm)
 	if ((status & MCI_STATUS_ADDRV) && !(status & MCI_STATUS_UC)) {
 		mm->flags |= FMS_CPUMEM_PAGE_ERROR;
 		asprintf(&mm->mnemonic, "mempage");
-		strcpy(mm->name, "mempage");
+		strcpy(mm->name, "memory");
 	} else {
 		asprintf(&mm->mnemonic, "mem%s", FMS_MCI_STATUS_UC(status));
-		strcpy(mm->name, "mem");
+		strcpy(mm->name, "memory");
 	}
 	
 	mm->mem_ch = ch;

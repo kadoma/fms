@@ -49,12 +49,7 @@ src_module_conf(evtsrc_module_t *p_evt_mod, char *so_full_path)
 	
 }
 
-/**
- * evt_handle
- * 1. extract nvlist from @head
- * 2. create fmd_event_t *
- * 3. xprt the new created fmd_event_t *
- */
+
 void *
 fmd_queue_dispatch(evtsrc_module_t *evt_mod_p, fmd_event_t *pevt)
 {
@@ -62,13 +57,10 @@ fmd_queue_dispatch(evtsrc_module_t *evt_mod_p, fmd_event_t *pevt)
     fmd_queue_t *p_queue = &pfmd->fmd_queue;
 
     ring_t *ring = &p_queue->queue_ring;
-	
     sem_wait(&ring->ring_vaild);
+
     pthread_mutex_lock(&ring->ring_lock);
-	if(pevt->ev_class != NULL)
-    	ring_add(ring, pevt);
-	else
-		wr_log("", WR_LOG_ERROR, "event list dispatch node is null.");
+    ring_add(ring, pevt);
     pthread_mutex_unlock(&ring->ring_lock);
 
     sem_post(&ring->ring_contain);
@@ -85,23 +77,20 @@ evt_handle(evtsrc_module_t *evt_mod_p, struct list_head *head)
         return;
     }
 
-    struct list_head *pos = NULL;
+    struct list_head *pos, *n = NULL;
     nvlist_t *nvl = NULL;
-
     char *eclass = NULL;
-
     fmd_t *p_fmd = ((fmd_module_t *)evt_mod_p)->p_fmd;
 
-    if (list_empty(head)){
+    if(list_empty(head)){
         def_free(head);
-		wr_log("", WR_LOG_ERROR, "event case is null.");
+		wr_log("", WR_LOG_ERROR, "event nvl list is null.");
         return;
     }
 
-    list_for_each(pos, head)
+    list_for_each_safe(pos, n, head)
 	{
         nvl = list_entry(pos, nvlist_t, nvlist);
-		wr_log("", WR_LOG_DEBUG, "NVL list node num is [%d]", nvl->node_num);
 
         eclass = nvl->value;
         if(eclass[0] == '\0')
@@ -109,11 +98,17 @@ evt_handle(evtsrc_module_t *evt_mod_p, struct list_head *head)
 
         fmd_event_t *evt = fmd_create_ereport(p_fmd, eclass, NULL, nvl);
         if(evt == NULL){
-            wr_log("fmd", WR_LOG_ERROR, "src deteck event is null.");
+            wr_log("fmd", WR_LOG_ERROR,
+                        "[%s]src deteck event is NULL.", evt_mod_p->module.mod_name);
         }
-		if(evt->ev_class)
-        	fmd_queue_dispatch(evt_mod_p, evt);
+        else{
+            wr_log("",WR_LOG_DEBUG,
+                      "[%s], module event is [%s]", evt_mod_p->module.mod_name, evt->ev_class);
+        }
+        fmd_queue_dispatch(evt_mod_p, evt);
     }
+	
+	def_free(head);
 	return;
 }
 
@@ -231,14 +226,15 @@ timer_init(evtsrc_module_t *evt_mod_p, fmd_t *p_fmd)
 fmd_module_t *
 evtsrc_init(evtsrc_modops_t *mod_ops_p, char* full_path, fmd_t *p_fmd)
 {
+    char * mod_name = strdup(full_path);//wanghuan
     evtsrc_module_t *evt_mod_p = NULL;
     evt_mod_p = (evtsrc_module_t *)def_calloc(1, sizeof(evtsrc_module_t));
 
     //set ops link to module struct
     evt_mod_p->mops = mod_ops_p;
 	evt_mod_p->module.p_fmd = p_fmd;
-	evt_mod_p->module.mod_name = full_path;
-
+	//evt_mod_p->module.mod_name = full_path;
+    evt_mod_p->module.mod_name = mod_name;//wanghuan
 
     // read config file, path for read conf file
     if(src_module_conf(evt_mod_p, full_path) < 0){

@@ -67,7 +67,7 @@ decode_bitfield(u64 status, struct field *fields, char *buf,
 			asprintf(&mm[mn].desc, "%s%s", buf ? buf : "", s);
 		} else {
 			asprintf(&mm[mn].mnemonic, "%s%s", type, FMS_MCI_STATUS_UC(status));
-			strcpy(mm[mn].name, type);
+			strcpy(mm[mn].name, "cpu");
 		}
 		
 		mn++;

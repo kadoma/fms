@@ -17,7 +17,7 @@
 
 #include "fm_disksmartdect.h"
 #include "fm_cmd.h"
-
+#include "logging.h"
 
 /* ////////////////////////////////////////////////////////
  * DoesSmartWork
@@ -45,7 +45,8 @@ DoesSmartWork(const char *path) {
 
         if(fstream == NULL)
         {
-                fprintf(stderr,"execute command failed: %s",strerror(errno));
+				wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+				return 0;
         }
 
         char testchar;
@@ -58,7 +59,7 @@ DoesSmartWork(const char *path) {
                 }
                 testchar = *result;
                 if (testchar == 'U'){   //"Unavailable"
-                        printf("device lacks SMART capability.\n");
+						wr_log("",WR_LOG_WARNING,"device lacks SMART capability.\n");
 						pclose(fstream);
 						return 0;
 				}else if(testchar == 'A'){   //"Available"
@@ -74,7 +75,7 @@ DoesSmartWork(const char *path) {
 										return 1;
                                         
                                 }else{          //"Disabled""£¬ SMART support is: Available£¬but  disabled
-                                        printf("SMART Disabled. Use option -s with argument 'on' to enable it.\n");
+										wr_log("",WR_LOG_WARNING,"SMART Disabled. Use option -s with argument 'on' to enable it.\n");
 										pclose(fstream);
 										return -1;
                                 }
@@ -88,7 +89,8 @@ DoesSmartWork(const char *path) {
 				fstream = popen(cmd,"r");
 				if(fstream == NULL)
        			{
-               		fprintf(stderr,"execute command failed: %s",strerror(errno));
+               		wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+					return 0;
         		}
 				if(fgets(buff, sizeof(buff),fstream) != NULL){ //Device supports SMART and is Enabled
 					pclose(fstream);
@@ -96,7 +98,7 @@ DoesSmartWork(const char *path) {
 				}						
 		}
 		//Device does not support SMART	
-		printf("Device does not support SMART.\n");
+		wr_log("",WR_LOG_WARNING,"Device does not support SMART.\n");
         pclose(fstream);
         return 0;
 }
@@ -125,8 +127,9 @@ int disk_unhealthy_check(const char *path) {
 		char* result = ""; 			
 		fstream = popen(cmd,"r");
         if(fstream == NULL)
-       	{
-            fprintf(stderr,"execute command failed: %s",strerror(errno));
+       	{  
+			wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+			return 0;
         }
 		char testchar;
         if(fgets(buff, sizeof(buff),fstream) != NULL)
@@ -150,7 +153,8 @@ int disk_unhealthy_check(const char *path) {
 			fstream = popen(cmd,"r");
 			if(fstream == NULL)
        		{
-               	fprintf(stderr,"execute command failed: %s",strerror(errno));
+               	wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+				return 0;
         	}
         	if(fgets(buff, sizeof(buff),fstream) != NULL)
         	{
@@ -197,7 +201,8 @@ int disk_temperature_check(const char *path){
         fstream = popen(cmd,"r");
         if(fstream == NULL)
        	{
-            fprintf(stderr,"execute command failed: %s",strerror(errno));
+			wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+			return 0;
         }	
 		
         while(fgets(buff, sizeof(buff),fstream) != NULL)

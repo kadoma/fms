@@ -7,6 +7,7 @@
 #include "fmd_api.h"
 #include "fmd.h"
 
+/*
 void
 fmd_create_fault(fmd_event_t *pevt)
 {
@@ -16,24 +17,36 @@ fmd_create_fault(fmd_event_t *pevt)
 	strcpy(eclass, pevt->ev_class);
 	p = strchr(eclass, '.');
     sprintf(pevt->ev_class, "fault%s", p);
-	
-	pevt->ev_flag = AGENT_TODO;
 	return;
 }
+*/
 
+#define REPAIRED_N   10
+#define REPAIRED_T   120
 fmd_event_t *
 fmd_create_ereport(fmd_t *pfmd, const char *eclass, char *id, nvlist_t *p_nvl)
 {
     fmd_event_t *pevt = NULL;
     pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t), 1);
-    pevt->ev_create = time(NULL);
-    pevt->ev_refs = 0;
-    pevt->ev_class = strdup(eclass);
+
 	pevt->dev_name = strdup(p_nvl->name);
-	pevt->ev_err_id = p_nvl->dev_id;
+	pevt->dev_id = p_nvl->dev_id;
+	pevt->evt_id = p_nvl->evt_id;
+	
+    pevt->ev_create = time(NULL);
+    pevt->ev_class = strdup(eclass);
+    pevt->data = p_nvl->data;
 
+
+	/* added for test by guanhj : todo every src module */
+	pevt->repaired_N =REPAIRED_N;
+	pevt->repaired_T = REPAIRED_T; // 2 min
+
+    list_del(&p_nvl->nvlist);
+    def_free(p_nvl);
+
+    //wanghuan 
     INIT_LIST_HEAD(&pevt->ev_list);
-
     return pevt;
 }
 
@@ -45,53 +58,24 @@ fmd_create_ereport(fmd_t *pfmd, const char *eclass, char *id, nvlist_t *p_nvl)
  */
  
 fmd_event_t *
-fmd_create_listevent(fmd_event_t *fault, int action)
+fmd_create_listevent(fmd_event_t *pevt, int action)
 {
-    fmd_event_t *pevt = NULL;
     char eclass[128] = {0};
-	char *p;
+    char *p;
+    fmd_event_t *listevt = def_calloc(sizeof(fmd_event_t), 1);
 
-    pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t), 1);
-	p = strchr(fault->ev_class, '.');
+    p = strchr(pevt->ev_class, '.');
     sprintf(eclass, "list%s", p);
-	
-	pevt->dev_name = fault->dev_name;
-	pevt->ev_err_id = fault->ev_err_id;
-    pevt->ev_create = time(NULL);
-    pevt->ev_class = strdup(eclass);
-	pevt->ev_flag = action;
-	
-    INIT_LIST_HEAD(&pevt->ev_list);
-    return pevt;
-}
 
-fmd_event_t *
-fmd_create_casefault(fmd_t *p_fmd, fmd_case_t *pcase)
-{
-	fmd_event_t *pevt = NULL;
-	pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t),1);
-	pevt->ev_create = time(NULL);
-	// bug lost it.
-	pevt->ev_refs = pcase->cs_fire_times;
-	//pevt->ev_data = NULL;
-	INIT_LIST_HEAD(&pevt->ev_list);
-	return pevt;
-}
+    listevt->dev_name = strdup(pevt->dev_name);
+    listevt->ev_create = time(NULL);
+    listevt->ev_class = strdup(eclass);
+    listevt->agent_result = action;
+	listevt->dev_id = pevt->dev_id;
+	listevt->evt_id = pevt->evt_id;
+	listevt->repaired_N = pevt->repaired_N;
+	listevt->repaired_T = pevt->repaired_T;
+	listevt->ev_refs = pevt->ev_refs;
 
-
-fmd_event_t *
-fmd_create_eventfault(fmd_t *pfmd, fmd_case_t *pcase)
-{
-	fmd_event_t *pevt = NULL;
-
-	const char *eclass = pcase->dev_name;
-
-	pevt = (fmd_event_t *)def_calloc(sizeof(fmd_event_t), 1);
-
-	pevt->ev_create = time(NULL);
-	pevt->ev_refs = 0;
-	pevt->ev_class = strdup(eclass);
-	INIT_LIST_HEAD(&pevt->ev_list);
-
-	return pevt;
+    return listevt;
 }

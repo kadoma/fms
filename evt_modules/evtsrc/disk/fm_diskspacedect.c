@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include "fm_diskspacedect.h"
+#include "logging.h"
 
 
 /*
@@ -41,7 +42,8 @@ int disk_space_check(void)
         fstream = popen(cmd,"r");
         if(fstream == NULL)
         {
-                fprintf(stderr,"execute command failed: %s",strerror(errno));
+				wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+				return 0;
         }	
 		
         while(fgets(buff, sizeof(buff),fstream) != NULL)
@@ -49,6 +51,7 @@ int disk_space_check(void)
                 result = buff;
                 if(atoi(result) > 95) /* if disk space >95%, disk space is insufficient error */
                 {
+                		pclose(fstream);
 						return 1;
                 }
                 

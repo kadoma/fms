@@ -1,7 +1,7 @@
 Name: fms
 Summary: fault management system
 Version: 2.0
-Release: 3
+Release: 5
 Vendor: INSPUR
 License: INSPUR SOFTWARE LICENSE.
 URL: www.inspur.com
@@ -27,12 +27,17 @@ INSPUR fault management system.
 %post
 	/bin/chmod 755 /usr/sbin/fmd
 	ldconfig
+	systemctl enable fmd.service 1>/dev/null 2>/dev/null
 	
 %preun
 	systemctl stop fmd.service
-	echo 1 > /proc/sys/fm/unload
-	rmmod kfm
 	
+	lsmod | grep kfm >/dev/null
+	if [ $? -eq 0 ] ; then
+	echo 1 > /proc/sys/fm/unload 
+	rmmod kfm
+	fi
+
 %postun
 	ldconfig
 	

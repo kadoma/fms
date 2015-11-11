@@ -54,6 +54,7 @@ get_efi_systab_smbios(void)
         if (strncmp(buffer, "SMBIOS", 6) == 0) {
             strcpy(buf, &buffer[7]);
             result = strtol(buf, NULL, 16);
+			fclose(fp);
             return result;
         }
     }
@@ -368,9 +369,9 @@ fmd_topo_walk_mem(dmi_data_t *pdmi, fmd_topo_t *ptopo)
                 break;
             }
         }
-        num_dimm[j] = max_dimm;
+        num_dimm[i] = max_dimm;
         /* dimm */
-        for (k = 0; k < num_dimm[j]; k++) {
+        for (k = 0; k < num_dimm[i]; k++) {
             topo_mem_t *pmem = NULL;
             struct list_head *pos3 = NULL;
             dmi_device_map_addr_t *pddma = NULL;

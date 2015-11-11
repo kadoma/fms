@@ -42,8 +42,8 @@ int
 fmd_init_module(fmd_t *p_fmd, char *so_full_path)
 {
 	// wanglei mod_path for adm
-    char* mod_path;
-    mod_path = strdup(so_full_path);
+    //char* mod_path;
+    //mod_path = strdup(so_full_path);//wanghuan
     void *handle = NULL;
 
     char *error = NULL;
@@ -70,8 +70,8 @@ fmd_init_module(fmd_t *p_fmd, char *so_full_path)
         return -1;
     }
 	
-	// wanglei mod_path for adm tool
-    p_module->mod_path = mod_path;
+	//wanghuan
+    // p_module->mod_path = mod_path;
     // fmd struct include all so modules one list. todo a hash map.
     list_add(&p_module->list_fmd, &p_fmd->fmd_module);
     return 0;
@@ -105,5 +105,6 @@ fmd_module_load(fmd_t *p_fmd)
         if(ret != 0)
             wr_log("module", WR_LOG_ERROR, "can't init module [%s]", so_full_path);
     }
+	(void) closedir(dirp);
     return 0;
 }

@@ -32,12 +32,14 @@ int unload_module(fmd_adm_t *adm,char* path)
 {
 
     if((strstr(path,".so")) == NULL){
+        printf("%s:illegal input ! NOTE : module end with .so\n",path);
         wr_log("",WR_LOG_ERROR,"%s:illegal input module end with .so\n",path);
         return (-1);
     }
 
     if((strstr(path,"adm_src.so")) != NULL){
-        wr_log("",WR_LOG_ERROR,"%s: adm module can not unload -- %s\n");
+        printf("%s: adm module can not unload !\n",path);
+        wr_log("",WR_LOG_ERROR,"%s: adm module can not unload !\n",path);
                 return (-1);
     }
 
@@ -59,6 +61,16 @@ cmd_unload(fmd_adm_t *adm, int argc, char *argv[])
         usage();
     return (FMADM_EXIT_USAGE);
     }
+
+#if 0
+    char fmd_thread[8];
+    FILE * fp ;
+    fp = popen("ps -aux | grep fmd |wc -l","r");
+    fgets(fmd_thread,sizeof(fmd_thread),fp);
+    if(strncmp(fmd_thread,"3",1)!= 0)
+        printf("fmd does not start ,exe command :'fmd start'\n");
+    pclose(fp);
+#endif
 
     int rt = unload_module(adm,argv[1]);
 

@@ -21,36 +21,47 @@ struct list_head *
 trace_probe(evtsrc_module_t *emp)
 {
     wr_log("trace", WR_LOG_DEBUG, "trace probe test hardware.");
-	
-    nvlist_t 	*nvl = NULL;
+
+    nvlist_t    *nvl = NULL;
     struct list_head *head = nvlist_head_alloc();
-	/*
-	//event list
-	nvl = nvlist_alloc();
-	sprintf(nvl->name, "cpu");
+/*  
+    //event ereport. /var/log/fms/trace/serd
+    nvl = nvlist_alloc();
+    sprintf(nvl->name, "cpu");
     strcpy(nvl->value, "ereport.trace.unknown_ue");
     nvl->dev_id = 0x02;
+    nvl->evt_id = 0x11;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 1;	
 
-	//fault
-	nvl = nvlist_alloc();
+
+    //fault  fault.  /var/log/fms/trace/fault
+    nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
     strcpy(nvl->value, "ereport.trace.mc_ce");
     nvl->dev_id = 0x01;
+    nvl->evt_id = 0x22;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 2;
+
+
+    nvl = nvlist_alloc();
+    sprintf(nvl->name, "cpu");
+    strcpy(nvl->value, "ereport.trace.mc_ce");
+    nvl->dev_id = 0x02;
+    nvl->evt_id = 0x22;
+    nvl->data=strdup("a private pointer.");
+    nvlist_add_nvlist(head, nvl);
+
 */
-	//serd
-	nvl = nvlist_alloc();
-	sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.trace.qpi_ue");
+    //serd  ereport. /var/log/fms/trace/serd
+    nvl = nvlist_alloc();
+    sprintf(nvl->name, "cpu");
+    strcpy(nvl->value, "ereport.trace.cache_ce");
     nvl->dev_id = 0x01;
-    nvl->data=strdup("a private pointer.");
+    nvl->evt_id = 0x12;
+    nvl->data = strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-	nvl->node_num = 3;
 
     return head;
 }

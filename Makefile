@@ -20,11 +20,12 @@ SUBDIRS=lib/libcase lib/libesc lib/libfmd evt_modules/evtlib  \
 									fms \
 				tools/fmstopo tools/fmsinject tools/fmsadm \
 				evt_modules/evtsrc/adm \
-				evt_modules/evtsrc/trace evt_modules/evtagent/trace \
-				#evt_modules/evtsrc/inject evt_modules/evtagent/inject \
-				#evt_modules/evtsrc/disk evt_modules/evtagent/disk \
-				#evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
-				#evt_modules/evtlib/kfm/kfm evt_modules/evtlib/kfm/kfmadm
+				evt_modules/evtsrc/inject  \
+				evt_modules/evtsrc/disk evt_modules/evtagent/disk \
+				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
+				evt_modules/evtlib/kfm/kfm evt_modules/evtlib/kfm/kfmadm \
+				#evt_modules/evtsrc/trace evt_modules/evtagent/trace \
+
 
 
 define make_subdir
@@ -53,7 +54,7 @@ FMS_SPEC_FILE=fms.spec
 RPM_FMS=$(BRROOTDIR)/usr/sbin/
 LD_SO_CONF_DIR=$(BRROOTDIR)/etc/ld.so.conf.d/
 LOG_PREFIX_DIR=$(BRROOTDIR)/var/log/fms
-LOG_TRACE_DIR=$(LOG_PREFIX_DIR)/trace
+#LOG_TRACE_DIR=$(LOG_PREFIX_DIR)/trace
 LOG_DISK_DIR=$(LOG_PREFIX_DIR)/disk
 LOG_CPUMEM_DIR=$(LOG_PREFIX_DIR)/cpumem
 LOG_INJECT_DIR=$(LOG_PREFIX_DIR)/inject
@@ -69,10 +70,10 @@ rpm: all
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
-	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/dict
+	mkdir -p $(BRROOTDIR)/usr/lib/$(PROJECT)/db
 	mkdir -p $(LD_SO_CONF_DIR)
 	mkdir -p $(LOG_PREFIX_DIR)
-	mkdir -p $(LOG_TRACE_DIR)
+#	mkdir -p $(LOG_TRACE_DIR)
 	mkdir -p $(LOG_DISK_DIR)
 	mkdir -p $(LOG_CPUMEM_DIR)
 	mkdir -p $(LOG_INJECT_DIR)
@@ -84,23 +85,22 @@ rpm: all
 	install -cm 755 $(EVT_SRC_DIR)/disk/disktool   $(RPM_FMS)
 	cp ./fmd.service                        $(BRROOTDIR)/lib/systemd/system/fmd.service
 	cp ./lib/libcase/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
-	cp ./lib/libdict/*.so			        $(BRROOTDIR)/usr/lib/$(PROJECT)
+	cp ./lib/libdict/*.so			$(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libesc/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libfmd/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libadm/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libmsg/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libtopo/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./evt_modules/evtlib/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)
-	cp ./dict/*.db                          $(BRROOTDIR)/usr/lib/$(PROJECT)/dict
+	cp ./db/*.db                            $(BRROOTDIR)/usr/lib/$(PROJECT)/db
 	cp $(EVT_SRC_DIR)/disk/*.so             $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp $(EVT_AGENT_DIR)/disk/*.so           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp $(EVT_SRC_DIR)/cpumem/*.so           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp $(EVT_AGENT_DIR)/cpumem/*.so         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-	cp $(EVT_SRC_DIR)/trace/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-	cp $(EVT_AGENT_DIR)/trace/*.so          $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+#	cp $(EVT_SRC_DIR)/trace/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
+#	cp $(EVT_AGENT_DIR)/trace/*.so          $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp $(EVT_SRC_DIR)/adm/*.so              $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp $(EVT_SRC_DIR)/inject/*.so           $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
-	cp $(EVT_AGENT_DIR)/inject/*.so         $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp ./fms_conf/escdir/*.esc              $(BRROOTDIR)/usr/lib/$(PROJECT)/escdir
 	cp ./fms_conf/plugins/*.conf            $(BRROOTDIR)/usr/lib/$(PROJECT)/plugins
 	cp ./fms_conf/ld.so.conf/*.conf         $(LD_SO_CONF_DIR)

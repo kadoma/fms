@@ -10,7 +10,7 @@ nvlist_t *nvlist_alloc()
 
     p_nvl = (nvlist_t *)def_calloc(1, sizeof(nvlist_t));
     p_nvl->data = NULL;
-    INIT_LIST_HEAD(&p_nvl->nvlist);
+    //INIT_LIST_HEAD(&p_nvl->nvlist);
 
     return p_nvl;
 }

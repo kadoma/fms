@@ -29,14 +29,14 @@ fmd_get_time(char *date, time_t times)
 	int hour = 0, min = 0, sec = 0;
 
 	time(&times);
-	tm = gmtime(&times);
+	tm = localtime(&times);
 	year = tm->tm_year + 1900;
 	month = tm->tm_mon + 1;
 	day = tm->tm_mday;
 	hour = tm->tm_hour;
 	min = tm->tm_min;
 	sec = tm->tm_sec;
-	sprintf(date, "%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hour, min, sec);
+	sprintf(date, "%d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, min, sec);
 }
 
 char *
@@ -141,6 +141,8 @@ fmd_log_write(int fd, const char *buf, int size)
 			"FMD: failed to write log file: fd=%d.\n", fd);
 		return (-1);
 	}
+
+    fsync(fd);
 
 	return 0;
 }

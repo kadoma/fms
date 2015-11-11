@@ -137,6 +137,7 @@ read_caches(void)
 			asprintf(&fn, "%s/%s/cache", PREFIX, de->d_name);
 			if (!stat(fn, &st)) {
 				numindex = st.st_nlink - 2;
+				wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "st_nlink: %d", numindex);
 				if (numindex < 0)
 					numindex = MIN_INDEX;
 				if (cachelen <= cpu)

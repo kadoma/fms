@@ -28,35 +28,39 @@ fmd_log_event(fmd_event_t *pevt)
 	char buf[128];
 
 	char dev_name[32];
-	int  err_dev_id = 0;
-	time_t evtime;
+	int  dev_id = 0;
+    time_t evtime;
 	
 	evtime = pevt->ev_create;
 	eclass = pevt->ev_class;
 	
 	strcpy(dev_name, pevt->dev_name);
-	err_dev_id = pevt->ev_err_id;
+	dev_id = (pevt->dev_id >> 16) & 0xFF;
 
-	if (strncmp(eclass, "ereport.", 8) == 0) {
-		type = FMD_LOG_ERROR;
-		dir = "/var/log/fms/trace/serd";
-	} else if (strncmp(eclass, "fault.", 6) == 0) {
-		type = FMD_LOG_FAULT;
-		dir = "/var/log/fms/trace/fault";
-	} else if (pevt->ev_flag == AGENT_TOLIST) {
-		type = FMD_LOG_LIST;
+	if(pevt->event_type == EVENT_LIST)
+	{
 		dir = "/var/log/fms/trace/list";
+		type = FMD_LOG_LIST;
+        
+	}else if(pevt->event_type == EVENT_FAULT)
+	{
+		dir = "/var/log/fms/trace/fault";
+		type = FMD_LOG_FAULT;
+        
+	}else{
+		dir = "/var/log/fms/trace/serd";
+		type = FMD_LOG_ERROR;
 	}
 
 	if ((fd = fmd_log_open(dir, type)) < 0) {
 		wr_log("", WR_LOG_ERROR, 
 			"FMD: failed to record log for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
+		return -1;
 	}
 
 	fmd_get_time(times, evtime);
 	memset(buf, 0, 128);
-	snprintf(buf, sizeof(buf), "\n%s\t%s\t%s\t%d\t\n", times, eclass, dev_name, err_dev_id);
+	snprintf(buf, sizeof(buf), "\n%s\t%s\t%s\t%d\t\n", times, eclass, dev_name, dev_id);
 
 	tsize = strlen(times) + 1;
 	ecsize = strlen(eclass) + 1;
@@ -65,11 +69,11 @@ fmd_log_event(fmd_event_t *pevt)
 	if (fmd_log_write(fd, buf, bufsize) != 0) {
 		wr_log("", WR_LOG_ERROR, 
 			"FMD: failed to write log file for event: %s\n", eclass);
-		return LIST_LOGED_FAILED;
+		return -1;
 	}
 	fmd_log_close(fd);
 
-	return LIST_LOGED_SUCCESS;
+	return -1;
 }
 
 
@@ -83,18 +87,19 @@ fmd_event_t *
 trace_handle_event(fmd_t *pfmd, fmd_event_t *event)
 {
 	wr_log("", WR_LOG_DEBUG, "trace agent ev_handle fault event to list event.");
-	int ret = 0;
-	
-	fmd_log_event(event);
 
 	if(event->ev_flag == AGENT_TODO)
 	{
-		ret = fmd_log_event(event);
-		if(ret != 0)
-			wr_log("", WR_LOG_ERROR, "trace log agent todo success.");
-		return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
+        //todo some
+        wr_log("trace agent", WR_LOG_NORMAL, "trace agent to do something and return list event.");
+        event->event_type = EVENT_LIST;
+        // to log list event
+        fmd_log_event(event);
+        return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
 	}
-	
+    // every fault, ereport ,serd to log.
+	fmd_log_event(event);
+
 	return NULL;
 }
 

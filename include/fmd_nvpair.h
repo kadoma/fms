@@ -8,11 +8,11 @@
 
 typedef struct _nvlist_{
     struct list_head nvlist;
-	int    node_num;
-    char name[32];
-    char value[128];
-    uint64_t dev_id;
-    void *data;
+    char name[32];  /* cpu, memory, disk, etc */ 
+    uint64_t dev_id; /*cpu: 0, 1, 2..; memory: todo; disk: uuid */
+    char value[128]; /* ereport.cpu.xxx */ 
+    uint64_t evt_id; /* event id */
+    void *data; /* private data */
 }nvlist_t;
 
 nvlist_t *nvlist_alloc(void);

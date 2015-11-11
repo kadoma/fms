@@ -59,6 +59,7 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
         return NULL;
     }
     if(read(fd, &buf, sizeof(buf)) < 0) {
+		close(fd);
         wr_log("",WR_LOG_ERROR,"read %s failed ",path);
         return NULL;
     }
@@ -75,6 +76,7 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
     }
     if(read(fd, &buf, sizeof(buf)) < 0) {
         wr_log("",WR_LOG_ERROR,"read %s failed ",path);
+		close(fd);
         return NULL;
     }
     close(fd);
@@ -200,6 +202,7 @@ fmd_topo_cpu(const char *dir, const char *prefix, fmd_topo_t *ptopo)
         /* node[0-8] style */
         ch = p[n];
         if(ch < '0' || ch > '7' || p[n + 1]) { /* node id invalid */
+			(void) closedir(dirp);
             return NODE_ID_INVALD;
         }
         (void) snprintf(path, sizeof (path), "%s/%s", dir, dp->d_name);

@@ -39,7 +39,7 @@ int get_module_info(fmd_adm_t *adm)
         mp = list_entry(pos,fmd_adm_modinfo_t,mod_list);
         faf_module_t *fafm =  NULL;
         fafm = &mp->fafm;
-        printf("%s\n",fafm->mod_path);
+        printf("%s\n",fafm->mod_name);
     }
     return 0;
 }
@@ -56,6 +56,16 @@ cmd_modinfo(fmd_adm_t *adm, int argc, char *argv[])
         usage();
     return (FMADM_EXIT_SUCCESS);
     }
+
+#if 0
+    char fmd_thread[8];
+    FILE * fp ;
+    fp = popen("ps -aux | grep fmd |wc -l","r");
+    fgets(fmd_thread,sizeof(fmd_thread),fp);
+    if(strncmp(fmd_thread,"3",1)!= 0)
+        printf("fmd does not start ,exe command :'fmd start'\n");
+    pclose(fp);
+#endif
 
     int rt = get_module_info(adm);
 

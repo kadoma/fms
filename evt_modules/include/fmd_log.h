@@ -3,9 +3,9 @@
 
 #include "fmd_event.h"
 
-#define FMD_LOG_ERROR   0
-#define FMD_LOG_FAULT   1
-#define FMD_LOG_LIST    2
+#define FMD_LOG_ERROR   1
+#define FMD_LOG_FAULT   2
+#define FMD_LOG_LIST    3
 
 void
 fmd_get_time(char *date, time_t times);

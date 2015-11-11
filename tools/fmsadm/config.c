@@ -122,29 +122,40 @@ fmd_add_conf(char *filename, char *mod_name)
         }
     } else if (agent) {
         while (fgets(buf, sizeof(buf), fp1)) {
-            printf(
-                   "\t(press 'add' to add new subscribe)\n"
-                   "\tfor example:add fault.cpu.intel.cache\n"
-                   "\t(press 'del' to delete a line)\n\n");
-            printf("this line is : %s \n",buf);
-            while (fgets(buff,sizeof(buff),stdin)){
-                if(strstr(buff,"add") != NULL){
-                    sprintf(buffer,"%s%s",buffer,buf);
-                    sprintf(buffer,"%ssubscribe %s",buffer, buff+4);
-                    break;
-                }else if(strstr(buff,"del") != NULL){
-                    break;
-                }else {
-                    sprintf(buffer,"%s%s",buffer,buf);
-                    break;
+            if(ready == 0){
+                printf(
+                        "\t(press 'quit' quit edit. note : don't use ctr+c to quit edit !)\n"
+                        "\t(press 'add' to add new subscribe)\n"
+                        "\tfor example:add fault.cpu.intel.cache\n"
+                        "\t(press 'del' to delete a line)\n\n");
+                printf("this line is : %s \n",buf);
+                while (fgets(buff,sizeof(buff),stdin)){
+                    if(strstr(buff,"add") != NULL){
+                        sprintf(buffer,"%s%s",buffer,buf);
+                        sprintf(buffer,"%ssubscribe %s",buffer, buff+4);
+                        break;
+                    }else if(strstr(buff,"del") != NULL){
+                        break;
+                    }else if(strstr(buff,"quit")){
+                        ready = 1;
+                        sprintf(buffer,"%s%s",buffer,buf);
+                        break;
+                    }else {
+                        sprintf(buffer,"%s%s",buffer,buf);
+                        break;
+                    }
                 }
+                continue;
+            }else{
+                sprintf(buffer,"%s%s",buffer,buf);
+                continue;
             }
-            continue;
         }
     }
 
     if ((fp2 = fopen(filename, "w+")) == NULL) {
         wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
+		fclose(fp1);
         return (-1);
     }
 
@@ -199,8 +210,11 @@ fmd_open_conf(char *mod_name)
             }
         }
     } else if (opt_b || opt_i) {
-        if (fmd_add_conf(filename, mod_name) != 0)
-            return (-1);
+        if (fmd_add_conf(filename, mod_name) != 0) {
+			fclose(fp);
+			return (-1);
+		}
+           
     }
 out:
     fclose(fp);
@@ -209,12 +223,6 @@ out:
 
 /*
  * fmadm config command
- *
- *      -h        help
- *    -l        list all the modules
- *      -s        show the module's configuration
- *      -i        set the interval value for evtsrc module
- *      -b        set the subscribing for agent module
  */
 
 int

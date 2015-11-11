@@ -7,10 +7,6 @@
 #include <syslog.h>
 #include <assert.h>
 
-#define fmd_debug \
-        syslog(LOG_DEBUG, "%s %s %d\n", \
-                            __FILE__, __func__, __LINE__);
-
 static void *def_calloc(size_t size, size_t nmemb)
 {
     void *p  = calloc(nmemb, size);

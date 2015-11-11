@@ -51,8 +51,11 @@ fmd_scan_pci_storage(topo_pci_t *ppci,fmd_topo_t *ptopo)
             char dir1[100];
             memset(dir1, 0, 100 * sizeof (char));
             sprintf(dir1, "%s/%s", dir, p);
-            if ((dirp1 = opendir(dir1)) == NULL)
-                return OPENDIR_FAILED; /* failed to open directory; just skip it */
+            if ((dirp1 = opendir(dir1)) == NULL) {
+				closedir(dirp);
+				return OPENDIR_FAILED; /* failed to open directory; just skip it */
+			}
+                
             while ((dp1 = readdir(dirp1)) != NULL) {
                 if (dp1->d_name[0] == '.')
                     continue; /* skip "." and ".." */
@@ -69,9 +72,12 @@ fmd_scan_pci_storage(topo_pci_t *ppci,fmd_topo_t *ptopo)
                     memset(dir2, 0, 100 * sizeof (char));
                     sprintf(dir2, "%s/%s", dir1, p1);
 
-                    if ((dirp2 = opendir(dir2)) == NULL)
+                    if ((dirp2 = opendir(dir2)) == NULL) {
+						closedir(dirp1);
+						closedir(dirp);
                         return OPENDIR_FAILED; /* failed to open directory; just skip it */
-                    while ((dp2 = readdir(dirp2)) != NULL) {
+                    }
+					while ((dp2 = readdir(dirp2)) != NULL) {
                         if (dp2->d_name[0] == '.')
                             continue; /* skip "." and ".." */
 
@@ -111,8 +117,13 @@ fmd_scan_pci_storage(topo_pci_t *ppci,fmd_topo_t *ptopo)
                             memset(dir3, 0, 100 * sizeof (char));
                             //p2 = dp2->d_name;
                             sprintf(dir3, "%s/%s", dir2, tmp);
-                            if ((dirp3 = opendir(dir3)) == NULL)
-                                return OPENDIR_FAILED;
+                            if ((dirp3 = opendir(dir3)) == NULL) {
+								closedir(dirp2);
+								closedir(dirp1);
+								closedir(dirp);
+								return OPENDIR_FAILED;
+							}
+                                
 
                             while ((dp3 = readdir(dirp3)) != NULL) {
                                 if (dp3->d_name[0] == '.')
@@ -132,8 +143,14 @@ fmd_scan_pci_storage(topo_pci_t *ppci,fmd_topo_t *ptopo)
                                         char dir4[100];
                                         memset(dir4, 0, 100 * sizeof (char));
                                         sprintf(dir4, "%s/%s", dir3, p3);
-                                        if ((dirp4 = opendir(dir4)) == NULL)
-                                            return OPENDIR_FAILED;
+                                        if ((dirp4 = opendir(dir4)) == NULL) {
+											closedir(dirp3);
+											closedir(dirp2);
+											closedir(dirp1);
+											closedir(dirp);
+											return OPENDIR_FAILED;
+										}
+                                            
 
                                         while ((dp4 = readdir(dirp4)) != NULL) {
                                             if (dp4->d_name[0] == '.')

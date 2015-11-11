@@ -55,7 +55,7 @@ read_field(char *base, char *name)
 	return  val;
 
 bad:
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
 		"Cannot read sysfs field %s/%s", 
 		base, name);
 	return strdup("");
@@ -70,7 +70,7 @@ read_field_num(char *base, char *name)
 	
 	free(val);
 	if (n != 1) { 
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR,
+		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
 			"Cannot parse number in sysfs field %s/%s", 
 			base, name);
 		return 0;
@@ -92,7 +92,7 @@ read_field_map(char *base, char *name, struct map *map)
 	if (map->name)
 		return map->value;
 	
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR,
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
 		"sysfs field %s/%s has unknown string value `%s'", 
 		base, name, val);
 	return -1;
