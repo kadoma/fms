@@ -1,0 +1,8 @@
+测试工具使用：
+1.  ./dict_tool create dict_name；		创建字典；
+2.  ./install dict_name；				向字典注入一百万条数据；
+3.  ./dict_tool total dict_name；		查询字典总数据条目；
+4.	./dict_tool out dict_name key		删除一条数据记录；
+	./dict_tool put dict_name key value	插入一条数据记录；
+	./dict_tool get dict_name key		查询key值记录；
+	./dict_tool list dict_name			列出全部数据记录；

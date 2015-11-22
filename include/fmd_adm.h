@@ -85,7 +85,7 @@ typedef struct fmd_adm_modinfo {
 
 extern int check_module(char*);
 extern int check_module_conf(char*);
-extern int fmd_adm_case_iter(fmd_adm_t *);
+extern int fmd_adm_case_iter(fmd_adm_t *,int);
 extern int fmd_adm_load_module(fmd_adm_t * ,char *);
 extern int fmd_adm_mod_iter(fmd_adm_t *);
 extern int fmd_adm_unload_module(fmd_adm_t *,char *);

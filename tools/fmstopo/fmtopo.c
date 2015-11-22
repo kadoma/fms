@@ -21,12 +21,12 @@
 static void
 usage(void)
 {
-    fputs("Usage: fmtopo [-hcpt]\n"
+    fputs("Usage: fmtopo [-hcmd] [-n <node index>]\n"
           "\t-h    help\n"
           "\t-c    display cpu topology\n"
           "\t-m    display mem topology\n"
           "\t-d    display disk topology\n"
-          "\t-t    display a tree formatted topology\n"
+          "\t-n    <node index>   display a node formatted topology\n"
           , stderr);
 }
 
@@ -41,7 +41,7 @@ main(int argc, char *argv[])
 {
     fmd_t fmd;
     char path[PATH_MAX], *error = NULL;
-    int c = 0, ret = 0;
+    int c = 0, ret = 0, id = 0;
     void *handle;
     void (*fmd_topo)(fmd_t *);
     int  (*topo_tree_create)(fmd_t *);
@@ -49,7 +49,7 @@ main(int argc, char *argv[])
     //void (*print_pci_topo)(fmd_topo_t *);
     void (*print_mem_topo)(fmd_topo_t *);
     void (*print_disk_topo)(fmd_topo_t *);
-    void (*print_topo_tree)(fmd_topo_t *);
+    void (*print_topo_tree)(fmd_topo_t * ,int);
 
     wr_log_logrotate(0);
     wr_log_init("/var/log/fms/topo.log");
@@ -131,7 +131,7 @@ main(int argc, char *argv[])
         exit(-1);
     }
 
-    while ((c = getopt(argc, argv, "hcpmdt")) != -1) {
+    while ((c = getopt(argc, argv, "hcmdn:")) != -1) {
         switch (c) {
         case 'h':
             usage();
@@ -156,12 +156,12 @@ main(int argc, char *argv[])
                         /* print_pci_topo */
                         (*print_disk_topo)(&fmd.fmd_topo);
                         break;
-        case 't':
+        case 'n':
             /* tree */
-
-            printf("\n                      System Topology Tree \n");
+            id = atoi(optarg);
+            printf("\n                      System Node%d Topology  \n",id);
             printf("\n");
-            (*print_topo_tree)(&fmd.fmd_topo);
+            (*print_topo_tree)(&fmd.fmd_topo,id);
             printf("\n");
             break;
         default:

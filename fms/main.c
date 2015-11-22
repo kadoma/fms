@@ -24,6 +24,7 @@ const char *app_name = "fmd";
 static pthread_mutex_t  m_mutex_exit;
 static pthread_cond_t   m_waitexit;
 
+// 1 : printf Screen 0: log to /var/log/fms.log  all debug level.
 #define DEBUG_MODE 0
 
 /* {mian}{minor}{small} : {00}{00}{00}: HEX */

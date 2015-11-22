@@ -30,5 +30,9 @@ extern int cmd_load(fmd_adm_t *, int, char *[]);
 //extern int cmd_reset(fmd_adm_t *, int, char *[]);
 //extern int cmd_rotate(fmd_adm_t *, int, char *[]);
 extern int cmd_unload(fmd_adm_t *, int, char *[]);
+extern int is_digit(const char*);
+extern int check_esc(char* ,char*);
+extern int check_sub_rep(char* ,char*);
+extern int check_sub_legal(const char *);
 #endif    /* _FMADM_H */
 

@@ -31,18 +31,22 @@ usage(void)
     fputs("Usage: fmadm config [-l|s] [-i <interval>] "
           "[-b] [module]\n"
           "\t-h    help\n"
-          "\t-l    list all the modules\n"
+          "\t-l    list all the module configuration files\n"
           "\t-s    show the module's configuration\n"
           "\t-i    set the interval value for evtsrc module\n"
           "\t-b    set the subscribing for agent module\n\n"
           "<interval> can be:\n"
-          "\tms\n"
-          "\tsecond\n"
-          "\tminute\n"
-          "\thour\n"
-          "\tday\n"
-          "\tFor example: 1second\n\n"
+          "\tFor example: 1\n"
           , stderr);
+}
+static void
+usage_b(void)
+{
+    printf(
+            "\t(enter 'quit' quit edit. note : don't use 'ctr+c' to quit edit !)\n"
+            "\t(enter 'add' to add new subscribe)\n"
+            "\t(for example: add subscribe:event.cpu.unclassified_ue)\n"
+            "\t(enter 'del' to delete a line !)\n\n");
 }
 
 static void
@@ -92,64 +96,83 @@ fmd_list_mod(void)
     return (0);
 }
 
-/*
- * clear old configuration, then add new's.
- */
 static int
-fmd_add_conf(char *filename, char *mod_name)
+fmd_add_agent_conf(char *mod_name)
 {
+    FILE *fp2 = NULL,*fp1 = NULL ;
+    char dir[] = "/usr/lib/fms/plugins/";
+    char filename[50];
     char buf[256];
     char buff[256];
     char buffer[PATH_MAX];
-    FILE *fp1 = NULL, *fp2 = NULL;
-    int ready = 0;
+    int ready = 0,std = 1;
 
+    memset(filename, 0, 50 * sizeof (char));
     memset(buf, 0, 256 * sizeof (char));
-    memset(buff, 0, 256 * sizeof (char));
     memset(buffer, 0, PATH_MAX * sizeof (char));
 
+
+    sprintf(filename, "%s%s.conf", dir, mod_name);
+    if (strstr(mod_name, "agent") == NULL){
+        usage();
+        return (-1);
+    }
+
     if ((fp1 = fopen(filename, "r+")) == NULL) {
+        printf("module: %s does not exist!\n",mod_name);
         wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
         return (-1);
     }
-    if (evtsrc) {
-        while (fgets(buf, sizeof(buf), fp1)) {
-            if (strncmp(buf, "interval ", 9) == 0) {
-                sprintf(buffer, "%sinterval %s\n", buffer, arg_interval);
+
+    usage_b();
+    while (fgets(buf, sizeof(buf), fp1)) {
+        if(ready == 0){
+            if(strstr(buf,"subscribe") == NULL)
                 continue;
-            } else
-                sprintf(buffer, "%s%s", buffer, buf);
-        }
-    } else if (agent) {
-        while (fgets(buf, sizeof(buf), fp1)) {
-            if(ready == 0){
-                printf(
-                        "\t(press 'quit' quit edit. note : don't use ctr+c to quit edit !)\n"
-                        "\t(press 'add' to add new subscribe)\n"
-                        "\tfor example:add fault.cpu.intel.cache\n"
-                        "\t(press 'del' to delete a line)\n\n");
-                printf("this line is : %s \n",buf);
-                while (fgets(buff,sizeof(buff),stdin)){
-                    if(strstr(buff,"add") != NULL){
-                        sprintf(buffer,"%s%s",buffer,buf);
-                        sprintf(buffer,"%ssubscribe %s",buffer, buff+4);
+
+            printf("%s\n",buf);
+            while (std){
+                if(fgets(buff,sizeof(buff),stdin)){
+                    if(strncmp(buff,"add",3) == 0 ){
+                        if(check_esc(buff,mod_name) == 0){
+                            if(check_sub_rep(buff,mod_name) == 0){
+                                sprintf(buffer,"%s%s",buffer,buf);
+                                char * tmp = strstr(buff,":");
+                                sprintf(buffer,"%ssubscribe %s",buffer, tmp+1);
+                                break;
+                            }else{
+                                printf("%s\n",buf);
+                                continue;
+                            }
+                        }else{
+                            usage_b();
+                            printf("%s\n",buf);
+                            continue;
+                            //break;
+                        }
+                    }else if(strncmp(buff,"del",3) == 0 && strlen(buff) == 4){
                         break;
-                    }else if(strstr(buff,"del") != NULL){
-                        break;
-                    }else if(strstr(buff,"quit")){
+                    }else if(strncmp(buff,"quit",4) == 0 && strlen(buff) == 5){
                         ready = 1;
                         sprintf(buffer,"%s%s",buffer,buf);
                         break;
-                    }else {
+                    }else if (strncmp(buff,"\n",1) == 0) {
                         sprintf(buffer,"%s%s",buffer,buf);
                         break;
+                    }else{
+                        printf("Your enter illegal !\n");
+                        usage_b();
+                        printf("%s\n",buf);
+                        continue;
                     }
+                }else{
+                    break;
                 }
                 continue;
-            }else{
-                sprintf(buffer,"%s%s",buffer,buf);
-                continue;
             }
+        }else{
+            sprintf(buffer,"%s%s",buffer,buf);
+            continue;
         }
     }
 
@@ -167,10 +190,262 @@ fmd_add_conf(char *filename, char *mod_name)
     return 0;
 }
 
-static int
-fmd_open_conf(char *mod_name)
-{
+/*
+ *check subscribe if exist in module conf
+ *
+ */
+int check_esc(char *sub ,char *mod_name){
+
     FILE *fp = NULL;
+    char escdir[] = "/usr/lib/fms/escdir/";
+
+    char escfile[50];
+    char escbuf[256];
+    char buffer[PATH_MAX];
+    int exist = 0;
+
+    memset(escfile, 0, 50 * sizeof (char));
+    memset(escbuf, 0, 256 * sizeof (char));
+    memset(buffer, 0, PATH_MAX * sizeof (char));
+
+    char *tmp =  NULL,*tmp1 = NULL;
+    tmp = strdup(mod_name);
+    tmp1 = strtok(tmp,"_");
+    sprintf(escfile, "%s%s.esc", escdir, tmp1);
+
+    /* open esc file */
+    if ((fp = fopen(escfile, "r+")) == NULL) {
+        printf("file: %s does not exist!\n",escfile);
+        wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
+        return (-1);
+    }
+
+    /*check subscribe head */
+    char *subhead = strstr(sub,"subscribe:");
+    if(subhead == NULL)
+    {
+        return (-1);
+    }
+
+    int addtmp = strlen(sub) - strlen(subhead) - 3;
+    char *tmpadd = sub+3;
+    while (addtmp > 0)
+    {
+        if (*tmpadd == ' '){
+            tmpadd++;
+            addtmp--;
+            continue;
+        }
+        else
+            return(-1);
+    }
+
+    if(strncmp(subhead + 10,"event",5) != 0)
+    {
+        printf("subscribe illegal ! subscribe header must be 'event'!\n");
+        return (-1);
+    }
+    /* check subscribe legal*/
+    char * subclass = strstr(sub,".");
+    if(check_sub_legal(subclass) != 0){
+        printf("subscribe illegal!, subscribe must in %s file \n",escfile);
+        return (-1);
+    }
+
+    /* check subscribe if exist in esc file  */
+    while (fgets(escbuf, sizeof(escbuf), fp)) {
+        if(escbuf == NULL)
+            continue;
+
+        char * escclass = strstr(escbuf,".");
+
+        if(escclass == NULL)
+            continue;
+
+        int len = strlen(escclass);
+        if(strstr(sub,"*") != NULL);
+            len = strlen(subclass) - 3;
+
+        if(strncmp(subclass,escclass,len) == 0){
+            exist = 1;
+        }
+        continue;
+    }
+
+    if(exist)
+        return 0;
+    else{
+        printf("subscribe illegal!, subscribe must in %s file \n",escfile);
+        return (-1);
+    }
+}
+
+/*
+ *
+ *
+*/
+int check_sub_legal(const char *sub)
+{
+
+    if(sub == NULL)
+        return (-1);
+    size_t len = strlen(sub);
+    while(len > 0) {
+        if (*sub == ' ' ) {
+            return (-1);
+        }
+        sub++;
+        len--;
+    }
+        return 0;
+}
+
+/*
+ *check subscribe if exist in module conf
+ *
+ */
+int check_sub_rep(char *sub ,char *mod_name){
+
+    FILE *fp1 = NULL;
+    char dir[] = "/usr/lib/fms/plugins/";
+
+    char modfile[50];
+    char buf[256];
+    char buff[256];
+    char buffer[PATH_MAX];
+    int exist = 0;
+
+
+    memset(modfile, 0, 50 * sizeof (char));
+    memset(buf, 0, 256 * sizeof (char));
+    memset(buffer, 0, PATH_MAX * sizeof (char));
+
+    sprintf(modfile, "%s%s.conf", dir, mod_name);
+
+    /* open module file */
+    if ((fp1 = fopen(modfile, "r+")) == NULL) {
+        printf("\nfile: %s does not exist!\n",modfile);
+        wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
+        return (-1);
+    }
+
+    char *tmp = strstr(sub,"subscribe:");
+    if(tmp == NULL)
+        return (-1);
+
+    /* check subscribe if exist in module conf */
+    while (fgets(buf, sizeof(buf), fp1)) {
+
+        char *rep = strstr(buf,"subscribe");
+        if (rep == NULL)
+            continue;
+
+        int sublen = strlen(tmp+10);
+        int buflen = strlen(rep+10);
+        int cmplen = 0;
+        if(strstr(tmp,"*"))
+            sublen =  sublen -3;
+        if(strstr(rep,"*"))
+            buflen = buflen -3;
+        if(sublen > buflen )
+            cmplen = buflen;
+        else
+            cmplen = sublen;
+        //printf("%d:%d:%d",sublen,buflen,cmplen);
+        //printf("%s\n%s\n",tmp+11,rep+11);
+        if(strncmp(tmp+10,rep+10,cmplen) == 0){
+            printf("\n%s has already have subscribe: %s \n",mod_name,rep+10);
+            return (-1);
+        }
+        continue;
+    }
+    return 0;
+
+}
+
+
+
+static int
+fmd_add_src_conf(char *mod_name)
+{
+    FILE *fp2 = NULL,*fp1 = NULL;
+    char dir[] = "/usr/lib/fms/plugins/";
+    char filename[50];
+    char buf[256];
+    char buff[256];
+    char buffer[PATH_MAX];
+    int ready = 0;
+
+    memset(filename, 0, 50 * sizeof (char));
+    memset(buf, 0, 256 * sizeof (char));
+    memset(buffer, 0, PATH_MAX * sizeof (char));
+
+    sprintf(filename, "%s%s.conf", dir, mod_name);
+    if (strstr(mod_name, "src") == NULL){
+        usage();
+        return (-1);
+    }
+
+    if ((fp1 = fopen(filename, "r+")) == NULL) {
+        printf("\nmodule: %s does not exist!\n",mod_name);
+        wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
+        return (-1);
+    }
+
+    while (fgets(buf, sizeof(buf), fp1)) {
+        if (strncmp(buf, "interval ", 9) == 0) {
+            if (is_digit(arg_interval) == 0){
+                sprintf(buffer, "%sinterval %s\n", buffer, arg_interval);
+            }else{
+                sprintf(buffer, "%s%s", buffer, buf);
+                printf("\n%s is illegal , interval must be number and not 0 !\n",arg_interval);
+            }
+            continue;
+        } else{
+            sprintf(buffer, "%s%s", buffer, buf);
+        }
+    }
+
+    if ((fp2 = fopen(filename, "w+")) == NULL) {
+        wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
+        fclose(fp1);
+        return (-1);
+    }
+
+    fputs(buffer, fp2);
+
+    fclose(fp1);
+    fclose(fp2);
+
+return 0;
+
+}
+
+int is_digit(const char *str)
+{
+    size_t len = strlen(str);
+    int nozore = 0;
+    while(len > 0) {
+        if (*str < '0' || *str > '9') {
+            return (-1);
+        }else
+        {
+            if( *str != '0')
+                nozore = 1;
+        }
+        str++;
+        len--;
+    }
+    if(nozore == 1)
+        return 0;
+    else
+        return (-1);
+}
+
+static int
+fmd_show_conf(char *mod_name)
+{
+    FILE *fp = NULL,*fp1 = NULL;
     char dir[] = "/usr/lib/fms/plugins/";
     char filename[50];
     char buf[256];
@@ -180,43 +455,35 @@ fmd_open_conf(char *mod_name)
     memset(buf, 0, 256 * sizeof (char));
     memset(buffer, 0, PATH_MAX * sizeof (char));
 
-    sprintf(filename, "%s%s.conf", dir, mod_name);
     if (strstr(mod_name, "src") != NULL)
         evtsrc = 1;
     else if (strstr(mod_name, "agent") != NULL)
         agent = 1;
+
+    sprintf(filename, "%s%s.conf", dir, mod_name);
     if ((fp = fopen(filename, "r+")) == NULL) {
+        printf("\n%s does not exist!\n",mod_name);
         wr_log("",WR_LOG_ERROR,"fmsadm config:failed to open conf file for %s\n",mod_name);
         return (-1);
     }
 
-    if (opt_s) {
-        while (fgets(buffer, sizeof(buffer), fp)) {
-            if ((buffer[0] == '\n') || (buffer[0] == '\0')
-             || (buffer[0] == '#'))
-                continue;        /* skip blank line and '#' line*/
-            if (evtsrc == 1) {
-                if (strncmp(buffer, "interval ", 9) == 0) {
-                    printf("%s\t\t%s", mod_name, buffer);
-                    goto out;
-                }
-                continue;
-            } else if (agent == 1) {
-                if (strncmp(buffer, "subscribe ", 10) == 0) {
-                    printf("%s\t\t%s", mod_name, buffer);
-                    continue;
-                }
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        if ((buffer[0] == '\n') || (buffer[0] == '\0')
+                || (buffer[0] == '#'))
+            continue;        /* skip blank line and '#' line*/
+        if (evtsrc == 1) {
+            if (strncmp(buffer, "interval ", 9) == 0) {
+                printf("%s\t\t%s", mod_name, buffer);
+            }
+            continue;
+        } else if (agent == 1) {
+            if (strncmp(buffer, "subscribe ", 10) == 0) {
+                printf("%s\t\t%s", mod_name, buffer);
                 continue;
             }
+            continue;
         }
-    } else if (opt_b || opt_i) {
-        if (fmd_add_conf(filename, mod_name) != 0) {
-			fclose(fp);
-			return (-1);
-		}
-           
     }
-out:
     fclose(fp);
     return (0);
 }
@@ -279,7 +546,7 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
         usage();
         return (FMADM_EXIT_ERROR);
     }
-    if (opt_l) {
+    if (opt_l == 1 && argc == 2) {
         printf("-----------------------------------------\n"
                "Module:\n"
                "-----------------------------------------\n");
@@ -287,17 +554,38 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
             return (FMADM_EXIT_ERROR);
         return (FMADM_EXIT_SUCCESS);
     }
-    if (opt_s) {
+    else if (opt_l > 1){
+        usage();
+    }
+    else if (opt_s == 1 && argc == 3) {
         printf("----------------------- ----------------------------"
                "-------------------\n"
                "Module                  Configuration\n"
                "----------------------- ----------------------------"
                "-------------------\n");
+        if(fmd_show_conf(arg_module) != 0)
+            return (FMADM_EXIT_ERROR);
+    }else if(opt_s > 1) {
+        usage();
     }
 
-    if ((rt = fmd_open_conf(arg_module)) != 0)
-        return (FMADM_EXIT_ERROR);
+    else if(opt_b == 1 && argc == 3)
+    {
+        if(fmd_add_agent_conf(arg_module) != 0)
+            return (FMADM_EXIT_ERROR);
+    }else if(opt_b > 1){
+        usage();
+    }
 
+    else if(opt_i == 1 && argc == 4)
+    {
+        if(fmd_add_src_conf(arg_module) != 0)
+            return (FMADM_EXIT_ERROR);
+    }else if(opt_i > 1){
+        usage();
+    }else {
+        usage();
+    }
     return (FMADM_EXIT_SUCCESS);
 }
 

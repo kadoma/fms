@@ -26,9 +26,10 @@
 #define DESTO_AGENT_AND_CASE 2
 
 // event list . report, fault, info
+//todo delete fault_class
 #define FM_EREPORT_CLASS    "ereport"
-#define FM_FAULT_CLASS      "fault"
-#define FM_INFO_CLASS       "info"
+#define FM_FAULT_CLASS      "ereport"
+//#define FM_INFO_CLASS       "info"
 
 // event action and result
 // isolated, repaired, logged
@@ -61,6 +62,7 @@ typedef struct _fmd_event_{
 	int                 repaired_N;
 	time_t              repaired_T;
     time_t              ev_create;    // the time for event occur
+    time_t              ev_last_occur;// the time for last event occur
     int                 ev_count;     //this event counts
     int                 ev_refs;      // occur counts
     int64_t             ev_flag;       // agent todo some , to log.

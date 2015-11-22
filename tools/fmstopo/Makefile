@@ -15,7 +15,7 @@ CFLAGS= -Wall -g -O0 \
 	-I../../include \
 	-L /usr/lib/fms/
 
-LDFLAGS = -lpthread -ldl 
+LDFLAGS = -lpthread -ldl -ltopo
 
 
 all: 

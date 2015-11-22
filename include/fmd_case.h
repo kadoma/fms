@@ -13,6 +13,8 @@
 #include "list.h"
 #include "fmd.h"
 #include "fmd_event.h"
+#include "atomic_64.h"
+
 
 #define CASE_CREATE 0x00
 #define CASE_FIRED 0x01
@@ -21,21 +23,23 @@
 #define CASE_DB  "/usr/lib/fms/db/rep_case.db"
 
 typedef struct _fmd_case_{
-	char      *dev_name;
-	uint64_t   dev_id;
-	char       last_eclass[128];
+    char      *dev_name;
+    int64_t   dev_id;
+    char       last_eclass[128];
 
-	uint8_t    cs_flag;   /* look above*/
-	uint32_t   cs_total_count;  /*on this case . total events*/
-	uint32_t   cs_fire_counts;  /*agent to process times */
-	time_t     cs_create;       /*create time*/
-	time_t     cs_first_fire;   /*first to process time*/
-	time_t     cs_last_fire;    /*last time*/
-	time_t     cs_close;        /*close time*/
+    int8_t     cs_flag;   /* look above*/
+    int32_t    cs_total_count;  /*on this case . total events*/
+    int32_t    cs_fire_counts;  /*agent to process times */
+    time_t     cs_create;       /*create time*/
+    time_t     cs_first_fire;   /*first to process time*/
+    time_t     cs_last_fire;    /*last time*/
+    time_t     cs_close;        /*close time*/
 
-	/* link to global fmd case list */
-	struct list_head cs_list;
-	struct list_head cs_event;
+    atomic_t   m_event_using;   /* if 0 can defree case else can't */
+
+    /* link to global fmd case list */
+    struct list_head cs_list;
+    struct list_head cs_event;
 }fmd_case_t;
 
 int fmd_case_insert(fmd_event_t *pevt);

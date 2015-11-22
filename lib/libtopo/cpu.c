@@ -16,10 +16,10 @@
 #include <assert.h>
 #include <string.h>
 
+#include <logging.h>
 #include <sys/types.h>
 #include <sys/fcntl.h>
 #include <linux/limits.h>
-#include <logging.h>
 #include <fmd_errno.h>
 #include <fmd_topo.h>
 

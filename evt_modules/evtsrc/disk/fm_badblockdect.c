@@ -35,21 +35,21 @@
 int
 disk_badblocks_check(const char *path)
 {
-        FILE *fstream = NULL;
-		FILE *fstreamtxt = NULL;
-		FILE *linenum = NULL;
-		FILE *sectorsnum = NULL;
-		FILE *bbtxt;			/* /tmp/badblockinfo.txt */
-        char buff[LINE_MAX];
-		char bufline[LINE_MAX];
-		char bufsectors[LINE_MAX];
-        memset(buff,0,sizeof(buff));
-		memset(bufline,0,sizeof(bufline));
-		memset(bufsectors,0,sizeof(bufsectors));
+    FILE *fstream = NULL;
+	FILE *fstreamtxt = NULL;
+	FILE *linenum = NULL;
+	FILE *sectorsnum = NULL;
+	FILE *bbtxt;			/* /tmp/badblockinfo.txt */
+    char  buff[LINE_MAX];
+    char bufline[LINE_MAX];
+    char bufsectors[LINE_MAX];
+    memset(buff,0,sizeof(buff));
+    memset(bufline,0,sizeof(bufline));
+    memset(bufsectors,0,sizeof(bufsectors));
 			
-		char* cmd = NULL;
-		char* cmdtxt = NULL;
-		char* cmdsectors = NULL;
+    char* cmd = NULL;
+    char* cmdtxt = NULL;
+    char* cmdsectors = NULL;
 		char cmdresult[PATH_MAX];
 		char cmdsecresult[PATH_MAX];
 		char cmdtxtresult[PATH_MAX];

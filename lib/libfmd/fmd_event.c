@@ -37,12 +37,12 @@ fmd_create_ereport(fmd_t *pfmd, const char *eclass, char *id, nvlist_t *p_nvl)
     pevt->ev_class = strdup(eclass);
     pevt->data = p_nvl->data;
 
-
 	/* added for test by guanhj : todo every src module */
-	pevt->repaired_N =REPAIRED_N;
+	pevt->repaired_N = REPAIRED_N;
 	pevt->repaired_T = REPAIRED_T; // 2 min
 
     list_del(&p_nvl->nvlist);
+    //def_free(p_nvl->data);
     def_free(p_nvl);
 
     //wanghuan 
@@ -76,6 +76,7 @@ fmd_create_listevent(fmd_event_t *pevt, int action)
 	listevt->repaired_N = pevt->repaired_N;
 	listevt->repaired_T = pevt->repaired_T;
 	listevt->ev_refs = pevt->ev_refs;
+    listevt->data = pevt->data;
 
     return listevt;
 }

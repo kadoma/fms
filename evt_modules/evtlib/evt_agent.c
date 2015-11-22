@@ -10,6 +10,8 @@
 #include "fmd.h"
 #include "logging.h"
 #include "fmd_ring.h"
+#include "atomic_64.h"
+
 
 #define NAME_LEN 128
 
@@ -69,29 +71,32 @@ agent_ring_put(fmd_t *p_fmd, fmd_event_t *pevt)
     pthread_mutex_lock(&plist_repaired->evt_repaired_lock);
 	
     struct list_head *pos;
+	struct list_head *listn;
 
-    list_for_each(pos, prepaired_head)
+    list_for_each_safe(pos, listn, prepaired_head)
     {
 		fmd_event_t *p_event = list_entry(pos, fmd_event_t, ev_repaired_list);
-		if((p_event->dev_name == pevt->dev_name) &&(p_event->dev_id == pevt->dev_id)
+		if((strncmp(p_event->dev_name, pevt->dev_name, strlen(pevt->dev_name)) == 0) &&(p_event->dev_id == pevt->dev_id)
 			 && (p_event->evt_id == pevt->evt_id) && (p_event->agent_result == pevt->agent_result))
 		{
 			p_event->ev_create = pevt->ev_create;
 			p_event->ev_refs = pevt->ev_refs;
+			p_event->ev_count++;
 			def_free(pevt->dev_name);
 	        def_free(pevt->ev_class);
 	        def_free(pevt->data);
 	        def_free(pevt);
 			wr_log("agent", WR_LOG_DEBUG, " **** list case event change." );
 			
+			pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
 			return 0;
 		}
 
 	}
+	pevt->ev_count = 1;
 	list_add_tail(&pevt->ev_repaired_list, &plist_repaired->list_repaired_head);
     
     pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
-    sem_post(&plist_repaired->evt_repaired_sem);
 
 	return 0;
 }
@@ -125,12 +130,19 @@ do_agent(ring_t *ring)
 
 		wr_log("", WR_LOG_DEBUG, "agent get event and print.[%s]", evt->ev_class);		
 		eresult = mops->evt_handle(pfmd, evt);
+        
+        fmd_case_t *pp_case = (fmd_case_t *)evt->p_case;
+        if(evt->ev_flag != AGENT_TODO)
+            atomic_dec(&pp_case->m_event_using);
+        
 		if(eresult == NULL){
+
 			wr_log("handle agent", WR_LOG_DEBUG, "event process serd/fault and log event.");
 			return 0;
 		}
 		//put to master queue again
-		wr_log("", WR_LOG_NORMAL, "event list put to ring.[%s]", eresult->ev_class);
+		wr_log("", WR_LOG_NORMAL, "event list put to ring.[%s], result is [%d]", 
+											eresult->ev_class, eresult->agent_result);
 		agent_ring_put(pfmd, eresult);
 	}
     sleep(1);

@@ -60,13 +60,9 @@ fmd_log_event(fmd_event_t *pevt)
 
 	fmd_get_time(times, evtime);
 	memset(buf, 0, 128);
-	snprintf(buf, sizeof(buf), "\n%s\t%s\t%s\t%d\t\n", times, eclass, dev_name, dev_id);
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s:\t%d\n", times, eclass, dev_name, dev_id);
 
-	tsize = strlen(times) + 1;
-	ecsize = strlen(eclass) + 1;
-	bufsize = tsize + ecsize + 3*sizeof(uint64_t) + 11;
-
-	if (fmd_log_write(fd, buf, bufsize) != 0) {
+	if(fmd_log_write(fd, buf, strlen(buf)) != 0){
 		wr_log("", WR_LOG_ERROR, 
 			"FMD: failed to write log file for event: %s\n", eclass);
 		return -1;
@@ -95,7 +91,7 @@ trace_handle_event(fmd_t *pfmd, fmd_event_t *event)
         event->event_type = EVENT_LIST;
         // to log list event
         fmd_log_event(event);
-        return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
+        return (fmd_event_t *)fmd_create_listevent(event, LIST_ISOLATED_SUCCESS);
 	}
     // every fault, ereport ,serd to log.
 	fmd_log_event(event);

@@ -59,7 +59,7 @@ cmd_unload(fmd_adm_t *adm, int argc, char *argv[])
 {
     if (argc != 2) {
         usage();
-    return (FMADM_EXIT_USAGE);
+    return (-1);//(FMADM_EXIT_USAGE);
     }
 
 #if 0

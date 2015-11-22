@@ -28,7 +28,6 @@
 static int
 disk_log_event(fmd_event_t *pevt)
 {
-	struct fms_disk *fms_disk;
 	int type, fd;
 	int tsize, ecsize, bufsize;
 	char *dir;
@@ -44,10 +43,6 @@ disk_log_event(fmd_event_t *pevt)
 	eclass = pevt->ev_class;
 
 	strcpy(dev_name, pevt->dev_name);
-	
-	fms_disk = (struct fms_disk*)pevt->data;
-	sprintf(dev_detail, fms_disk->detail);
-
 
 	if(pevt->event_type == EVENT_LIST)
 	{
@@ -73,21 +68,15 @@ disk_log_event(fmd_event_t *pevt)
 
 	fmd_get_time(times, evttime);
 	memset(buf, 0, 128);
-	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t%s\n", times, eclass, dev_name,dev_detail);
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s\n", times, eclass, dev_name);
 
-	tsize = strlen(times) + 1;
-	ecsize = strlen(eclass) + 1;
-	bufsize = tsize + ecsize + 3*sizeof(uint64_t) + 11;
-
-	if (fmd_log_write(fd, buf, bufsize) != 0) {
-		wr_log("disk_agent", WR_LOG_ERROR,
-			"FMD: failed to write log file for event: %s\n", eclass);
+	if (fmd_log_write(fd, buf, strlen(buf)) != 0) {
+		wr_log("disk_agent", WR_LOG_ERROR, "FMD: failed to write log file for event: %s\n", eclass);
 		return -1;
 	}
+    
 	fmd_log_close(fd);
-
 	return 0;
-	
 }
 
 /**
@@ -108,7 +97,9 @@ disk_handle_event(fmd_t *pfmd, fmd_event_t *event)
         event->event_type = EVENT_LIST;
         // to log list event
         disk_log_event(event);
-        return (fmd_event_t *)fmd_create_listevent(event, LIST_REPAIRED_SUCCESS);
+        
+        //only isolated is in repaired_db
+        return (fmd_event_t *)fmd_create_listevent(event, LIST_ISOLATED_SUCCESS);
 	}
     
 	// every fault, ereport ,serd to log.

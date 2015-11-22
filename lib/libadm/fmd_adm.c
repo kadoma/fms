@@ -298,7 +298,7 @@ fmd_adm_get_modinfo(fmd_adm_t *ap)
  * list of UUIDs, sort them, then obtain the case information for each.
  */
 int
-fmd_adm_case_iter(fmd_adm_t *ap)
+fmd_adm_case_iter(fmd_adm_t *ap,int type)
 {
     int ret = 0;
     int num = 20;
@@ -307,7 +307,7 @@ fmd_adm_case_iter(fmd_adm_t *ap)
 
     while ((num > 0 && index == 0) || num == 20){
 
-        sprintf(cmd,"GET CASELIST:%d",FAF_NUM*index);
+        sprintf(cmd,"GET CASELIST:%d:%d",FAF_NUM*index,type);
         index++;
 
         ret = fmd_adm_get_list(ap,cmd);

@@ -97,11 +97,8 @@ __handle_fault_event(fmd_event_t *e)
 
 	memset(&edata, 0, sizeof edata);
 	edata.cpu_action = e->ev_refs;
-	if(cmea_evt_processing(evt_type, &edata, e->data)) {
-		return LIST_REPAIRED_FAILED;
-	}
 
-	return LIST_REPAIRED_SUCCESS;
+	return (cmea_evt_processing(evt_type, &edata, e->data));
 }
 
 static int
@@ -142,7 +139,7 @@ __log_event(fmd_event_t *pevt)
 
 	fmd_get_time(times, evtime);
 	memset(buf, 0, sizeof buf);
-	snprintf(buf, sizeof(buf), "%s\t%s\t%s\t%llx\t\n", times, eclass, dev_name, 
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s:\t%llu\t\n", times, eclass, dev_name, 
 		(long long unsigned int)dev_id);
 
 	if (fmd_log_write(fd, buf, strlen(buf)) != 0) {
@@ -182,7 +179,7 @@ cpumem_handle_event(fmd_t *pfmd, fmd_event_t *e)
 		break;
 	}
 
-	if(!action) {
+	if (!action) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
 			"cpumem agent log event.");
 		return NULL;

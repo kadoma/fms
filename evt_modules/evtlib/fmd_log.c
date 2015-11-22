@@ -127,8 +127,7 @@ void
 fmd_log_close(int fd)
 {
 	if (fd >= 0 && close(fd) != 0)
-		wr_log("", WR_LOG_ERROR, 
-			"FMD: failed to close log file: fd=%d.\n", fd);
+		wr_log("", WR_LOG_ERROR, "FMD: failed to close log file: fd=%d.\n", fd);
 }
 
 int
@@ -143,6 +142,5 @@ fmd_log_write(int fd, const char *buf, int size)
 	}
 
     fsync(fd);
-
-	return 0;
+    return 0;
 }

@@ -25,7 +25,6 @@
 #include <fmd_errno.h>
 #include <fmd_topo.h>
 #include <logging.h>
-
 /**
  * get_efi_systab_smbios
  *

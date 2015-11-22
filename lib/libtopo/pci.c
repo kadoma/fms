@@ -21,6 +21,7 @@
 #include <storage.h>
 #include <network.h>
 #include <logging.h>
+
 #define PCI_CLASS_REVISION      0x08              /* High 24 bits are class, low 8 revision */
 #define PCI_VENDOR_ID           0x00    /* 16 bits */
 #define PCI_DEVICE_ID           0x02    /* 16 bits */

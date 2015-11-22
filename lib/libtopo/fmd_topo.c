@@ -13,7 +13,6 @@
 #include <dmi.h>
 #include <cpu.h>
 #include <fmd.h>
-#include <logging.h>
 #include <fmd_errno.h>
 
 /* global defs */
@@ -38,7 +37,7 @@ _print_cpu_topo(fmd_topo_t *pptopo)
     list_for_each(pos, &pptopo->list_cpu) {
         pcpu = list_entry(pos, topo_cpu_t, list);
         printf("%3d%7d%7d%7d\n", pcpu->cpu_chassis,
-            pcpu->cpu_socket, pcpu->cpu_core, pcpu->cpu_thread);
+            pcpu->cpu_socket, pcpu->cpu_core, pcpu->processor);
     } /* list_for_each */
 }
 
@@ -87,12 +86,12 @@ _print_mem_topo(fmd_topo_t *pptopo)
 
     /* traverse mem */
     printf("           MEMORY \n");
-    printf("node  socket  controller  dimm    size\n");
+    printf("node  socket     dimm     size\n");
     list_for_each(pos,&pptopo->list_mem){
         pmem = list_entry(pos,topo_mem_t,list);
 
-        printf("  %-7d%-9d%-9d%-7d%ld\n",pmem->mem_chassis,
-            pmem->mem_socket,pmem->mem_controller,pmem->mem_dimm,pmem->end-pmem->start);
+        printf("  %-7d%-9d%-7d%ld kb\n",pmem->mem_chassis,
+            pmem->mem_socket,pmem->mem_dimm,pmem->end-pmem->start);
     }/* list_for_each */
 }
 
@@ -110,11 +109,11 @@ _print_disk_topo(fmd_topo_t *pptopo)
     topo_storage_t *pstr = NULL;
 
     /* traverse storage */
-    printf("            DISK\n");
+    printf("                    DISK\n");
     list_for_each(pos,&pptopo->list_storage){
         pstr = list_entry(pos,topo_storage_t,list);
 
-        printf("%04x:%02x:%02x.%1x-%04x:%02x:%02x.%1x", pstr->storage_chassis, pstr->storage_hostbridge,
+        printf("%04x:%04x:%04x.%04x-%04x:%04x:%04x.%04x", pstr->storage_chassis, pstr->storage_hostbridge,
                         pstr->storage_slot, pstr->storage_func, pstr->storage_host, pstr->storage_channel,
                         pstr->storage_target, pstr->storage_lun);
 

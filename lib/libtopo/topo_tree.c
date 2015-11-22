@@ -204,7 +204,7 @@ print_topo_dimm(memcontroller_t *mcp)
     /* traverse dimm */
     list_for_each(pos, &mcp->dimm_head) {
         dp = list_entry(pos, dimm_t, list);
-        printf("|       |       |   -- dimm%-4d:%10ld      |       |       |\n", dp->tnode->tn_value,dp->size);
+        printf("|       |       |   -- dimm%-4d:%10ld kb   |       |       |\n", dp->tnode->tn_value,dp->size);
     }
 }
 
@@ -233,7 +233,7 @@ print_topo_core(chip_t *chp)
             mcp = list_entry(ppos, memcontroller_t, list);
 
             printf("|       |       |-------------------------------|       |       |\n");
-            printf("|       |       |memory-controller%-3d           |       |       |\n", mcp->tnode->tn_value);
+            printf("|       |       |memory-controller              |       |       |\n");
             print_topo_dimm(mcp);
             printf("|       |       |-------------------------------|       |       |\n");
         }
@@ -339,19 +339,25 @@ print_topo_chassis(chassis_t *csp)
 }
 
 void
-print_topo_tree(fmd_topo_t *ptp)
+print_topo_tree(fmd_topo_t *ptp,int id)
 {
 
     struct list_head *pos = NULL;
     chassis_t *csp = NULL;
+    int exist = 0,total = 0;
         /* traverse memory */
 
     /* traverse chassis */
     list_for_each(pos, &ptp->tp_root->tt_root) {
+        total++;
         csp = list_entry(pos, chassis_t, list);
-
-        print_topo_chassis(csp);
+        if(csp->tnode->tn_value == id){
+            exist = 1;
+            print_topo_chassis(csp);
+        }
     }
+    if(!exist)
+        printf("node%d does not exist! node index range : 0 - %d \n",id,total-1);
 }
 
 static int
@@ -466,7 +472,8 @@ fmd_topo_tree(fmd_topo_t *ptp)
         thread_t *ht = NULL;
         if (cop->ht == NULL) {            /* thread list head */
             cop->ht = topo_thread_alloc();
-            cop->ht->tnode->tn_value = pcpu->cpu_thread;
+            //cop->ht->tnode->tn_value = pcpu->cpu_thread;
+            cop->ht->tnode->tn_value = pcpu->processor;
             ht = cop->ht;
             list_add(&ht->list, &cop->ht_head);
         } else {
@@ -475,7 +482,8 @@ fmd_topo_tree(fmd_topo_t *ptp)
             list_for_each(tpos, &cop->ht_head) {
                 thread = list_entry(tpos, thread_t, list);
 
-                if (thread->tnode->tn_value == pcpu->cpu_thread) {
+                //if (thread->tnode->tn_value == pcpu->cpu_thread) {
+                if (thread->tnode->tn_value == pcpu->processor) {
                     ht = thread;
                     break;
                 }
@@ -483,7 +491,8 @@ fmd_topo_tree(fmd_topo_t *ptp)
 
             if (ht == NULL) {    /* thread not found */
                 ht = topo_thread_alloc();
-                ht->tnode->tn_value = pcpu->cpu_thread;
+                //ht->tnode->tn_value = pcpu->cpu_thread;
+                ht->tnode->tn_value = pcpu->processor;
                 ht->tnode->tn_state = TOPO_NODE_BOUND;
                 list_add(&ht->list, &cop->ht_head);
             }

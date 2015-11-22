@@ -29,14 +29,25 @@ static void usage(void)
 
 int load_module(fmd_adm_t *adm,char* path)
 {
+    char *tmp = malloc(128);
     if(access(path,0))
     {
         printf("%s is not exist!\n",path);
         wr_log("",WR_LOG_ERROR,"%s: is not exist \n",path);
         return -1;
+    }else{
+        if(strstr(path,"./") != NULL){
+            char *tmp1 = strstr(path,"./");
+            sprintf(tmp,"/usr/lib/fms/plugins/%s",tmp1+2);
+        }else
+            sprintf(tmp,"%s",path);
     }
-    if(fmd_adm_load_module(adm,path) != 0)
+
+    if(fmd_adm_load_module(adm,tmp) != 0){
         die("FMD:failed to load module");
+        free(tmp);
+        tmp = NULL;
+    }
     return 0;
 }
 
@@ -51,8 +62,9 @@ cmd_load(fmd_adm_t *adm, int argc, char *argv[])
 {
     if (argc != 2) {
         usage();
-    return (FMADM_EXIT_SUCCESS);
+        return(-1 );//(FMADM_EXIT_SUCCESS);
     }
+
 #if 0
     char fmd_thread[8];
     FILE * fp ;

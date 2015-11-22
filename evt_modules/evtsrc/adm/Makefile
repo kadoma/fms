@@ -12,7 +12,8 @@ LDFLAGS= -lpthread -ldl -shared -fpic -lrt -levt -g
 
 CFLAGS= -g -O0 -Wall\
 	-Wno-unused-function \
-    -Wno-unused-variable \
+	-Wno-unused-variable \
+	-Wno-unused-but-set-variable \
 	-I ../../../include\
 	-I ../../include\
 	-L /usr/lib/fms\
@@ -21,10 +22,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	scp adm_src.so /usr/lib/fms/plugins
+	scp adm_src.so /usr/lib/fms/plugins/
 
 install:
-	scp adm_src.so /usr/lib/fms/plugins
+	scp adm_src.so /usr/lib/fms/plugins/
 
 clean:
 	rm -rf *.o *.so

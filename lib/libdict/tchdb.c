@@ -436,6 +436,110 @@ char *tchdbget2(TCHDB *hdb, const char *kstr){
 }
 
 
+/* Remove a record of a hash database object. */
+bool tchdbout(TCHDB *hdb, const char *kbuf, int ksiz){
+  assert(hdb && kbuf && ksiz >= 0);
+  if(hdb->fd < 0 || !(hdb->omode & HDBOWRITER)){
+    tchdbsetecode(hdb, TCEINVALID, __FILE__, __LINE__, __func__);
+    return false;
+  }
+  if(hdb->drpool && !tchdbflushdrp(hdb)) return false;
+  uint64_t bidx = tchdbbidx(hdb, kbuf, ksiz);
+  uint64_t off = tchdbgetbucket(hdb, bidx);
+  uint8_t hash = tcrechash(kbuf, ksiz);
+  uint64_t entoff = 0;
+  TCHREC rec;
+  char rbuf[HDBIOBUFSIZ];
+  while(off > 0){
+    rec.off = off;
+    if(!tchdbreadrec(hdb, &rec, rbuf)) return false;
+    if(hash > rec.hash){
+      off = rec.left;
+      entoff = rec.off + (sizeof(uint8_t) + sizeof(uint8_t));
+    } else if(hash < rec.hash){
+      off = rec.right;
+      entoff = rec.off + (sizeof(uint8_t) + sizeof(uint8_t)) +
+        (hdb->ba64 ? sizeof(uint64_t) : sizeof(uint32_t));
+    } else {
+      if(!rec.kbuf && !tchdbreadrecbody(hdb, &rec)) return false;
+      int kcmp = tcreckeycmp(kbuf, ksiz, rec.kbuf, rec.ksiz);
+      if(kcmp > 0){
+        off = rec.left;
+        free(rec.bbuf);
+        rec.kbuf = NULL;
+        rec.bbuf = NULL;
+        entoff = rec.off + (sizeof(uint8_t) + sizeof(uint8_t));
+      } else if(kcmp < 0){
+        off = rec.right;
+        free(rec.bbuf);
+        rec.kbuf = NULL;
+        rec.bbuf = NULL;
+        entoff = rec.off + (sizeof(uint8_t) + sizeof(uint8_t)) +
+          (hdb->ba64 ? sizeof(uint64_t) : sizeof(uint32_t));
+      } else {
+        free(rec.bbuf);
+        rec.bbuf = NULL;
+        if(!tchdbwritefb(hdb, rec.off, rec.rsiz)) return false;
+        tchdbfbpinsert(hdb, rec.off, rec.rsiz);
+        uint64_t child;
+        if(rec.left > 0 && rec.right < 1){
+          child = rec.left;
+        } else if(rec.left < 1 && rec.right > 0){
+          child = rec.right;
+        } else if(rec.left < 1 && rec.left < 1){
+          child = 0;
+        } else {
+          child = rec.left;
+          uint64_t right = rec.right;
+          rec.right = child;
+          while(rec.right > 0){
+            rec.off = rec.right;
+            if(!tchdbreadrec(hdb, &rec, rbuf)) return false;
+          }
+          if(hdb->ba64){
+            uint64_t toff = rec.off + (sizeof(uint8_t) + sizeof(uint8_t) + sizeof(uint64_t));
+            uint64_t llnum = right >> hdb->apow;
+            llnum = TCHTOILL(llnum);
+            if(!tcseekwrite(hdb, toff, &llnum, sizeof(uint64_t))) return false;
+          } else {
+            uint32_t toff = rec.off + (sizeof(uint8_t) + sizeof(uint8_t) + sizeof(uint32_t));
+            uint32_t lnum = right >> hdb->apow;
+            lnum = TCHTOIL(lnum);
+            if(!tcseekwrite(hdb, toff, &lnum, sizeof(uint32_t))) return false;
+          }
+        }
+        if(entoff > 0){
+          if(hdb->ba64){
+            uint64_t llnum = child >> hdb->apow;
+            llnum = TCHTOILL(llnum);
+            if(!tcseekwrite(hdb, entoff, &llnum, sizeof(uint64_t))) return false;
+          } else {
+            uint32_t lnum = child >> hdb->apow;
+            lnum = TCHTOIL(lnum);
+            if(!tcseekwrite(hdb, entoff, &lnum, sizeof(uint32_t))) return false;
+          }
+        } else {
+          tchdbsetbucket(hdb, bidx, child);
+        }
+        hdb->rnum--;
+        uint64_t llnum = hdb->rnum;
+        llnum = TCHTOILL(llnum);
+        memcpy(hdb->map + HDBRNUMOFF, &llnum, sizeof(llnum));
+        return true;
+      }
+    }
+  }
+  tchdbsetecode(hdb, TCENOREC, __FILE__, __LINE__, __func__);
+  return false;
+}
+
+
+/* Remove a string record of a hash database object. */
+bool tchdbout2(TCHDB *hdb, const char *kstr){
+  assert(hdb && kstr);
+  return tchdbout(hdb, kstr, strlen(kstr));
+}
+
 /* Initialize the iterator of a hash database object. */
 bool tchdbiterinit(TCHDB *hdb){
   assert(hdb);
@@ -1519,7 +1623,13 @@ static void tchdbsetbucket(TCHDB *hdb, uint64_t bidx, uint64_t off){
     hdb->ba32[bidx] = TCHTOIL(lnum);
   }
 }
-
-
+uint64_t tchdbrnum(TCHDB *hdb){
+    assert(hdb);
+    if(hdb->fd < 0){
+        tchdbsetecode(hdb,TCEINVALID,__FILE__,__LINE__,__func__);
+        return 0;
+    }
+    return hdb->rnum;
+}
 
 /* END OF FILE */

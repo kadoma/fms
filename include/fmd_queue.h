@@ -6,7 +6,6 @@
 #include "list.h"
 
 typedef struct _list_repaired_{
-    sem_t              evt_repaired_sem;
     pthread_mutex_t    evt_repaired_lock;
     struct list_head    list_repaired_head;
 
@@ -32,7 +31,6 @@ fmd_queue_init(fmd_queue_t *p)
 	
 	/* list repaired init */
 	list_repaired  *plist_repaired = &p->queue_repaired_list;
-    sem_init(&plist_repaired->evt_repaired_sem, 0, 0);   
     pthread_mutex_init(&plist_repaired->evt_repaired_lock, NULL);
 	INIT_LIST_HEAD(&plist_repaired->list_repaired_head);
 

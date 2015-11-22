@@ -6,16 +6,13 @@ CP=cp 1>/dev/null 2>&1 -f
 
 TARGET=libtopo.so
 
-CFLAGS = -g -Wall -O0\
+CFLAGS = -g -Wall -O0 \
 	-Wno-unused-function \
-    	-Wno-unused-variable\
+	-Wno-unused-variable \
 	-I../../include \
-	-L /usr/lib/fms
 
-LDFLAGS = -shared -fpic -ldl -lpthread -lfmd
-
-LIBDIR=/usr/lib/fms
-
+LDFLAGS = -shared -fpic -ldl -lpthread
+LIBDIR = /usr/lib/fms
 SRCS = $(wildcard *.c)
 
 all:

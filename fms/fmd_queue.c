@@ -105,10 +105,8 @@ put_to_agents(fmd_event_t *p_evt)
 int
 event_disp_dest(fmd_event_t *p)
 {
-    if(strncmp(p->ev_class, "list", 4) == 0)
-        return 0;
-    else if(strncmp(p->ev_class, "ereport.", 8) == 0){
-        // default to log event . if libcase . turn to other type.
+    if(strncmp(p->ev_class, "ereport.", 8) == 0)
+    {
         p->ev_flag = AGENT_TOLOG;
         return 1;
     }
@@ -116,92 +114,16 @@ event_disp_dest(fmd_event_t *p)
         return -1;
 }
 
-static int
-case_close(fmd_case_t *pcase)
-{
-    return 0;
-    
-    TCHDB *hdb;
-    bool ret = 0;
-    int ecode;
-    
-    char key[128] = {0};
-    char value[128] = {0};
-    
-    sprintf(key, "%s-%ld", pcase->dev_name, pcase->dev_id);
-    sprintf(value, "eclass:%s, first time:%ld, last time:%ld, ereport total count:%u.", 
-                    pcase->last_eclass, pcase->cs_create, pcase->cs_last_fire,
-                    pcase->cs_total_count);
-
-    hdb = tchdbnew();
-    tchdbopen(hdb, CASE_DB, HDBOWRITER|HDBOCREAT);
-
-    tchdbput2(hdb,key,value);
-    tchdbclose(hdb);
-
-    tchdbdel(hdb);
-
-    struct list_head *pos, *n;
-    list_for_each_safe(pos, n, &pcase->cs_event)
-    {
-        fmd_event_t *p_evt = list_entry(pos, fmd_event_t, ev_list);
-        
-        def_free(p_evt->dev_name);
-        def_free(p_evt->ev_class);
-        def_free(p_evt->data);
-        list_del(&p_evt->ev_list);
-        def_free(p_evt);
-    }
-    
-    wr_log("", WR_LOG_DEBUG, "");
-    return 0;
-}
-
-
-static int
-fmd_case_close(fmd_event_t *pevt)
-{
-    fmd_case_t *pcase = (fmd_case_t *)pevt->p_case;
-    wr_log("", WR_LOG_DEBUG, "LIST event close. [%s]", pevt->ev_class);
-
-    if(!pcase){
-        wr_log("",WR_LOG_ERROR, "fmd close case .case is null. big bug");
-        return 0;
-    }
-
-    if(pevt->ev_refs >=2)
-    {
-        wr_log("event close", WR_LOG_DEBUG, "event refs is [%d], close event.", pevt->ev_refs);
-        case_close(pcase);
-    }
-    else if((pevt->ev_count >= pevt->N) || (pcase->cs_last_fire - pcase->cs_create) > pevt->T)
-    {
-        wr_log("event close", WR_LOG_DEBUG, "event [%s] count is [%d], close event.", 
-                                                                    pevt->ev_class, pevt->ev_count);
-        case_close(pcase);
-    }
-/*
-    if(pevt->ev_flag == AGENT_TODO){
-        def_free(pevt->dev_name);
-        def_free(pevt->ev_class);
-        def_free(pevt->data);
-        def_free(pevt);
-    }
-*/
-    return 0;
-}
-
 int
 fmd_proc_event(fmd_event_t *p_event)
 {
     int ret= event_disp_dest(p_event);
+    
     wr_log("dispatch event", WR_LOG_DEBUG, "dispatch event is %d type.", ret);
+    
     if(ret == -1)
         wr_log("proc event", WR_LOG_ERROR, "unknow event and lost.");
 
-    if(ret == 0)
-        fmd_case_close(p_event);
-        
     if(ret > 0)
     {
         fmd_case_insert(p_event);
@@ -209,50 +131,19 @@ fmd_proc_event(fmd_event_t *p_event)
     return 0;
 }
 
-void *
-queue_start(void *pp)
-{
-    fmd_event_t *evt = NULL;
-    fmd_queue_t *p = (fmd_queue_t *)pp;
-    pthread_setspecific(key_module, p);
-
-    ring_t *p_ring = &p->queue_ring;
-    
-RETRY:
-
-    while(ring_stat(p_ring) != 0)
-    {
-    sem_wait(&p_ring->ring_contain);
-    wr_log("", WR_LOG_DEBUG, "queue start wait ring contain.");
-    pthread_mutex_lock(&p_ring->ring_lock);
-    evt = (fmd_event_t *)ring_del(p_ring);
-    pthread_mutex_unlock(&p_ring->ring_lock);
-    sem_post(&p_ring->ring_vaild);
-    
-    wr_log("", WR_LOG_DEBUG, "queue start wait ring contain get event is [%s]", evt->ev_class);
-    if(evt != NULL)
-        fmd_proc_event(evt);
-    wr_log("", WR_LOG_DEBUG, "queue stat count is [%d]", p_ring->count);
-    }
-    sleep(1);
-    goto RETRY;
-}
 
 /* begin --- by guanhj */
-#define DELETE_CIRCLE    90 
+#define DELETE_CIRCLE    20 
 
-void * queue_delete_start(void *pp)
+void * queue_delete_proc(fmd_queue_t *pp)
 {
 
 	int ret = 0;
 	fmd_queue_t *p_queue = (fmd_queue_t *)pp;
-	pthread_setspecific(key_module, p_queue);
-	
-	list_repaired *plist_repaired = &p_queue->queue_repaired_list;
 
-RETRY:
-	wr_log("", WR_LOG_DEBUG, " queue delete start ");
-	sem_wait(&plist_repaired->evt_repaired_sem);
+    list_repaired *plist_repaired = &p_queue->queue_repaired_list;
+
+	wr_log("", WR_LOG_DEBUG, " queue delete proc ");
 
     pthread_mutex_lock(&plist_repaired->evt_repaired_lock);
 	struct list_head *prepaired_head = &plist_repaired->list_repaired_head;
@@ -273,6 +164,8 @@ RETRY:
 				wr_log("", WR_LOG_DEBUG, " isolate fail, no case list event, maybe device offline");
 				def_free(pevt->dev_name);
 		        def_free(pevt->ev_class);
+
+                //double free .
 		        def_free(pevt->data);
 		        list_del(&pevt->ev_repaired_list);
 		        def_free(pevt);
@@ -334,25 +227,58 @@ RETRY:
 		else if((pevt->repaired_T <= (time(NULL) - pevt->ev_create)) && (pevt->ev_refs >= pevt->repaired_N))
 		{
 			//to do
-			//wr_log("", WR_LOG_DEBUG, "fault timeout and ev_refs more ");
-                       
+			//wr_log("", WR_LOG_DEBUG, "fault timeout and ev_refs more ");            
 		}
 		
 		//else /* < repaired_T and < repaired_N : continue */
-					
-		
 	}
  
     pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
-
-	sleep(DELETE_CIRCLE);
-	goto RETRY;
-
-	
-
+	return NULL;
 }
 
 /* end --- by guanhj */
+
+
+
+void *
+queue_start(void *pp)
+{
+	int count = 0;
+    fmd_event_t *evt = NULL;
+    fmd_queue_t *p = (fmd_queue_t *)pp;
+    pthread_setspecific(key_module, p);
+
+    ring_t *p_ring = &p->queue_ring;
+    
+RETRY:
+	count++;
+    while(ring_stat(p_ring) != 0)
+    {
+        sem_wait(&p_ring->ring_contain);
+        wr_log("", WR_LOG_DEBUG, "queue start wait ring contain.");
+        pthread_mutex_lock(&p_ring->ring_lock);
+        evt = (fmd_event_t *)ring_del(p_ring);
+        pthread_mutex_unlock(&p_ring->ring_lock);
+        sem_post(&p_ring->ring_vaild);
+    
+        wr_log("", WR_LOG_DEBUG, "queue start wait ring contain get event is [%s]", evt->ev_class);
+        if(evt != NULL)
+            fmd_proc_event(evt);
+        wr_log("", WR_LOG_DEBUG, "queue stat count is [%d]", p_ring->count);
+    }
+
+	if(count == DELETE_CIRCLE)
+	{
+		queue_delete_proc(p);
+		count = 0;
+	}
+
+    sleep(1);
+    goto RETRY;
+}
+
+
 
 
 int
@@ -368,12 +294,6 @@ fmd_queue_load(fmd_t *pfmd)
         return -1;
     }
 
-	/* delete repaired event thread by guanhj */
-	ret = pthread_create(&pid, NULL, queue_delete_start, (void *)p);
-    if(ret < 0){
-        wr_log("fmd", WR_LOG_ERROR, "fmd queue delete repaired event thread error.");
-        return -1;
-    }
 
     return 0;
 }

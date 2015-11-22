@@ -89,8 +89,8 @@ static const struct cmd {
 } cmds[] = {
 { cmd_config, "config", "[-ls] [-i <interval>] [-b] [module]",
     "display or set fault manager configuration" },
-{ cmd_modinfo, "modinfo", "display fault manager loaded module list" },
-{ cmd_faulty, "faulty", "[-svfth] [-n <max_fault>]",
+{ cmd_modinfo, "modinfo","", "display fault manager loaded module list" },
+{ cmd_faulty, "faulty", "[-sv] [-t <type:repaired or happenning>]",
     "display list of faulty resources" },
 //{ cmd_flush, "flush", "<fmri> ...", "flush cached state for resource" },
 //{ cmd_gc, "gc", "<module>", NULL },
@@ -122,13 +122,13 @@ usage(FILE *fp)
             continue;
 
         if (cp->cmd_usage != NULL) {
-            (void) snprintf(buf, sizeof (buf), "%s %s %s",
+            (void) snprintf(buf, sizeof(buf), "%s %s %s",
                 g_pname, cp->cmd_name, cp->cmd_usage);
         } else {
             (void) snprintf(buf, sizeof (buf), "%s %s",
                 g_pname, cp->cmd_name);
         }
-        (void) fprintf(fp, "\t%-30s - %s\n", buf, cp->cmd_desc);
+        (void) fprintf(fp, "\t%-60s - %s\n", buf, cp->cmd_desc);
     }
 
     return (FMADM_EXIT_USAGE);

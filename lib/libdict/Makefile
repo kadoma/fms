@@ -9,7 +9,7 @@ SHELL = /bin/sh
 
 LIBRARYFILES = libdict.so
 LIBOBJFILES = tcutil.o tchdb.o myconf.o
-
+#COMMANDFILES = dict_tool
 
 # Install destinations
 prefix = /usr/local
@@ -56,7 +56,8 @@ clean :
 
 libdict.so : $(LIBOBJFILES)
 	$(CC) -ldl -lpthread -shared -fpic -Wl,-soname,libdict.so -o $@ $(LIBOBJFILES) $(LDFLAGS) $(LIBS)
-
+#dict_tool : dict_tool.o $(LIBOBJFILES)
+##	$(LDENV) $(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) -ldict $(LIBS)
 myconf.o : myconf.h
 tcutil.o : tcutil.h myconf.h
 tchdb.o : tchdb.h tcutil.h myconf.h

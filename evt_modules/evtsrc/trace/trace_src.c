@@ -24,7 +24,7 @@ trace_probe(evtsrc_module_t *emp)
 
     nvlist_t    *nvl = NULL;
     struct list_head *head = nvlist_head_alloc();
-/*  
+ 
     //event ereport. /var/log/fms/trace/serd
     nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
@@ -39,11 +39,11 @@ trace_probe(evtsrc_module_t *emp)
     nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
     strcpy(nvl->value, "ereport.trace.mc_ce");
-    nvl->dev_id = 0x01;
+    nvl->dev_id = 0x02;
     nvl->evt_id = 0x22;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-
+/*
 
     nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
@@ -53,7 +53,7 @@ trace_probe(evtsrc_module_t *emp)
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
 
-*/
+
     //serd  ereport. /var/log/fms/trace/serd
     nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
@@ -62,7 +62,7 @@ trace_probe(evtsrc_module_t *emp)
     nvl->evt_id = 0x12;
     nvl->data = strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-
+*/
     return head;
 }
 

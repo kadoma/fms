@@ -52,6 +52,11 @@ static struct evt_handler {
 	{NULL, 			NULL}
 };
 
+/*
+ *	@evt_type: event type, cache¡¢tlb¡¢bus....
+ *	@edata: fmd event data
+ * 	@data: cpumem event source private data
+ */
 int
 cmea_evt_processing(char *evt_type, struct cmea_evt_data *edata, void *data)
 {
@@ -69,7 +74,7 @@ cmea_evt_processing(char *evt_type, struct cmea_evt_data *edata, void *data)
 	
 	wr_log(CMEA_LOG_DOMAIN, WR_LOG_WARNING, 
 		"event type[%s] is no handler", evt_type);
-	return -1;
+	return LIST_REPAIRED_FAILED;
 }
 
 static int 
@@ -177,7 +182,8 @@ cpu_offine_on_cache(int cpu, unsigned clevel, unsigned ctype)
 	unsigned *cpumask;
 	int cpumasklen;
 	int i;
-	int r, ret = 0;
+	int r =0;
+	int ret = 0;
 		
 	if (cache_to_cpus(cpu, clevel, ctype, &cpumasklen, &cpumask) == 0)
 	{
@@ -185,6 +191,7 @@ cpu_offine_on_cache(int cpu, unsigned clevel, unsigned ctype)
 			if (test_bit(i, cpumask)) {
 				r = do_cpu_offline(i);
 
+				/* write log, Easy to see */ 
 				if(!r)
 					wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
 						"cpu %d offline sucess", 
@@ -193,7 +200,8 @@ cpu_offine_on_cache(int cpu, unsigned clevel, unsigned ctype)
 					wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
 						"cpu %d offline fail, %s", 
 						i, strerror(errno));
-
+				
+				/* try to offline all fault CPUs, if there is a failure as failure */
 				if(r)
 					ret = -1;
 			}
@@ -201,6 +209,7 @@ cpu_offine_on_cache(int cpu, unsigned clevel, unsigned ctype)
 	} else { /* no find cache */
 		ret = do_cpu_offline(cpu);
 
+		/* write log, Easy to see */ 
 		if(!ret)
 			wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
 				"cpu %d offline sucess", 
@@ -217,12 +226,12 @@ cpu_offine_on_cache(int cpu, unsigned clevel, unsigned ctype)
 static inline int
 __handle_cache(struct cmea_evt_data *edata, void *data)
 {
-	int ret = 0;
+	int ret = LIST_REPAIRED_FAILED;
 	struct fms_cpumem *fc;
 	struct kfm_cache_u cache;
 
 	if(!edata || !data)
-		return -1;
+		return ret;
 	
 	fc = (struct fms_cpumem*)data;
 	switch (edata->cpu_action) {
@@ -231,17 +240,21 @@ __handle_cache(struct cmea_evt_data *edata, void *data)
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "flush cpu %d cache", fc->cpu);
 		memset(&cache, 0, sizeof cache);
 		cache.cpu = fc->cpu;
-		ret = kfm_cache_flush(&cache);
+		if (kfm_cache_flush(&cache) == 0)
+			ret = LIST_REPAIRED_SUCCESS;
+		else
+			ret = LIST_REPAIRED_FAILED;
 		break;
 	case 2:
 		/* cpu offline */
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, "CPU offline, cpu: %u, level: %d, type: %d", 
 			fc->cpu, fc->clevel, fc->ctype);
 		
-		ret = cpu_offine_on_cache(fc->cpu, fc->clevel, fc->ctype);
+		if(cpu_offine_on_cache(fc->cpu, fc->clevel, fc->ctype) == 0)
+			ret = LIST_ISOLATED_SUCCESS;
+		else
+			ret = LIST_ISOLATED_FAILED;
 		break;
-	default:
-		return -1;
 	}
 	
 	return ret;
@@ -298,14 +311,20 @@ evt_handle_qpi(struct cmea_evt_data *edata, void *data)
 {
 	struct fms_cpumem *fc;
 	int cpu;
+	int ret = LIST_REPAIRED_FAILED;
 	
-	if(!edata || !data)
-		return -1;
+	if (!edata || !data)
+		return ret;
 
 	fc = (struct fms_cpumem*)data;
 	cpu = fc->cpu;
 	
-	return do_cpu_offline(cpu);
+	if (do_cpu_offline(cpu) == 0)
+		ret = LIST_ISOLATED_SUCCESS;
+	else
+		ret = LIST_ISOLATED_FAILED;
+
+	return ret;
 }
 
 static int 
@@ -326,32 +345,34 @@ evt_handle_mc(struct cmea_evt_data *edata, void *data)
 static int 
 evt_handle_mempage(struct cmea_evt_data *edata, void *data)
 {	
-	int ret = 0;
+	int ret = LIST_REPAIRED_FAILED;
 	struct fms_cpumem *fc;
 
-	if(!data) {
+	if (!data) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
 			"data is null in handle mempage");
-		return -1;
+		return ret;
 	}
 	
 	fc = (struct fms_cpumem*)data;
 
-	if(fc->flags & FMS_CPUMEM_PAGE_ERROR) {
+	if (fc->flags & FMS_CPUMEM_PAGE_ERROR) {
 		ret = memory_page_offline(fc->addr);
 
-		if(!ret)
+		/* write log, Easy to see */ 
+		if (!ret) {
 			wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
 				"mempage %llx offline sucess", 
 				fc->maddr);
-		else
+			ret = LIST_ISOLATED_SUCCESS;
+		} else {
 			wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
 				"mempage %llx offline fail, %s", 
 				fc->maddr, strerror(errno));
+			ret = LIST_ISOLATED_FAILED;
+		}
 	}
-	
-//	dump_evt(data);
-	
+		
 	return ret;
 }
 

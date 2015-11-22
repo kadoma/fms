@@ -42,29 +42,45 @@ typedef struct fmd_acl {
  * @return
  */
 static void
-fmd_resv_caselist(fmd_t *pfmd, fmd_acl_t *acl,int num)
+fmd_resv_caselist(fmd_t *pfmd, fmd_acl_t *acl,int num,int index)
 {
-    struct list_head *pos = NULL, *epos = NULL;
+    struct list_head *pos = NULL, *epos = NULL, *listn = NULL;
     fmd_case_t *cp = NULL;
     int case_num = 0;
     int tmp = 0;
     fmd_event_t *p_event = NULL;
 
-    list_for_each(pos, &pfmd->list_case) {
+    if(index == 1){
+        list_for_each(pos, &pfmd->list_case) {
 
-        cp = list_entry(pos, fmd_case_t, cs_list);
+            cp = list_entry(pos, fmd_case_t, cs_list);
 
-        list_for_each(epos,&cp->cs_event){
+            list_for_each(epos,&cp->cs_event){
+
+                p_event = list_entry(epos,fmd_event_t,ev_list);
+                ++tmp;
+
+                if((tmp > num) && (tmp <= num+ FAF_NUM)){
+                    case_num++;
+                }
+            }
+        }
+    }else{
+        fmd_queue_t *p_queue = &pfmd->fmd_queue;
+        list_repaired *plist_repaired = &p_queue->queue_repaired_list;
+        struct list_head *prepaired_head = &plist_repaired->list_repaired_head;
+        pthread_mutex_lock(&plist_repaired->evt_repaired_lock);
+
+        list_for_each_safe(pos, listn, prepaired_head){
 
             p_event = list_entry(epos,fmd_event_t,ev_list);
             ++tmp;
 
             if((tmp > num) && (tmp <= num+ FAF_NUM)){
-                int count = p_event->ev_count;
-                p_event->ev_count = count;
                 case_num++;
             }
         }
+        pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
     }
     wr_log("",WR_LOG_DEBUG,"FMD:GETCASELIST happenning  caselist num = %d get num = %d\n",tmp,case_num);
     acl->acl_secs = case_num;               /* number of sections */
@@ -104,9 +120,9 @@ fmd_resv_modlist(fmd_t *pfmd, fmd_acl_t *acl)
  * @return
  */
 static void *
-fmd_get_caselist(fmd_t *pfmd, int *size,int num)
+fmd_get_caselist(fmd_t *pfmd, int *size,int num, int index)
 {
-    struct list_head *pos = NULL, *epos = NULL;
+    struct list_head *pos = NULL, *epos = NULL, *listn = NULL;
     faf_case_t *fafc = NULL;
     fmd_case_t *cp = NULL;
     fmd_event_t *ep = NULL;
@@ -117,7 +133,7 @@ fmd_get_caselist(fmd_t *pfmd, int *size,int num)
     assert(acl != NULL);
     memset(acl, 0, sizeof(fmd_acl_t));
 
-    fmd_resv_caselist(pfmd, acl, num);
+    fmd_resv_caselist(pfmd, acl, num,index);
 
     /*
      * Allocate memory for FAF.
@@ -137,32 +153,77 @@ fmd_get_caselist(fmd_t *pfmd, int *size,int num)
 
     fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize);
 
-    list_for_each(pos, &pfmd->list_case) {
-        cp = list_entry(pos, fmd_case_t, cs_list);
-        list_for_each(epos,&cp->cs_event){
-            ep = list_entry(epos,fmd_event_t,ev_list);
+    if( index == 1){
+        list_for_each(pos, &pfmd->list_case) {
+            cp = list_entry(pos, fmd_case_t, cs_list);
+            list_for_each(epos,&cp->cs_event){
+                ep = list_entry(epos,fmd_event_t,ev_list);
+                ++tmp_num;
+                if((tmp_num > num) && (tmp_num <= num + FAF_NUM)){
+                    fafc->fafc_count = ep->ev_count;
+                    fafc->fafc_create = (uint64_t)ep->ev_create;
+                    fafc->fafc_fire = (uint64_t)ep->ev_last_occur;
+                   // fafc->fafc_close = (uint64_t)ep->ev_close;
+                    if(strstr(ep->ev_class,"disk") != NULL)
+                    {
+                        sprintf(fafc->fafc_fault,"%s:%s",ep->dev_name,ep->ev_class);
+                    }else{
+                        sprintf(fafc->fafc_fault,"%s%ld:%s",ep->dev_name,ep->dev_id,ep->ev_class);
+                    }
+                    if (cp->cs_flag == CASE_CREATE)
+                        fafc->fafc_state = FAF_CASE_CREATE;
+                    else if (cp->cs_flag == CASE_FIRED)
+                        fafc->fafc_state = FAF_CASE_FIRED;
+                    else if (cp->cs_flag == CASE_CLOSED)
+                        fafc->fafc_state = FAF_CASE_CLOSED;
+                    else {
+                        wr_log("",WR_LOG_DEBUG,"FMD:case %phas invalid state%u\n",cp, cp->cs_flag);
+                        return NULL;
+                    }
+                    cnt++;
+                    fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize + cnt * sizeof (faf_case_t));
+                }
+            }
+        }
+    }
+    else{
+        fmd_queue_t *p_queue = &pfmd->fmd_queue;
+        list_repaired *plist_repaired = &p_queue->queue_repaired_list;
+        struct list_head *prepaired_head = &plist_repaired->list_repaired_head;
+        pthread_mutex_lock(&plist_repaired->evt_repaired_lock);
+
+        list_for_each_safe(pos, listn, prepaired_head)
+        {
+            ep = list_entry(pos, fmd_event_t, ev_repaired_list);
             ++tmp_num;
             if((tmp_num > num) && (tmp_num <= num + FAF_NUM)){
                 fafc->fafc_count = ep->ev_count;
                 fafc->fafc_create = (uint64_t)ep->ev_create;
-                fafc->fafc_fire = (uint64_t)cp->cs_last_fire;
-                fafc->fafc_close = (uint64_t)cp->cs_close;
-                sprintf(fafc->fafc_fault,"%s%ld:%s",cp->dev_name,cp->dev_id,ep->ev_class);
+                fafc->fafc_fire = (uint64_t)ep->ev_last_occur;
+                //fafc->fafc_fire = (uint64_t)cp->cs_last_fire;
+                //fafc->fafc_close = (uint64_t)ep->cs_close;
+                    if(strstr(ep->ev_class,"disk") != NULL)
+                    {
+                        sprintf(fafc->fafc_fault,"%s:%s",ep->dev_name,ep->ev_class);
+                    }else{
+                        sprintf(fafc->fafc_fault,"%s%ld:%s",ep->dev_name,ep->dev_id,ep->ev_class);
+                    }
 
-                if (cp->cs_flag == CASE_CREATE)
+                /*if (ep->ev_flag == CASE_CREATE)
                     fafc->fafc_state = FAF_CASE_CREATE;
-                else if (cp->cs_flag == CASE_FIRED)
+                else if (ep->ev_flag == CASE_FIRED)
                     fafc->fafc_state = FAF_CASE_FIRED;
-                else if (cp->cs_flag == CASE_CLOSED)
+                else if (ep->ev_flag == CASE_CLOSED)
                     fafc->fafc_state = FAF_CASE_CLOSED;
                 else {
-                    wr_log("",WR_LOG_DEBUG,"FMD:case %phas invalid state%u\n",cp, cp->cs_flag);
+                    wr_log("",WR_LOG_DEBUG,"FMD:case %phas invalid state%u\n",ep, ep->ev_flag);
                     return NULL;
-                }
+                }*/
                 cnt++;
                 fafc = (void *)(acl->acl_buf + acl->acl_hdr->fafh_hdrsize + cnt * sizeof (faf_case_t));
             }
         }
+        pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
     }
     *size = acl->acl_size;
     return (void *)acl->acl_hdr;
@@ -266,13 +327,16 @@ adm_probe(evtsrc_module_t *emp)
     }
 
     if(strncmp(buf,"GET CASELIST",12) == 0){
-        char *tmp;
-        int num;
+        char *tmp,*tmp1;
+        int num = 0 ,index = 0;
         tmp = strtok((char*)buf,":");
         if(tmp)
             tmp = strtok(NULL,":");
+        if(tmp)
+            tmp1 = strtok(NULL,":");
         num = atoi(tmp);
-        sendbuf = fmd_get_caselist(pfmd, &size,num);
+        index = atoi(tmp1);
+        sendbuf = fmd_get_caselist(pfmd, &size,num,index);
     }else if(strncmp(buf,"LOAD",4) == 0){
         char  *path = NULL;
         path = strstr((char*)buf,":");
@@ -356,14 +420,13 @@ int evt_load_module(fmd_t *fmd, char *path)
     if((fmd_init_module(fmd,path)) == -1){
         wr_log("",WR_LOG_DEBUG,"%s can't load failed",path);
         return (-1);
-    }else{
-        struct list_head *pos = NULL;
-        fmd_module_t *mp = NULL;
-        list_for_each(pos, &fmd->fmd_module){
-            mp = list_entry(pos, fmd_module_t, list_fmd);
-            if(strstr(mp->mod_name,".so")== NULL)
-                mp->mod_name = "/usr/lib/fms/plugins/adm_src.so";
-        }
+    }
+    struct list_head *pos = NULL;
+    fmd_module_t *mp = NULL;
+    list_for_each(pos, &fmd->fmd_module){
+        mp = list_entry(pos, fmd_module_t, list_fmd);
+        if(strstr(mp->mod_name,".so")== NULL)
+            mp->mod_name = "/usr/lib/fms/plugins/adm_src.so";
     }
     return 0;
 }
@@ -371,16 +434,24 @@ int evt_load_module(fmd_t *fmd, char *path)
 int evt_unload_module(fmd_t *fmd, char* module)
 {
     int ret = -1;
+    char *tmp = NULL;
     if(module == NULL){
         wr_log("",WR_LOG_DEBUG,"module is null");
         return (-1);
     }
+    if(strrchr(module,'/'))
+        tmp = strrchr(module,'/') + 1;
+    else
+        tmp = module;
+
     struct list_head *pos,*n;
     fmd_module_t *mp = NULL;
 
     list_for_each_safe(pos,n,&fmd->fmd_module){
         mp = list_entry(pos,fmd_module_t,list_fmd);
-        if(strstr(mp->mod_name,module)!= NULL){
+        char *tmpmodule = strrchr(mp->mod_name,'/') + 1;
+        int len = strlen(tmpmodule);
+        if(strncmp(tmpmodule,tmp,len) == 0){
             ret = 0;
             free_module(mp);
            // list_del(&mp->list_fmd);

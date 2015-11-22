@@ -18,101 +18,101 @@
  *************************************************************************************************/
 
 typedef struct {                         // type of structure for a hash database
-  uint8_t type;                          // database type
-  uint8_t flags;                         // additional flags
-  uint64_t bnum;                         // number of the bucket array
-  uint8_t apow;                          // power of record alignment
-  uint8_t fpow;                          // power of free block pool number
-  uint8_t opts;                          // options
-  char *path;                            // path of the database file
-  int fd;                                // file descriptor of the database file
-  uint32_t omode;                        // connection mode
-  uint64_t rnum;                         // number of the records
-  uint64_t fsiz;                         // size of the database file
-  uint64_t frec;                         // offset of the first record
-  uint64_t lrec;                         // offset of the last record
-  uint64_t iter;                         // offset of the iterator
-  char *map;                             // pointer to the mapped memory
-  uint64_t msiz;                         // size of the mapped memory
-  uint32_t *ba32;                        // 32-bit bucket array
-  uint64_t *ba64;                        // 64-bit bucket array
-  uint32_t align;                        // record alignment
-  uint32_t runit;                        // record reading unit
-  int32_t fbpmax;                        // maximum number of the free block pool
-  int32_t fbpsiz;                        // size of the free block pool
-  void *fbpool;                          // free block pool
-  int32_t fbpnum;                        // number of free block pool
-  int32_t fbpmis;                        // number of missing retrieval of free block pool
-  TCXSTR *drpool;                        // delayed record pool
-  TCXSTR *drpdef;                        // deferred records of delayed record pool
-  int ecode;                             // last happened error code
-  bool fatal;                            // whether a fatal error occured
-  uint64_t inode;                        // inode number
-  time_t mtime;                          // modification time
-  int dbgfd;                             // file descriptor for debugging
-  int64_t cnt_writerec;                  // tesing counter for record write times
-  int64_t cnt_reuserec;                  // tesing counter for record reuse times
-  int64_t cnt_moverec;                   // tesing counter for record move times
-  int64_t cnt_readrec;                   // tesing counter for record read times
-  int64_t cnt_searchfbp;                 // tesing counter for FBP search times
-  int64_t cnt_insertfbp;                 // tesing counter for FBP insert times
-  int64_t cnt_splicefbp;                 // tesing counter for FBP splice times
-  int64_t cnt_dividefbp;                 // tesing counter for FBP divide times
-  int64_t cnt_mergefbp;                  // tesing counter for FBP merge times
-  int64_t cnt_reducefbp;                 // tesing counter for FBP reduce times
-  int64_t cnt_appenddrp;                 // tesing counter for DRP append times
-  int64_t cnt_deferdrp;                  // tesing counter for DRP defer times
-  int64_t cnt_flushdrp;                  // tesing counter for DRP flush times
+    uint8_t type;                          // database type
+    uint8_t flags;                         // additional flags
+    uint64_t bnum;                         // number of the bucket array
+    uint8_t apow;                          // power of record alignment
+    uint8_t fpow;                          // power of free block pool number
+    uint8_t opts;                          // options
+    char *path;                            // path of the database file
+    int fd;                                // file descriptor of the database file
+    uint32_t omode;                        // connection mode
+    uint64_t rnum;                         // number of the records
+    uint64_t fsiz;                         // size of the database file
+    uint64_t frec;                         // offset of the first record
+    uint64_t lrec;                         // offset of the last record
+    uint64_t iter;                         // offset of the iterator
+    char *map;                             // pointer to the mapped memory
+    uint64_t msiz;                         // size of the mapped memory
+    uint32_t *ba32;                        // 32-bit bucket array
+    uint64_t *ba64;                        // 64-bit bucket array
+    uint32_t align;                        // record alignment
+    uint32_t runit;                        // record reading unit
+    int32_t fbpmax;                        // maximum number of the free block pool
+    int32_t fbpsiz;                        // size of the free block pool
+    void *fbpool;                          // free block pool
+    int32_t fbpnum;                        // number of free block pool
+    int32_t fbpmis;                        // number of missing retrieval of free block pool
+    TCXSTR *drpool;                        // delayed record pool
+    TCXSTR *drpdef;                        // deferred records of delayed record pool
+    int ecode;                             // last happened error code
+    bool fatal;                            // whether a fatal error occured
+    uint64_t inode;                        // inode number
+    time_t mtime;                          // modification time
+    int dbgfd;                             // file descriptor for debugging
+    int64_t cnt_writerec;                  // tesing counter for record write times
+    int64_t cnt_reuserec;                  // tesing counter for record reuse times
+    int64_t cnt_moverec;                   // tesing counter for record move times
+    int64_t cnt_readrec;                   // tesing counter for record read times
+    int64_t cnt_searchfbp;                 // tesing counter for FBP search times
+    int64_t cnt_insertfbp;                 // tesing counter for FBP insert times
+    int64_t cnt_splicefbp;                 // tesing counter for FBP splice times
+    int64_t cnt_dividefbp;                 // tesing counter for FBP divide times
+    int64_t cnt_mergefbp;                  // tesing counter for FBP merge times
+    int64_t cnt_reducefbp;                 // tesing counter for FBP reduce times
+    int64_t cnt_appenddrp;                 // tesing counter for DRP append times
+    int64_t cnt_deferdrp;                  // tesing counter for DRP defer times
+    int64_t cnt_flushdrp;                  // tesing counter for DRP flush times
 } TCHDB;
 
 enum {                                   // enumeration for error codes
-  TCESUCCESS,                            // success
-  TCEINVALID,                            // invalid operation												
-  TCENOFILE,                             // file not found													
-  TCENOPERM,                             // no permission													
-  TCEMETA,                               // invalid meta data
-  TCERHEAD,                              // invalid record header
-  TCEOPEN,                               // open error													
-  TCECLOSE,                              // close error
-  TCETRUNC,                              // trunc error
-  TCESYNC,                               // sync error
-  TCESTAT,                               // stat error								
-  TCESEEK,                               // seek error
-  TCEREAD,                               // read error
-  TCEWRITE,                              // write error
-  TCEMMAP,                               // mmap error
-  TCELOCK,                               // lock error							
-  TCEUNLINK,                             // unlink error
-  TCERENAME,                             // rename error
-  TCEMKDIR,                              // mkdir error
-  TCERMDIR,                              // rmdir error
-  TCEKEEP,                               // existing record
-  TCENOREC,                              // no record found
-  TCEMISC                                // miscellaneous error
+    TCESUCCESS,                            // success
+    TCEINVALID,                            // invalid operation												
+    TCENOFILE,                             // file not found													
+    TCENOPERM,                             // no permission													
+    TCEMETA,                               // invalid meta data
+    TCERHEAD,                              // invalid record header
+    TCEOPEN,                               // open error													
+    TCECLOSE,                              // close error
+    TCETRUNC,                              // trunc error
+    TCESYNC,                               // sync error
+    TCESTAT,                               // stat error								
+    TCESEEK,                               // seek error
+    TCEREAD,                               // read error
+    TCEWRITE,                              // write error
+    TCEMMAP,                               // mmap error
+    TCELOCK,                               // lock error							
+    TCEUNLINK,                             // unlink error
+    TCERENAME,                             // rename error
+    TCEMKDIR,                              // mkdir error
+    TCERMDIR,                              // rmdir error
+    TCEKEEP,                               // existing record
+    TCENOREC,                              // no record found
+    TCEMISC                                // miscellaneous error
 };
 
 enum {                                   // enumeration for database type
-  HDBTHASH,                              // hash table
-  HDBTBTREE                              // B+ tree
+    HDBTHASH,                              // hash table
+    HDBTBTREE                              // B+ tree
 };
 
 enum {                                   // enumeration for additional flags
-  HDBFOPEN = 1 << 0,                     // whether opened
-  HDBFFATAL = 1 << 1                     // whetehr with fatal error
+    HDBFOPEN = 1 << 0,                     // whether opened
+    HDBFFATAL = 1 << 1                     // whetehr with fatal error
 };
 
 enum {                                   // enumeration for tuning options
-  HDBTLARGE = 1 << 0,                    // use 64-bit bucket array						
-  HDBTDEFLATE = 1 << 1,                  // compress each record with deflate
+    HDBTLARGE = 1 << 0,                    // use 64-bit bucket array						
+    HDBTDEFLATE = 1 << 1,                  // compress each record with deflate
 };
 
 enum {                                   // enumeration for open modes
-  HDBOREADER = 1 << 0,                   // open as a reader
-  HDBOWRITER = 1 << 1,                   // open as a writer						
-  HDBOCREAT = 1 << 2,                    // writer creating						
-  HDBOTRUNC = 1 << 3,                    // writer truncating						
-  HDBONOLCK = 1 << 4,                    // open without locking					
-  HDBOLCKNB = 1 << 5                     // lock without blocking					
+    HDBOREADER = 1 << 0,                   // open as a reader
+    HDBOWRITER = 1 << 1,                   // open as a writer						
+    HDBOCREAT = 1 << 2,                    // writer creating						
+    HDBOTRUNC = 1 << 3,                    // writer truncating						
+    HDBONOLCK = 1 << 4,                    // open without locking					
+    HDBOLCKNB = 1 << 5                     // lock without blocking					
 };		
 
 
@@ -183,8 +183,6 @@ bool tchdbput2(TCHDB *hdb, const char *kstr, const char *vstr);
 
 
 
-
-
 /* Retrieve a record in a hash database object.
    `hdb' specifies the hash database object.
    `kbuf' specifies the pointer to the region of the key.
@@ -210,6 +208,20 @@ char *tchdbget(TCHDB *hdb, const char *kbuf, int ksiz, int *sp);
 char *tchdbget2(TCHDB *hdb, const char *kstr);
 
 
+
+/* Remove a record of a hash database object.
+   `hdb' specifies the hash database object connected as a writer.
+   `kbuf' specifies the pointer to the region of the key.
+   `ksiz' specifies the size of the region of the key.
+   If successful, the return value is true, else, it is false. */
+bool tchdbout(TCHDB *hdb, const char *kbuf, int ksiz);
+
+
+/* Remove a string record of a hash database object.
+   `hdb' specifies the hash database object connected as a writer.
+   `kstr' specifies the string of the key.
+   If successful, the return value is true, else, it is false. */
+bool tchdbout2(TCHDB *hdb, const char *kstr);
 
 
 
@@ -276,7 +288,9 @@ void tchdbsetecode(TCHDB *hdb, int ecode, const char *filename, int line, const 
    If successful, the return value is true, else, it is false. */
 bool tchdbmemsync(TCHDB *hdb, bool phys);
 
-
+/* Get the number of records in a dabase object.
+   `hdb' specifies the hash database object. */
+uint64_t tchdbrnum(TCHDB *hdb);
 
 
 #endif                                   // duplication check

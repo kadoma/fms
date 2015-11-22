@@ -18,20 +18,20 @@ event ereport.cpu.tmp_high
 event ereport.cpu.tmp_low
 event ereport.cpu.mem_ce
 event ereport.cpu.mem_ue
+event ereport.cpu.mc_ce
+event ereport.cpu.mc_ue
+event ereport.cpu.pcu_ce
+event ereport.cpu.pcu_ue
+event ereport.cpu.bus_ce
+event ereport.cpu.bus_ue
 event ereport.cpu.unknown_ce
 event ereport.cpu.unknown_ue
 
-fault ereport.cpu.mc_ce
-fault ereport.cpu.mc_ue
 
 engine ereport.cpu.cache_ce {N=6, T=1}
 engine ereport.cpu.cache_ue {N=3, T=72}
 engine ereport.cpu.tlb_ce {N=24, T=72}
 engine ereport.cpu.tlb_ue {N=3, T=72}
-engine ereport.cpu.bus_ce {N=5, T=1}
-engine ereport.cpu.bus_ue {N=3, T=72}
 engine ereport.cpu.mempage {N=10, T=72}
-engine ereport.cpu.pcu_ce {N=24, T=72}
-engine ereport.cpu.pcu_ue {N=3, T=72}
 engine ereport.cpu.qpi_ce {N=24, T=72}
 engine ereport.cpu.qpi_ue {N=3, T=72}

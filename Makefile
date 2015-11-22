@@ -16,7 +16,7 @@ PROGRAM = fmd
 
 #SUBDIRS=`ls -d */ | grep -v 'bin' | grep -v 'lib' | grep -v 'include'`
 SUBDIRS=lib/libcase lib/libesc lib/libfmd evt_modules/evtlib  \
-				lib/libadm lib/libmsg lib/libtopo lib/libdict \
+				lib/libadm lib/libtopo lib/libdict \
 									fms \
 				tools/fmstopo tools/fmsinject tools/fmsadm \
 				evt_modules/evtsrc/adm \
@@ -24,7 +24,7 @@ SUBDIRS=lib/libcase lib/libesc lib/libfmd evt_modules/evtlib  \
 				evt_modules/evtsrc/disk evt_modules/evtagent/disk \
 				evt_modules/evtsrc/cpumem evt_modules/evtagent/cpumem \
 				evt_modules/evtlib/kfm/kfm evt_modules/evtlib/kfm/kfmadm \
-				#evt_modules/evtsrc/trace evt_modules/evtagent/trace \
+				evt_modules/evtsrc/trace evt_modules/evtagent/trace \
 
 
 
@@ -89,7 +89,6 @@ rpm: all
 	cp ./lib/libesc/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libfmd/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libadm/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
-	cp ./lib/libmsg/*.so                    $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./lib/libtopo/*.so                   $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./evt_modules/evtlib/*.so            $(BRROOTDIR)/usr/lib/$(PROJECT)
 	cp ./db/*.db                            $(BRROOTDIR)/usr/lib/$(PROJECT)/db

@@ -187,11 +187,11 @@ typedef struct topo_storage {
 			uint32_t board:8;		/* motherboard: 0 */
 			uint32_t hostbridge:8;		/* bus */
 			uint32_t slot:8;		/* slot */
-			uint32_t func:4;		/* func */
-			uint32_t host:3;		/* host id */
-			uint32_t channel:3;		/* channel id */
-			uint32_t target:3;		/* target id */
-			uint32_t lun:3;			/* lun id */
+			uint32_t func:8;		/* func */
+			uint32_t host:8;		/* host id */
+			uint32_t channel:8;		/* channel id */
+			uint32_t target:8;		/* target id */
+			uint32_t lun:8;			/* lun id */
 			uint32_t reserved:3;
 			uint32_t topoclass:5;
 		} _struct_topo_storage;

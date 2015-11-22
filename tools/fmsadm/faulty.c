@@ -35,9 +35,7 @@ typedef struct status_record {
     char *resource;
     char *asru;
     char *fru;
-    char *serial;
-    uint64_t uuid;
-    uint64_t rscid;
+    uint64_t last_occur;
     uint8_t  state;
     uint32_t count;
     uint64_t create;
@@ -68,13 +66,11 @@ static int opt_f = 0;
 static void
 usage(void)
 {
-    fputs("Usage: fmadm faulty [-sfvh] [-n <num>] [-t<type>]\n"
+    fputs("Usage: fmadm faulty [-sv] [-t<type>]\n"
           "\t-h    help\n"
-          "\t-s    show faulty fru's\n"
-          "\t-f    show faulty only \n"
-          "\t-n    number of fault records to display\n"
-          "\t-v    full output\n"
-          "\t-t    caselist type :repaired or happenning\n"
+          "\t-s    show faulty summary for each faulty event\n"
+          "\t-v    show full output for each faulty event\n"
+          "\t-t    faulty type :repaired or happenning\n"
           , stderr);
 }
 
@@ -85,7 +81,7 @@ format_date(char *buf, time_t secs)
     int year = 0, month = 0, day = 0;
     int hour = 0, min = 0, sec = 0;
 
-    time(&secs);
+    //time(&secs);
     tm = gmtime(&secs);
     year = tm->tm_year + 1900;
     month = tm->tm_mon + 1;
@@ -145,8 +141,10 @@ static void
 print_status_record(status_record_t *srp, int opt_t)
 {
     char buf[64];
-    time_t sec = 0;
+    time_t sec = (time_t) srp->last_occur;
     char *head;
+    format_date(buf,sec);
+
     head = "--------------------- "
         "--------------  "
         "---------------\n"
@@ -156,25 +154,9 @@ print_status_record(status_record_t *srp, int opt_t)
         "-------------- "
         " ---------------";
     printf("%s\n", head);
-
-    /* Get the times */
-    format_date(buf, sec);
-
-    if (opt_f) {
-        if (srp->state > FAF_CASE_CREATE)
-            return;
-        else {
-            (void) printf("%s%s\t%s\n",
-                buf, srp->msgid, srp->severity);
-
-            print_dict_info(srp);
-        }
-    } else {
-        (void) printf("%s%s\t%s\n",
+    (void) printf("%-20s%-18s%-s\n",
             buf, srp->msgid, srp->severity);
-
-        print_dict_info(srp);
-    }
+    print_dict_info(srp);
 }
 
 static status_record_t *
@@ -190,9 +172,7 @@ status_record_alloc(void)
     srp->resource = NULL;
     srp->asru = NULL;
     srp->fru = NULL;
-    srp->serial = NULL;
-    srp->uuid = (uint64_t)0;
-    srp->rscid = (uint64_t)0;
+    srp->last_occur = (uint64_t)0;
     srp->state = (uint8_t)0;
     srp->count = (uint32_t)0;
     srp->create = (uint64_t)0;
@@ -211,16 +191,23 @@ print_catalog(fmd_adm_t *adm)
     if (max == 0) {
         list_for_each(pos, &status_rec_list) {
             srp = list_entry(pos, status_record_t, list);
-
-            (void) printf("\n");
-            print_status_record(srp, opt_f);
+            if((strncmp(srp->class,"list",4) == 0) ||(srp->msgid == NULL)){
+                continue;
+            }else{
+                (void) printf("\n");
+                print_status_record(srp, opt_f);
+            }
         }
     } else if (max > 0) {
         list_for_each(pos, &status_rec_list) {
             srp = list_entry(pos, status_record_t, list);
             if (max > 0) {
-                (void) printf("\n");
-                print_status_record(srp, opt_f);
+                if((strncmp(srp->class,"list",4) == 0) ||(srp->msgid == NULL)){
+                    continue;
+                }else{
+                    (void) printf("\n");
+                    print_status_record(srp, opt_f);
+                }
                 max--;
             } else
                 break;
@@ -235,30 +222,45 @@ print_fru(fmd_adm_t *adm)
     struct list_head *pos = NULL;
     status_record_t *srp;
     char *head;
-    head = "------------------  "
-           "-------------------  "
+    char buf[64];
+
+    head = "------------------------  "
+           "-----------------------  "
+           "--------------------------------------  "
            "-----------\n"
-           "DEV NAME                 FAULT CLASS"
-           "        COUNTS"
-           "\n------------------  "
-           "-------------------  "
+           "    DEV NAME             "
+           "          TIME                 "
+           "      FAULT CLASS      "
+           "              COUNTS"
+           "\n------------------------  "
+           "-----------------------  "
+           "--------------------------------------  "
            "-----------";
     printf("%s\n", head);
 
     list_for_each(pos, &status_rec_list) {
         srp = list_entry(pos, status_record_t, list);
 
+        if (srp->last_occur ==  0)
+        {
+            srp->last_occur = srp->create;
+        }
+        time_t sec = (time_t) srp->last_occur;
+        format_date(buf,sec);
+
         (void) printf("\n");
-        (void) printf("%-20s%-20s \t%d\n",srp->fru,srp->class, srp->count);
+        (void) printf("%-28s%-25s %-40s %-10d\n",srp->fru,buf,srp->class, srp->count);
     }
 }
 
-int fmd_adm_case_dbiter(){
+int fmd_adm_case_dbiter(fmd_adm_t *adm){
 
     TCHDB *hdbcase = tchdbnew();
     TCHDB *hdbcpumem = tchdbnew();
     TCHDB *hdbdisk = tchdbnew();
 
+    struct list_head *pos = NULL;
+    fmd_adm_caseinfo_t *aci = NULL;
     char * key = NULL;
     char * value = NULL;
 
@@ -283,7 +285,6 @@ int fmd_adm_case_dbiter(){
     }
 
     while((key = tchdbiternext2(hdbcase))){
-
         char *tmp ,*tmp1,*tmp2,*tmp3,*tmp4,*count,*class;
         status_record_t *srp = status_record_alloc();
 
@@ -307,6 +308,7 @@ int fmd_adm_case_dbiter(){
 
         tmp4 = strtok(count,".");
         srp->count = atoi(tmp4);
+        srp->last_occur = srp->create;
 
         if(strstr(srp->class,"cpu") != NULL){
             srp->msgid = tchdbget2(hdbcpumem,srp->class);
@@ -321,6 +323,48 @@ int fmd_adm_case_dbiter(){
         }
 
         list_add(&srp->list, &status_rec_list);
+    }
+
+    if (fmd_adm_case_iter(adm,2) == 0){
+        list_for_each(pos, &adm->cs_list) {
+            aci = list_entry(pos, fmd_adm_caseinfo_t, aci_list);
+            status_record_t *srp = status_record_alloc();
+
+            if(aci->fafc.fafc_fault == NULL)
+                continue;
+
+            srp->fru = strtok(aci->fafc.fafc_fault,":");
+            if(srp->fru)
+                srp->class = strtok(NULL,":");
+
+            if(srp->class == NULL){
+
+                srp->class = strdup(srp->fru);
+                char *tmp = strtok(srp->fru,".");
+                if( tmp )
+                    srp->fru = strtok(NULL,".");
+            }
+
+            srp->asru = aci->aci_asru;
+            srp->state = aci->fafc.fafc_state;
+            srp->count = aci->fafc.fafc_count;
+            srp->create = aci->fafc.fafc_create;
+            srp->last_occur = aci->fafc.fafc_fire;
+
+            if(strstr(srp->class,"cpu") != NULL){
+                srp->msgid = tchdbget2(hdbcpumem,srp->class);
+                char key[32];
+                sprintf(key,"%s.severity",srp->msgid);
+                srp->severity = tchdbget2(hdbcpumem,key);
+            }else {
+                srp->msgid = tchdbget2(hdbdisk,srp->class);
+                char key[32];
+                sprintf(key,"%s.severity",srp->msgid);
+                srp->severity = tchdbget2(hdbdisk,key);
+            }
+
+            list_add(&srp->list, &status_rec_list);
+        }
     }
 
     if(!tchdbclose(hdbcase)){
@@ -348,7 +392,7 @@ static int
 get_cases_from_fmd(fmd_adm_t *adm,char* type)
 {
     if(strncmp(type,"repaired",8) == 0)
-        return fmd_adm_case_dbiter();
+        return fmd_adm_case_dbiter(adm);
 
     struct list_head *pos = NULL;
     fmd_adm_caseinfo_t *aci = NULL;
@@ -368,7 +412,7 @@ get_cases_from_fmd(fmd_adm_t *adm,char* type)
      /*
      * These calls may fail with Protocol error if message payload is to big
      */
-    if (fmd_adm_case_iter(adm) != 0)
+    if (fmd_adm_case_iter(adm,1) != 0)
         die("FMD: failed to get case list from fmd");
 
     list_for_each(pos, &adm->cs_list) {
@@ -395,7 +439,7 @@ get_cases_from_fmd(fmd_adm_t *adm,char* type)
         srp->state = aci->fafc.fafc_state;
         srp->count = aci->fafc.fafc_count;
         srp->create = aci->fafc.fafc_create;
-
+        srp->last_occur = aci->fafc.fafc_fire;
         if(strstr(srp->class,"cpu") != NULL){
             srp->msgid = tchdbget2(hdbcpumem,srp->class);
             char key[32];
@@ -443,17 +487,13 @@ cmd_faulty(fmd_adm_t *adm, int argc, char *argv[])
     int rt, c;
     //char opt_type[32];
     char *opt_type;
-    while ((c = getopt(argc, argv, "svfn:t:u:h?")) != EOF) {
+    while ((c = getopt(argc, argv, "svn:t:u:h?")) != EOF) {
         switch (c) {
         case 's':
             opt_s++;
             break;
         case 'v':
             opt_v++;
-            break;
-        case 'f':
-            opt_v++;
-            opt_f++;
             break;
         case 'n':
             max_fault = atoi(optarg);
@@ -479,19 +519,26 @@ cmd_faulty(fmd_adm_t *adm, int argc, char *argv[])
 
     if(opt_t){
         if((strncmp(opt_type,"repaired",8) != 0) && (strncmp(opt_type,"happenning",10)!=0)){
-           printf("\t-t    caselist type :repaired or happenning\n");
+           usage();
+           return (-1);
         }
     }else{
+        /*
         opt_type = malloc(16 * sizeof(char));
         sprintf(opt_type,"repaired");
+        */
+           usage();
+           return (-1);
     }
 #if 0
     char    fmd_thread[8];
     FILE * fp ;
     fp = popen("ps -aux | grep fmd |wc -l","r");
     fgets(fmd_thread,sizeof(fmd_thread),fp);
-    if(strncmp(fmd_thread,"3",1) != 0)
+    if(strncmp(fmd_thread,"3",1) != 0){
         printf("fmd does not start ,exe command :'fmd start'\n");
+        exit(-1);
+    }
     pclose(fp);
 #endif
     rt = get_cases_from_fmd(adm,opt_type);

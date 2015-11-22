@@ -9,7 +9,6 @@ event ereport.disk.unhealthy
 
 fault ereport.disk.space-insufficient
 fault ereport.disk.over-temperature
-fault ereport.disk.badblocks
 
 /**
  * serd

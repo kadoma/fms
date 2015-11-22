@@ -5,6 +5,7 @@
 
 #include "wrap.h"
 #include "fmd_common.h"
+#include "fmd_event.h"
 
 #define xcalloc(nmemb, size)	def_calloc(nmemb, size)
 #define xfree(ptr)		def_free(ptr)
