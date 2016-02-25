@@ -64,17 +64,7 @@ cmd_load(fmd_adm_t *adm, int argc, char *argv[])
         usage();
         return(-1 );//(FMADM_EXIT_SUCCESS);
     }
-
-#if 0
-    char fmd_thread[8];
-    FILE * fp ;
-    fp = popen("ps -aux | grep fmd |wc -l","r");
-    fgets(fmd_thread,sizeof(fmd_thread),fp);
-    if(strncmp(fmd_thread,"3",1)!= 0)
-        printf("fmd does not start ,exe command :'fmd start'\n");
-    pclose(fp);
-#endif
-
+    
     int rt = load_module(adm,argv[1]);
 
     return rt;

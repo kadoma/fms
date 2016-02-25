@@ -34,6 +34,9 @@ int disk_unhealthy_check(const char *path)
     char buff[LINE_MAX] = {0};
     
     char cmd[128];
+	if(strlen(path) > 10)
+		return 0;
+
     smarthealthycmd(path, cmd);
     
     fstream = popen(cmd,"r");
@@ -47,9 +50,12 @@ int disk_unhealthy_check(const char *path)
     {
         char *p = strstr(buff, "OK");
         char *p_n = strstr(buff, "Unable");
+		char *p_m = strstr(buff, "PASSED");
         
-        if((p != NULL)||(p_n != NULL))
-           return 0;
+        if ((p != NULL)||(p_n != NULL)||(p_m != NULL)){
+			pclose(fstream);
+			return 0;
+		}
     }
     
     pclose(fstream);
@@ -71,6 +77,10 @@ int disk_temperature_check(const char *path)
 {
     char buff[LINE_MAX] = {0};
 	char cmd[128] = {0};
+
+	if(strlen(path) > 10)
+		return 0;
+
 	smarttempcmd(path, cmd);
     
 	char* result = NULL; 			

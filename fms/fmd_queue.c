@@ -189,11 +189,11 @@ void * queue_delete_proc(fmd_queue_t *pp)
 				wr_log("", WR_LOG_DEBUG, "delete case list event err");
 			}	
 
-			def_free(pevt->dev_name);
-	        def_free(pevt->ev_class);
-	        def_free(pevt->data);
-	        list_del(&pevt->ev_repaired_list);
-	        def_free(pevt);
+			//def_free(pevt->dev_name);
+	        //def_free(pevt->ev_class);
+	        //def_free(pevt->data);
+	        //list_del(&pevt->ev_repaired_list);
+	        //def_free(pevt);
 			continue;
 		}
 		
@@ -209,7 +209,7 @@ void * queue_delete_proc(fmd_queue_t *pp)
 			/* delete repaired list event */	
 			def_free(pevt->dev_name);
 	        def_free(pevt->ev_class);
-	        def_free(pevt->data);
+	        //def_free(pevt->data);
 	        list_del(&pevt->ev_repaired_list);
 	        def_free(pevt);
 
@@ -250,6 +250,7 @@ queue_start(void *pp)
     pthread_setspecific(key_module, p);
 
     ring_t *p_ring = &p->queue_ring;
+    ras_event_opendb();
     
 RETRY:
 	count++;
@@ -267,7 +268,7 @@ RETRY:
             fmd_proc_event(evt);
         wr_log("", WR_LOG_DEBUG, "queue stat count is [%d]", p_ring->count);
     }
-
+//wanghuan
 	if(count == DELETE_CIRCLE)
 	{
 		queue_delete_proc(p);

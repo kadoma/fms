@@ -26,12 +26,12 @@ event ereport.cpu.bus_ce
 event ereport.cpu.bus_ue
 event ereport.cpu.unknown_ce
 event ereport.cpu.unknown_ue
-
+event ereport.cpu.qpi_ce
+event ereport.cpu.qpi_ue
 
 engine ereport.cpu.cache_ce {N=6, T=1}
 engine ereport.cpu.cache_ue {N=3, T=72}
 engine ereport.cpu.tlb_ce {N=24, T=72}
 engine ereport.cpu.tlb_ue {N=3, T=72}
 engine ereport.cpu.mempage {N=10, T=72}
-engine ereport.cpu.qpi_ce {N=24, T=72}
-engine ereport.cpu.qpi_ue {N=3, T=72}
+

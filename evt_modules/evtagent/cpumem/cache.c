@@ -194,14 +194,22 @@ cache_to_cpus(int cpu, unsigned level, unsigned type,
 			return -1;
 		}
 	}
-
+	
 	/* Maybe, cpu hotplug, add new cpu */
-	if (caches && !caches[cpu]) {
+	if (caches && (cpu >= cachelen || !caches[cpu])) {
 		caches_release();
 		if (read_caches() < 0)
 			return -1;
 	}
-		
+
+	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
+				"cachelen: %d, cpu: %d", cachelen, cpu);
+	
+	/* illegality cpu */
+	if (cpu >= cachelen) {
+		return -1;
+	}
+	
 	for (c = caches[cpu]; c && c->cpumap; c++) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
 			"cpu %d level %d type %d\n", 

@@ -14,6 +14,8 @@
 #include "memdev.h"
 #include "logging.h"
 #include "cmea_base.h"
+#include "fmd_log.h"
+#include "evt_process.h"
 
 static char *form_factors[] = { 
 	"?",
@@ -57,18 +59,18 @@ dmi_dimm_size(unsigned short size, char *unit)
 }
 
 static void 
-dump_type_details(unsigned short td)
+dump_type_details(char *buf, unsigned short td)
 {
 	int i;
 	if (!td)
 		return;
 	for (i = 0; i < 16; i++) 
 		if (td & (1<<i))
-			wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "%s ", type_details[i]);
+			sprintf(buf+strlen(buf), "%s ", type_details[i]);
 }
 
 void 
-dump_memdev(struct dmi_memdev *md, unsigned long addr)
+dump_memdev(int fd, char *buf, struct dmi_memdev *md, unsigned long addr)
 {
 	char tmp[20];
 	char unit[10];
@@ -82,25 +84,26 @@ dump_memdev(struct dmi_memdev *md, unsigned long addr)
 		return;
 	}	
 
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-		"%s ", LOOKUP(memory_types, md->memory_type, tmp));
+	line_indent(fd);
+	sprintf(buf, "%s ", LOOKUP(memory_types, md->memory_type, tmp));
 	if (md->form_factor >= 3) 
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"%s ", LOOKUP(form_factors, md->form_factor, tmp));
+		sprintf(buf+strlen(buf), "%s ", LOOKUP(form_factors, md->form_factor, tmp));
 	if (md->speed != 0)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"%hu Mhz ", md->speed);
-	dump_type_details(md->type_details);
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-		"Width %hu Data Width %hu Size %u %s\n",
+		sprintf(buf+strlen(buf), "%hu Mhz ", md->speed);
+	dump_type_details(buf, md->type_details);
+	sprintf(buf+strlen(buf), "Width %hu Data Width %hu Size %u %s\n",
 		md->total_width, md->data_width, 
 		dmi_dimm_size(md->size, unit), unit);
-
+	fmd_log_write(fd, buf, strlen(buf));
+	
 #define DUMPSTR(n,x) \
 	if (md->x) { \
 		s = dmi_getstring(&md->header, md->x);	\
-		if (s && *s && strcmp(s,"None"))	\
-			wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, n ": %s\n", s);		\
+		if (s && *s && strcmp(s,"None")) {	\
+			line_indent(fd);	\
+			sprintf(buf, n ": %s\n", s); \
+			fmd_log_write(fd, buf, strlen(buf));\
+		}	\
 	}
 	
 	DUMPSTR("Device Locator", device_locator);

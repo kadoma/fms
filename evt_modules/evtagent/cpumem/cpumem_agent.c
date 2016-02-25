@@ -139,14 +139,18 @@ __log_event(fmd_event_t *pevt)
 
 	fmd_get_time(times, evtime);
 	memset(buf, 0, sizeof buf);
-	snprintf(buf, sizeof(buf), "%s\t%s\t%s:\t%llu\t\n", times, eclass, dev_name, 
+	snprintf(buf, sizeof(buf), "%s\t%s\t%s:\t%llu\n", times, eclass, dev_name, 
 		(long long unsigned int)dev_id);
 
 	if (fmd_log_write(fd, buf, strlen(buf)) != 0) {
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_ERROR, 
 			"failed to write log file for event: %s\n", eclass);
+		fmd_log_close(fd);
 		return -1;
 	}
+	if (type == FMD_LOG_ERROR)
+		cpumem_err_printf(fd, (struct fms_cpumem*)pevt->data);
+	
 	fmd_log_close(fd);
 
 	return 0;
@@ -163,8 +167,8 @@ cpumem_handle_event(fmd_t *pfmd, fmd_event_t *e)
 
 	ev_flag = e->ev_flag;
 	wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG,
-		"handle event, class: %s  flag: %08x,", 
-		e->ev_class, ev_flag);
+		"handle event, class: %s  flag: 0X%08x, handle_mode: 0X%08x", 
+		e->ev_class, ev_flag, e->handle_mode);
 
 	__log_event(e); 
 	
@@ -172,7 +176,13 @@ cpumem_handle_event(fmd_t *pfmd, fmd_event_t *e)
 	case AGENT_TODO:
 		wr_log(CMEA_LOG_DOMAIN, WR_LOG_DEBUG, 
 			"cpumem agent handle fault event.");
-		ret = __handle_fault_event(e);
+
+		if (e->handle_mode & EVENT_HANDLE_MODE_AUTO)
+			ret = __handle_fault_event(e);
+		/* add other handle mode, eg. user-define. */
+		if(e->handle_mode == EVENT_HANDLE_MODE_MANUAL)
+			ret = LIST_REPAIRED_MANUAL;
+		
 		e->event_type = EVENT_LIST;
 		__log_event(e);
 		action = 1;

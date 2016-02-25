@@ -38,6 +38,25 @@ fmd_module_name(const char *path)
 	return str;
 }
 
+
+fmd_module_t *
+fmd_get_module_by_name(fmd_t *fmd, char *name)
+{
+    struct list_head *pos = NULL;
+    fmd_module_t *mp = NULL;
+	
+	if (fmd == NULL || name == NULL)
+		return NULL;
+
+    list_for_each(pos, &fmd->fmd_module) {
+        mp = list_entry(pos, fmd_module_t, list_fmd);
+        if(strstr(mp->mod_name, name) != NULL)
+        	return (mp);
+    }
+	
+    return NULL;
+}
+
 int
 fmd_init_module(fmd_t *p_fmd, char *so_full_path)
 {

@@ -84,7 +84,7 @@ evt_handle(evtsrc_module_t *evt_mod_p, struct list_head *head)
 
     if(list_empty(head)){
         def_free(head);
-		wr_log("", WR_LOG_ERROR, "event nvl list is null.");
+		wr_log("", WR_LOG_DEBUG, "event nvl list is null.");
         return;
     }
 
@@ -132,7 +132,7 @@ do_evtsrc()
     }
 
     if(rawevt == NULL){
-        wr_log("fmd", WR_LOG_WARNING, "no ereport event.");
+        wr_log("fmd", WR_LOG_DEBUG, "no ereport event.");
         return NULL;
     }
 

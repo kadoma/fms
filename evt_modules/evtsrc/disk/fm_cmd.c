@@ -33,7 +33,7 @@ char* smartoncmd(const char *path, char *cmdresult)
 
 void smarttempcmd(const char *path, char *cmd)
 {
-    sprintf(cmd,"disktool -A %s | grep 'Temperature' | cut -f 2 -d ':'| cut -f 1 -d 'C' 2>/dev/null", path);
+    sprintf(cmd,"disktool -A %s | grep 'Current Drive Temperature' | cut -f 2 -d ':'| cut -f 1 -d 'C' 2>/dev/null", path);
     return;
 }
 

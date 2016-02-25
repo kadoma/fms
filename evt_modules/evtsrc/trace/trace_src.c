@@ -28,7 +28,7 @@ trace_probe(evtsrc_module_t *emp)
     //event ereport. /var/log/fms/trace/serd
     nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.trace.unknown_ue");
+    strcpy(nvl->value, "ereport.cpu.cache_ce");
     nvl->dev_id = 0x02;
     nvl->evt_id = 0x11;
     nvl->data=strdup("a private pointer.");
@@ -37,32 +37,23 @@ trace_probe(evtsrc_module_t *emp)
 
     //fault  fault.  /var/log/fms/trace/fault
     nvl = nvlist_alloc();
-    sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.trace.mc_ce");
-    nvl->dev_id = 0x02;
-    nvl->evt_id = 0x22;
-    nvl->data=strdup("a private pointer.");
-    nvlist_add_nvlist(head, nvl);
-/*
-
-    nvl = nvlist_alloc();
-    sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.trace.mc_ce");
+    sprintf(nvl->name, "sdb");
+    strcpy(nvl->value, "ereport.disk.badblocks");
     nvl->dev_id = 0x02;
     nvl->evt_id = 0x22;
     nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
 
 
-    //serd  ereport. /var/log/fms/trace/serd
+    // event only log
     nvl = nvlist_alloc();
     sprintf(nvl->name, "cpu");
-    strcpy(nvl->value, "ereport.trace.cache_ce");
-    nvl->dev_id = 0x01;
-    nvl->evt_id = 0x12;
-    nvl->data = strdup("a private pointer.");
+    strcpy(nvl->value, "ereport.cpu.bus_ue");
+    nvl->dev_id = 0x02;
+    nvl->evt_id = 0x22;
+    nvl->data=strdup("a private pointer.");
     nvlist_add_nvlist(head, nvl);
-*/
+
     return head;
 }
 

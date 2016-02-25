@@ -64,7 +64,7 @@ inject_probe(evtsrc_module_t *emp)
 	if(size == -1)
     {
 		if(errno == EAGAIN){
-			wr_log("inject_evtsrc", WR_LOG_WARNING, "so module mq has not message,please waiting for message.\n");
+			wr_log("inject_evtsrc", WR_LOG_DEBUG, "so module mq has not message,please waiting for message.\n");
 			mq_close(mqd);
 			free(buff);
 			return NULL;

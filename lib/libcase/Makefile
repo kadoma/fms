@@ -9,7 +9,7 @@ OUTPUT=$(BASEPATH)
 
 TARGET=libcase.so
 
-LDFLAGS= -ldl -lpthread -shared -fpic -g
+LDFLAGS= -ldl -lpthread -lsqlite3 -shared -fpic -g
 
 CFLAGS= -g -Wall\
 	-Wno-unused-function \

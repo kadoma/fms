@@ -59,4 +59,6 @@ typedef struct _fmd_module_{
 
 int fmd_module_load(fmd_t *p_fmd);
 void free_module(fmd_module_t * module);
+fmd_module_t *fmd_get_module_by_name(fmd_t *fmd, char *name);
+
 #endif  // fmd_module.h

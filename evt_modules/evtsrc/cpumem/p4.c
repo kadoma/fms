@@ -336,7 +336,7 @@ decode_mca(u64 status, u64 misc, int cpu, int socket,
 			dev = EXTRACT(misc, 19, 23);
 			fn = EXTRACT(misc, 16, 18);
 			
-			asprintf(&tmp, "%s\nIO MCA reported by root port %x:%02x:%02x.%x",
+			asprintf(&tmp, "%s; IO MCA reported by root port %x:%02x:%02x.%x",
 				mm[mn].desc, seg, bus, dev, fn);
 			xfree(mm[mn].desc);
 			mm[mn].desc = tmp;
@@ -445,7 +445,7 @@ decode_memory_controller(u32 mca, u64 status, struct mc_msg *mm)
 		ch = mca & 0xf;
 	}
 	
-	asprintf(&mm->desc, "MEMORY CONTROLLER %s_CHANNEL%s_ERR\nTransaction: %s", 
+	asprintf(&mm->desc, "MEMORY CONTROLLER %s_CHANNEL%s_ERR; %s", 
 		mmm_mnemonic[(mca >> 4) & 7],
 		channel,
 		mmm_desc[(mca >> 4) & 7]);

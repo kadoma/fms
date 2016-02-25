@@ -386,3 +386,24 @@ fmd_adm_unload_module(fmd_adm_t *ap ,char *path){
     }
     return 0;
 }
+
+int
+fmd_adm_config_module(fmd_adm_t *ap ,char *module, char * mode){
+    char cmd[128];
+    sprintf(cmd,"CONFIG:%s:%s",module,mode);
+
+    if((fmd_adm_get_list(ap,cmd)) != 0)
+        return (fmd_adm_set_errno(ap, EPROTO));
+
+    if(strstr((char*)ap->adm_buf,"UNLOAD:") != NULL){
+        return (-1);
+    }
+
+    printf("%s\n",(char*)ap->adm_buf);
+
+    if(strstr(ap->adm_buf,"failed")!= 0){
+        printf("please view /var/log/fms/fms.log for unload failed  reason\n");
+        return (-1);
+    }
+    return 0;
+}

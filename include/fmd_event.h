@@ -40,6 +40,7 @@
 
 #define LIST_REPAIRED_FAILED  0x0103
 #define LIST_REPAIRED_SUCCESS  0x0104
+#define LIST_REPAIRED_MANUAL  0x0105
 
 
 #define AGENT_TODO         0x0301  //action  fault file
@@ -50,6 +51,11 @@
 #define EVENT_SERD         0x0201
 #define EVENT_FAULT        0x0202
 #define EVENT_LIST         0x0203
+
+#define EVENT_HANDLE_MODE_MANUAL	0X0000  /* manual handle fault */
+#define EVENT_HANDLE_MODE_AUTO		0X0001	/* auto handle fault */
+#define EVENT_HANDLE_MODE_DEFINE	0X0002  /* user define */
+
 
 typedef struct _fmd_event_{
     char                *dev_name;  //strdup
@@ -71,6 +77,7 @@ typedef struct _fmd_event_{
     struct list_head    ev_list;
 	struct list_head    ev_repaired_list;
     void               *p_case;
+	int 				handle_mode;	/* manual; auto;user-define*/ 
     char               *data;  //private data
 }fmd_event_t;
 

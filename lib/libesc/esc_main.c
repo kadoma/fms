@@ -68,10 +68,10 @@ esc_parsefile(const char *fname)
 	char buf[128] = {0};
 
 	if((fp = fopen(fname, "r")) == NULL){
-		wr_log("FMD",WR_LOG_ERROR, "failed to open file %s\n", fname);
+		wr_log("FMD",WR_LOG_ERROR, "failed to open file %s", fname);
 		return;
 	}else
-		wr_log("parsefile",WR_LOG_NORMAL, "Parsing file: %s\n", fname);
+		wr_log("parsefile",WR_LOG_NORMAL, "Parsing file: %s", fname);
 
 	while(fgets(buf, sizeof(buf), fp))
 	{

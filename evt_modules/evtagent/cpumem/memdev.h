@@ -3,6 +3,7 @@
 
 #include "cpumem.h"
 
-extern void dump_memdev(struct dmi_memdev *md, unsigned long addr);
+extern void dump_memdev(int fd, char *buf, 
+	struct dmi_memdev *md, unsigned long addr);
 
 #endif

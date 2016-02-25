@@ -7,6 +7,7 @@
 #include "fmd_event.h"
 #include "logging.h"
 #include "atomic_64.h"
+#include "ev_record.h"
 
 extern void put_to_agents(fmd_event_t *p_evt);
 
@@ -213,7 +214,10 @@ fmd_case_insert(fmd_event_t *pevt)
     if(pevt->event_type == 0){
         pevt->event_type = EVENT_REPORT;
     }
-    
+	
+	//insert to sqlite DB.
+	ras_events_handle(pevt);
+	
     //if only come a event . not free . and to goto agent.
     add_case_list(pevt);
         
@@ -233,7 +237,7 @@ int fmd_case_find_and_delete(fmd_event_t *pevt)
 	{
 	    fmd_case_t *p_case = list_entry(pos, fmd_case_t, cs_list);
         if(atomic_read(&p_case->m_event_using) > 0){
-            wr_log("", WR_LOG_ERROR, "agent having event data.can't free case.case num [%d].",
+            wr_log("", WR_LOG_DEBUG, "agent having event data.can't free case.case num [%d].",
                                                         p_case->m_event_using );
             continue;
         }
@@ -243,7 +247,10 @@ int fmd_case_find_and_delete(fmd_event_t *pevt)
             if(pevt->agent_result == LIST_ISOLATED_SUCCESS)
             {
 				fmd_event_t *p_event = NULL;
-				case_to_db(p_case);
+                
+                /* insert to sqlite db*/
+				//case_to_db(p_case);
+				ras_store_rep_event(pevt);
 
 				struct list_head *pos_evt, *n;
 				list_for_each_safe(pos_evt, n, &p_case->cs_event)

@@ -82,7 +82,7 @@ fmd_resv_caselist(fmd_t *pfmd, fmd_acl_t *acl,int num,int index)
         }
         pthread_mutex_unlock(&plist_repaired->evt_repaired_lock);
     }
-    wr_log("",WR_LOG_DEBUG,"FMD:GETCASELIST happenning  caselist num = %d get num = %d\n",tmp,case_num);
+    wr_log("",WR_LOG_WARNING,"FMD:GETCASELIST happenning  caselist num = %d get num = %d\n",tmp,case_num);
     acl->acl_secs = case_num;               /* number of sections */
     acl->acl_size = case_num * sizeof(faf_case_t) + sizeof(faf_hdr_t);
 }
@@ -177,7 +177,7 @@ fmd_get_caselist(fmd_t *pfmd, int *size,int num, int index)
                     else if (cp->cs_flag == CASE_CLOSED)
                         fafc->fafc_state = FAF_CASE_CLOSED;
                     else {
-                        wr_log("",WR_LOG_DEBUG,"FMD:case %phas invalid state%u\n",cp, cp->cs_flag);
+                        wr_log("",WR_LOG_ERROR,"FMD:case %phas invalid state%u\n",cp, cp->cs_flag);
                         return NULL;
                     }
                     cnt++;
@@ -278,6 +278,113 @@ fmd_get_modlist(fmd_t *pfmd, int *size)
     return (void *)acl->acl_hdr;
 }
 
+int check_mod_load(fmd_t *fmd, char *path)
+{
+    if(path == NULL)
+        return (-1);
+    struct list_head *pos = NULL;
+    fmd_module_t *mp = NULL;
+
+    list_for_each(pos,&fmd->fmd_module){
+        mp = list_entry(pos, fmd_module_t, list_fmd);
+        if(strcmp(mp->mod_name, path)== 0)
+        return (-1);
+    }
+    return 0;
+}
+
+void free_module( fmd_module_t * module)
+{
+
+    if(strstr(module->mod_name,"agent") != NULL)
+    {
+        agent_module_t * agent_module = (agent_module_t *)module;
+        struct list_head *pos ,*n;
+        struct subitem *p = NULL;
+
+        list_for_each_safe(pos,n,&(agent_module->module.list_eclass)){
+            p = list_entry(pos,struct subitem,si_list);
+            def_free(p->si_eclass);
+            list_del(&p->si_list);
+        }
+
+        list_del(&(agent_module->module.list_queue));
+        list_del(&(agent_module->module.list_fmd));
+
+        def_free(agent_module->ring);
+        def_free(agent_module->module.mod_name);
+        def_free(agent_module);
+
+    }else{
+        evtsrc_module_t * src_module = (evtsrc_module_t *)module;
+        list_del(&(src_module->module.list_fmd));
+        list_del(&(src_module->timer.timer_list));
+        def_free(src_module->module.mod_name);
+        def_free(src_module);
+    }
+}
+
+int evt_load_module(fmd_t *fmd, char *path)
+{
+    if((check_mod_load(fmd,path))== -1){
+        wr_log("",WR_LOG_WARNING,"module :%s has loaded",path);
+        return (-1);
+    }
+
+    if((fmd_init_module(fmd,path)) == -1){
+        wr_log("",WR_LOG_ERROR,"%s can't load failed",path);
+        return (-1);
+    }
+    struct list_head *pos = NULL;
+    fmd_module_t *mp = NULL;
+    list_for_each(pos, &fmd->fmd_module){
+        mp = list_entry(pos, fmd_module_t, list_fmd);
+        if(strstr(mp->mod_name,".so")== NULL)
+            mp->mod_name = "/usr/lib/fms/plugins/adm_src.so";
+    }
+    return 0;
+}
+
+int module_update_conf(fmd_t *fmd, char *module,char* mode)
+{
+    int ret = agent_module_update_conf(fmd,module,
+	NULL, AGENT_KEY_EVT_HANDLE_MODE,mode);
+    return ret;
+}
+
+
+int evt_unload_module(fmd_t *fmd, char* module)
+{
+    int ret = -1;
+    char *tmp = NULL;
+    if(module == NULL){
+        wr_log("",WR_LOG_WARNING,"module is null");
+        return (-1);
+    }
+    if(strrchr(module,'/'))
+        tmp = strrchr(module,'/') + 1;
+    else
+        tmp = module;
+
+    struct list_head *pos,*n;
+    fmd_module_t *mp = NULL;
+
+    list_for_each_safe(pos,n,&fmd->fmd_module){
+        mp = list_entry(pos,fmd_module_t,list_fmd);
+        char *tmpmodule = strrchr(mp->mod_name,'/') + 1;
+        int len = strlen(tmpmodule);
+        if(strncmp(tmpmodule,tmp,len) == 0){
+            ret = 0;
+            free_module(mp);
+           // list_del(&mp->list_fmd);
+        }
+    }
+    if(ret == -1){
+         wr_log("",WR_LOG_WARNING,"module :%s has not loaded",module);
+    }
+    return ret;
+}
+
 struct list_head *
 adm_probe(evtsrc_module_t *emp)
 {
@@ -296,14 +403,14 @@ adm_probe(evtsrc_module_t *emp)
 
     if (mqd == -1) {
         perror("fmadm mq_open");
-        wr_log("",WR_LOG_DEBUG,"fmsadm mq_open failed");
+        wr_log("",WR_LOG_ERROR,"fmsadm mq_open failed");
         return NULL;
     }
 
     buf = malloc(128 * 1024);
     if (buf == NULL) {
         perror("fmadm malloc");
-        wr_log("",WR_LOG_DEBUG,"fmsadm malloc failed");
+        wr_log("",WR_LOG_ERROR,"fmsadm malloc failed");
         mq_close(mqd);
         return NULL;
     }
@@ -311,7 +418,7 @@ adm_probe(evtsrc_module_t *emp)
     /* Determine max. msg size; initial buffer to receive msg */
     if (mq_getattr(mqd, &attr) == -1) {
         perror("fmadm mq_getattr");
-        wr_log("",WR_LOG_DEBUG,"fmsadm mq_getattr failed");
+        wr_log("",WR_LOG_ERROR,"fmsadm mq_getattr failed");
         free(buf);
         mq_close(mqd);
         return NULL;
@@ -350,6 +457,26 @@ adm_probe(evtsrc_module_t *emp)
             void *ret = NULL;
             ret = malloc(32);
             sprintf(ret, "load failed ");
+            size = strlen((char*)ret);
+            sendbuf = (void*)ret;
+        }
+    }else if(strncmp(buf,"UPDATE",6) == 0){
+        char *module,*mode,*tmp;
+        tmp = strtok((char*)buf,":");
+        if(tmp)
+            module = strtok(NULL,":");
+        if(module)
+            mode = strtok(NULL,":");
+        if((module_update_conf(pfmd,module+1,mode+1)) == 0 ){
+            void *ret = NULL;
+            ret = malloc(32);
+            sprintf(ret, "undate successed ");
+            size = strlen((char*)ret);
+            sendbuf = (void*)ret;
+        }else{
+            void *ret = NULL;
+            ret = malloc(32);
+            sprintf(ret, "update failed ");
             size = strlen((char*)ret);
             sendbuf = (void*)ret;
         }
@@ -393,105 +520,6 @@ adm_probe(evtsrc_module_t *emp)
     free(buf);
 
     return NULL;
-}
-
-int check_mod_load(fmd_t *fmd, char *path)
-{
-    if(path == NULL)
-        return (-1);
-    struct list_head *pos = NULL;
-    fmd_module_t *mp = NULL;
-
-    list_for_each(pos,&fmd->fmd_module){
-        mp = list_entry(pos, fmd_module_t, list_fmd);
-        if(strcmp(mp->mod_name, path)== 0)
-        return (-1);
-    }
-    return 0;
-}
-
-int evt_load_module(fmd_t *fmd, char *path)
-{
-    if((check_mod_load(fmd,path))== -1){
-        wr_log("",WR_LOG_DEBUG,"module :%s has loaded",path);
-        return (-1);
-    }
-
-    if((fmd_init_module(fmd,path)) == -1){
-        wr_log("",WR_LOG_DEBUG,"%s can't load failed",path);
-        return (-1);
-    }
-    struct list_head *pos = NULL;
-    fmd_module_t *mp = NULL;
-    list_for_each(pos, &fmd->fmd_module){
-        mp = list_entry(pos, fmd_module_t, list_fmd);
-        if(strstr(mp->mod_name,".so")== NULL)
-            mp->mod_name = "/usr/lib/fms/plugins/adm_src.so";
-    }
-    return 0;
-}
-
-int evt_unload_module(fmd_t *fmd, char* module)
-{
-    int ret = -1;
-    char *tmp = NULL;
-    if(module == NULL){
-        wr_log("",WR_LOG_DEBUG,"module is null");
-        return (-1);
-    }
-    if(strrchr(module,'/'))
-        tmp = strrchr(module,'/') + 1;
-    else
-        tmp = module;
-
-    struct list_head *pos,*n;
-    fmd_module_t *mp = NULL;
-
-    list_for_each_safe(pos,n,&fmd->fmd_module){
-        mp = list_entry(pos,fmd_module_t,list_fmd);
-        char *tmpmodule = strrchr(mp->mod_name,'/') + 1;
-        int len = strlen(tmpmodule);
-        if(strncmp(tmpmodule,tmp,len) == 0){
-            ret = 0;
-            free_module(mp);
-           // list_del(&mp->list_fmd);
-        }
-    }
-    if(ret == -1){
-         wr_log("",WR_LOG_DEBUG,"module :%s has not loaded",module);
-    }
-    return ret;
-}
-
-void free_module( fmd_module_t * module)
-{
-
-    if(strstr(module->mod_name,"agent") != NULL)
-    {
-        agent_module_t * agent_module = (agent_module_t *)module;
-        struct list_head *pos ,*n;
-        struct subitem *p = NULL;
-
-        list_for_each_safe(pos,n,&(agent_module->module.list_eclass)){
-            p = list_entry(pos,struct subitem,si_list);
-            def_free(p->si_eclass);
-            list_del(&p->si_list);
-        }
-
-        list_del(&(agent_module->module.list_queue));
-        list_del(&(agent_module->module.list_fmd));
-
-        def_free(agent_module->ring);
-        def_free(agent_module->module.mod_name);
-        def_free(agent_module);
-
-    }else{
-        evtsrc_module_t * src_module = (evtsrc_module_t *)module;
-        list_del(&(src_module->module.list_fmd));
-        list_del(&(src_module->timer.timer_list));
-        def_free(src_module->module.mod_name);
-        def_free(src_module);
-    }
 }
 
 static evtsrc_modops_t adm_mops = {

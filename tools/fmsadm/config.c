@@ -17,24 +17,27 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include "fmadm.h"
+#include <fmd_adm.h>
 
-static int opt_l = 0, opt_s = 0;
+static int opt_l = 0, opt_s = 0, opt_m = 0;
 static int opt_i = 0, opt_b = 0;
 static int evtsrc = 0, agent = 0;
 
 static char arg_module[256];
+static char arg_mode[256];
 static char arg_interval[256];
-
+static char mode[256];
 static void
 usage(void)
 {
-    fputs("Usage: fmadm config [-l|s] [-i <interval>] "
+    fputs("Usage: fmadm config [-l|s] [-i <interval>] [-m <auto> | <manual> | <define>]"
           "[-b] [module]\n"
           "\t-h    help\n"
           "\t-l    list all the module configuration files\n"
           "\t-s    show the module's configuration\n"
           "\t-i    set the interval value for evtsrc module\n"
           "\t-b    set the subscribing for agent module\n\n"
+          "\t-m    set the agent module fault-tolerant mode\n"
           "<interval> can be:\n"
           "\tFor example: 1\n"
           , stderr);
@@ -43,10 +46,11 @@ static void
 usage_b(void)
 {
     printf(
-            "\t(enter 'quit' quit edit. note : don't use 'ctr+c' to quit edit !)\n"
-            "\t(enter 'add' to add new subscribe)\n"
-            "\t(for example: add subscribe:event.cpu.unclassified_ue)\n"
-            "\t(enter 'del' to delete a line !)\n\n");
+            "\t(enter 'quit' to quit edit. note : don't use 'ctr+c' to quit edit !)\n"
+	        "\t(press Enter key to cat the next subscribe.)\n"
+            "\t(enter 'add' to add a new subscribe.)\n"
+            "\t(for example: add subscribe:event.cpu.unclassified_ue.)\n"
+            "\t(enter 'del' to delete a subscribe.)\n\n");
 }
 
 static void
@@ -248,7 +252,7 @@ int check_esc(char *sub ,char *mod_name){
     /* check subscribe legal*/
     char * subclass = strstr(sub,".");
     if(check_sub_legal(subclass) != 0){
-        printf("subscribe illegal!, subscribe must in %s file \n",escfile);
+        printf("subscribe illegal ! subscribe must in %s file \n",escfile);
         return (-1);
     }
 
@@ -275,7 +279,7 @@ int check_esc(char *sub ,char *mod_name){
     if(exist)
         return 0;
     else{
-        printf("subscribe illegal!, subscribe must in %s file \n",escfile);
+        printf("subscribe illegal ! subscribe must in %s file \n",escfile);
         return (-1);
     }
 }
@@ -488,6 +492,12 @@ fmd_show_conf(char *mod_name)
     return (0);
 }
 
+/**/
+int config_module(fmd_adm_t *adm,char* module,char* mode)
+{
+    int ret = fmd_adm_config_module(adm,module,mode);
+    return ret;
+}
 /*
  * fmadm config command
  */
@@ -500,7 +510,7 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
     memset(arg_module, 0, 256 * sizeof (char));
     memset(arg_interval, 0, 256 * sizeof (char));
 
-    while ((c = getopt(argc, argv, "ls:i:bh?")) != EOF) {
+    while ((c = getopt(argc, argv, "ls:i:m:bh?")) != EOF) {
         switch (c) {
         case 'l':
             opt_l++;
@@ -515,6 +525,11 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
             break;
         case 'b':
             opt_b++;
+            strcpy(arg_mode, optarg);
+            break;
+		case 'm':
+            opt_m++;
+            strcpy(mode,optarg);
             break;
         case 'h':
         case '?':
@@ -542,7 +557,12 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
       ||((opt_l == 1) && (opt_b == 1))
       ||((opt_s == 1) && (opt_i == 1))
       ||((opt_s == 1) && (opt_b == 1))
-      ||((opt_i == 1) && (opt_b == 1))) {
+      ||((opt_i == 1) && (opt_b == 1))
+      ||((opt_m == 1) && (opt_i == 1))
+      ||((opt_m == 1) && (opt_l == 1))
+      ||((opt_m == 1) && (opt_s == 1))
+      ||((opt_m == 1) && (opt_b == 1))
+      ) {
         usage();
         return (FMADM_EXIT_ERROR);
     }
@@ -575,9 +595,10 @@ cmd_config(fmd_adm_t *adm, int argc, char *argv[])
             return (FMADM_EXIT_ERROR);
     }else if(opt_b > 1){
         usage();
-    }
-
-    else if(opt_i == 1 && argc == 4)
+    }else if(opt_m == 1 && argc == 4){
+        if(config_module(adm,arg_module,mode) != 0)
+            return (FMADM_EXIT_ERROR);
+    }else if(opt_i == 1 && argc == 4)
     {
         if(fmd_add_src_conf(arg_module) != 0)
             return (FMADM_EXIT_ERROR);

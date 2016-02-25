@@ -38,7 +38,7 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
 {
     char path[PATH_MAX];
     int fd;
-    char buf;
+    char buf[8];
     topo_cpu_t *pcpu = NULL;
 
     /* malloc */
@@ -59,13 +59,13 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
         return NULL;
     }
     if(read(fd, &buf, sizeof(buf)) < 0) {
-		close(fd);
+        close(fd);
         wr_log("",WR_LOG_ERROR,"read %s failed ",path);
         return NULL;
     }
     close(fd);
-    pcpu->cpu_socket = buf - '0';
-
+    //pcpu->cpu_socket = buf - '0';
+    pcpu->cpu_socket = atoi(buf);
     /* core id */
     snprintf(path, sizeof(path), "%s/%s", dir,
             "topology/core_id");
@@ -76,11 +76,12 @@ fmd_topo_read_cpu(const char *dir, int nodeid, int processorid)
     }
     if(read(fd, &buf, sizeof(buf)) < 0) {
         wr_log("",WR_LOG_ERROR,"read %s failed ",path);
-		close(fd);
+        close(fd);
         return NULL;
     }
     close(fd);
-    pcpu->cpu_core = buf - '0';
+    //pcpu->cpu_core = buf - '0';
+    pcpu->cpu_core = atoi(buf);
 
     /* thread id */
     pcpu->cpu_thread = 0;
@@ -181,7 +182,7 @@ int
 fmd_topo_cpu(const char *dir, const char *prefix, fmd_topo_t *ptopo)
 {
     char path[PATH_MAX];
-    int n;
+    int n,m;
     struct dirent *dp;
     const char *p;
     char ch;
@@ -199,14 +200,20 @@ fmd_topo_cpu(const char *dir, const char *prefix, fmd_topo_t *ptopo)
                 strncmp(p, prefix, n = strlen(prefix)) != 0))
             continue; /* skip files with the wrong suffix */
 
-        /* node[0-8] style */
-        ch = p[n];
-        if(ch < '0' || ch > '7' || p[n + 1]) { /* node id invalid */
-			(void) closedir(dirp);
-            return NODE_ID_INVALD;
+        /* node style */
+
+        m = strlen(p);
+        int i;
+        for (i=n ;i<m ;i++){
+            ch = p[i];
+            if(ch < '0' || ch > '9') { /* node id invalid */
+                (void) closedir(dirp);
+                return NODE_ID_INVALD;
+            }
         }
+
         (void) snprintf(path, sizeof (path), "%s/%s", dir, dp->d_name);
-        (void) fmd_topo_walk_cpu(path, atoi(&ch), ptopo);
+        (void) fmd_topo_walk_cpu(path, atoi(p+n), ptopo);
     }
 
     (void) closedir(dirp);

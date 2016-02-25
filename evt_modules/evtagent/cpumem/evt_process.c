@@ -25,6 +25,7 @@
 #include "sysfs.h"
 #include "tsc.h"
 #include "cache.h"
+#include "fmd_log.h"
 
 extern double cpumhz;
 
@@ -53,7 +54,7 @@ static struct evt_handler {
 };
 
 /*
- *	@evt_type: event type, cache¡¢tlb¡¢bus....
+ *	@evt_type: event type, cache tlb bus....
  *	@edata: fmd event data
  * 	@data: cpumem event source private data
  */
@@ -426,32 +427,37 @@ bankname(unsigned bank, enum cputype cputype)
 } 
 
 static void 
-print_tsc(int cpunum, __u64 tsc, unsigned long time, 
+print_tsc(int fd, char *buf, int cpunum, __u64 tsc, unsigned long time, 
         enum cputype cputype) 
 { 
 	int ret = -1;
-	char *buf = NULL;
+	char *buffer = NULL;
 
 	if (!time) 
-		ret = decode_tsc_current(&buf, cpunum, cputype, cpumhz, tsc);
-	
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-		"TSC %llx %s", tsc, ret >= 0 && buf ? buf : "");
-	free(buf);
+		ret = decode_tsc_current(&buffer, cpunum, cputype, cpumhz, tsc);
+
+	line_indent(fd);
+	sprintf(buf, "TSC: %llx %s\n", tsc, ret >= 0 && buffer ? buffer : "");
+	fmd_log_write(fd, buf, strlen(buf));
+	if(buffer)
+		free(buffer);
 }
 
 static void
-print_mcg(__u64 mcgstatus)
+print_mcg(int fd, char *buf, __u64 mcgstatus)
 {
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "MCG status:");
+	line_indent(fd);
+	sprintf(buf, "MCG status:");
 	if (mcgstatus & MCG_STATUS_RIPV)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "RIPV ");
+		sprintf(buf+strlen(buf), " RIPV");
 	if (mcgstatus & MCG_STATUS_EIPV)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "EIPV ");
+		sprintf(buf+strlen(buf), " EIPV");
 	if (mcgstatus & MCG_STATUS_MCIP)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "MCIP ");
+		sprintf(buf+strlen(buf), " MCIP");
 	if (mcgstatus & MCG_STATUS_LMCES)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "LMCE ");
+		sprintf(buf+strlen(buf), " LMCE");
+	sprintf(buf+strlen(buf), "\n");
+	fmd_log_write(fd, buf, strlen(buf));
 }
 
 static const char *arstate[4] = { 
@@ -462,41 +468,65 @@ static const char *arstate[4] = {
 };
 
 static void
-print_mci(__u64 status, unsigned mcgcap)
-{
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "MCi status:");
-	if (!(status & MCI_STATUS_VAL))
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-			"Machine check not valid");
-
-	if (status & MCI_STATUS_OVER)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "Error overflow");
+print_mci(int fd, char *buf, __u64 status, unsigned mcgcap)
+{	
+	line_indent(fd);
+	sprintf(buf, "MCi status:\n");
+	fmd_log_write(fd, buf, strlen(buf));
 	
+	if (!(status & MCI_STATUS_VAL)) {
+		line_indent(fd);
+		sprintf(buf, "  Machine check not valid\n");
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	
+	if (status & MCI_STATUS_OVER) {
+		line_indent(fd);
+		sprintf(buf, "  Error overflow\n");
+		fmd_log_write(fd, buf, strlen(buf));
+	}	
+
+	line_indent(fd);
 	if (status & MCI_STATUS_UC) 
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "Uncorrected error");
+		sprintf(buf, "  Uncorrected error\n");
 	else
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "Corrected error");
-
-	if (status & MCI_STATUS_EN)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "Error enabled");
-
-	if (status & MCI_STATUS_MISCV) 
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "MCi_MISC register valid");
-
-	if (status & MCI_STATUS_ADDRV)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "MCi_ADDR register valid");
-
-	if (status & MCI_STATUS_PCC)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "Processor context corrupt");
-
-	if (status & (MCI_STATUS_S|MCI_STATUS_AR))
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-			"%s\n", 
-			arstate[(status >> 55) & 3]);
+		sprintf(buf, "  Corrected error\n");
+	fmd_log_write(fd, buf, strlen(buf));
+	
+	if (status & MCI_STATUS_EN) {
+		line_indent(fd);
+		sprintf(buf, "  Error enabled\n");
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	
+	if (status & MCI_STATUS_MISCV) {
+		line_indent(fd);
+		sprintf(buf, "  MCi_MISC register valid\n");
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	
+	if (status & MCI_STATUS_ADDRV) {
+		line_indent(fd);
+		sprintf(buf, "  MCi_ADDR register valid\n");
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	
+	if (status & MCI_STATUS_PCC) {
+		line_indent(fd);
+		sprintf(buf, "  Processor context corrupt\n");
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	
+	if (status & (MCI_STATUS_S|MCI_STATUS_AR)) {
+		line_indent(fd);
+		sprintf(buf, "%s\n", arstate[(status >> 55) & 3]);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
 
 	if ((mcgcap & MCG_SER_P) && (status & MCI_STATUS_FWST)) {
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"Firmware may have updated this error\n");
+		line_indent(fd);
+		sprintf(buf, "Firmware may have updated this error\n");
+		fmd_log_write(fd, buf, strlen(buf));
 	}
 }
 
@@ -518,79 +548,119 @@ cpuvendor_name(uint32_t cpuvendor)
 	return (cpuvendor < NELE(vendor)) ? vendor[cpuvendor] : "Unknown vendor";
 }
 
-void
-dump_evt(void *data)
+inline void
+line_indent(int fd)
 {
-	struct fms_cpumem *fc;
+#define INDENT_SPACE_NUM	19
+	char buf[64];
+	int i;
+	
+	for (i = 0; i < INDENT_SPACE_NUM; i++) {
+		buf[i] = ' ';
+	}
+	buf[i++] = '\t';
+	buf[i] = '\0';
+	
+	fmd_log_write(fd, buf, strlen(buf));
+#undef INDENT_SPACE_NUM
+}
 
-	if(!data)
+void
+cpumem_err_printf(int fd, struct fms_cpumem *fc)
+{
+	char buf[512];
+	
+	if(!fc)
 		return ;
 
-	fc = (struct fms_cpumem *)data;
-
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-		"CPU %d %s", fc->cpu, bankname(fc->bank, fc->cputype));
+	line_indent(fd);
+	sprintf(buf, "CPU %d %s\n", fc->cpu, bankname(fc->bank, fc->cputype));
+	fmd_log_write(fd, buf, strlen(buf));
 
 	if (fc->tsc)
-		print_tsc(fc->cpu, fc->tsc, fc->time, fc->cputype);
-
-	if (fc->ip)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"RIP%s %02x:%llx", 
+		print_tsc(fd, buf, fc->cpu, fc->tsc, fc->time, fc->cputype);
+	
+	if (fc->ip) {
+		line_indent(fd);
+		sprintf(buf, "RIP%s %02x:%llx\n", 
 			!(fc->mcgstatus & MCG_STATUS_EIPV) ? " !INEXACT!" : "",
-			fc->cs, fc->ip);
+			fc->cs, (long long unsigned int)fc->ip);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
 
-	if (fc->status & MCI_STATUS_MISCV)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"MISC %llx ", fc->misc);
-	if (fc->status & MCI_STATUS_ADDRV)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"ADDR %llx ", fc->addr);
+	if (fc->status & MCI_STATUS_MISCV) {
+		line_indent(fd);
+		sprintf(buf, "MISC: %llx\n", (long long unsigned int)fc->misc);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	if (fc->status & MCI_STATUS_ADDRV) {
+		line_indent(fd);
+		sprintf(buf, "ADDR: %llx\n", (long long unsigned int)fc->addr);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
 
 	if (fc->time) {
 		time_t t = fc->time;
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"TIME %llu %s", fc->time, ctime(&t));
+		line_indent(fd);
+		sprintf(buf, "TIME: %s", ctime(&t));
+		fmd_log_write(fd, buf, strlen(buf));
 	}
 
-	if (fc->bank == MCE_THERMAL_BANK) { 
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"%s", fc->desc);
+	if (fc->bank == MCE_THERMAL_BANK) {
+		line_indent(fd);
+		fmd_log_write(fd, fc->desc, strlen(fc->desc));
+		fmd_log_write(fd, "\n", 1);
 		return ;
 	}
 	
-	print_mcg(fc->mcgstatus);
-	print_mci(fc->status, fc->mcgcap);
+	print_mcg(fd, buf, fc->mcgstatus);
+	print_mci(fd, buf, fc->status, fc->mcgcap);
+
+	line_indent(fd);
+	fmd_log_write(fd, "MCA: ", 5);
+	fmd_log_write(fd, fc->desc, strlen(fc->desc));
+	fmd_log_write(fd, "\n", 1);
 	
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "MCA: ");
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, "%s", fc->desc);
-
 	/* decode all status bits here */
-	wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-		"STATUS %llx MCGSTATUS %llx\n", fc->status, fc->mcgstatus);
+	line_indent(fd);
+	sprintf(buf, "STATUS: %llx\n", 
+		(long long unsigned int)fc->status);
+	fmd_log_write(fd, buf, strlen(buf));
 
-	if (fc->mcgcap)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-			"MCGCAP %llx ", fc->mcgcap);
-	if (fc->apicid)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-			"APICID %x ", fc->apicid);
-	if (fc->socketid)
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL, 
-			"SOCKETID %x", fc->socketid);
+	line_indent(fd);
+	sprintf(buf, "MCGSTATUS: %llx\n", 
+		(long long unsigned int)fc->mcgstatus);
+	fmd_log_write(fd, buf, strlen(buf));
+	
+	if (fc->mcgcap) {
+		line_indent(fd);
+		sprintf(buf, "MCGCAP: %llx\n", (long long unsigned int)fc->mcgcap);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	if (fc->apicid) {
+		line_indent(fd);
+		sprintf(buf, "APICID: %x\n", fc->apicid);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
+	if (fc->socketid) {
+		line_indent(fd);
+		sprintf(buf, "SOCKETID: %x\n", fc->socketid);
+		fmd_log_write(fd, buf, strlen(buf));
+	}
 	if (fc->cpuid) {
 		uint32_t fam, mod;
 		parse_cpuid(fc->cpuid, &fam, &mod);
-		wr_log(CMEA_LOG_DOMAIN, WR_LOG_NORMAL,
-			"CPUID Vendor %s Family %u Model %u",
+		line_indent(fd);
+		sprintf(buf, "CPUID Vendor %s Family %u Model %u\n",
 			cpuvendor_name(fc->cpuvendor), 
 			fam,
 			mod);
+		fmd_log_write(fd, buf, strlen(buf));
 	}
 
 	/* dump memory device, if any */
 	if (fc->memdev) {
-		dump_memdev(fc->memdev, fc->addr);
+		dump_memdev(fd, buf, fc->memdev, fc->addr);
 	}
 }
 

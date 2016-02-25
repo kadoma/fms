@@ -34,5 +34,6 @@ extern int is_digit(const char*);
 extern int check_esc(char* ,char*);
 extern int check_sub_rep(char* ,char*);
 extern int check_sub_legal(const char *);
+
 #endif    /* _FMADM_H */
 

@@ -22,7 +22,7 @@
 #  0x9000000000000165      l1dcache_prefetch_ce
 #  0x9000000000000175      l1dcache_eviction_ce
 #  0x9000000000000185      l1dcache_snoop_ce
-#  0x9040000000000185      l1dcache_snoop_ce    //fault
+#  0x9040000000000185      l1dcache_snoop_ce
 #
 #DESCRIPTION
 #===========

@@ -66,13 +66,28 @@ disk_probe(evtsrc_module_t * emp)
         wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
 		return NULL;
     }	
-		
+//avoid boot partition------start----
+	char bootdev[64] = {0};
+	char buff1[LINE_MAX] = {0};
+	char cmd1[128] = {0};
+	sprintf(cmd1, "df -h| grep '/boot'|awk '{print $1}'");
+	FILE *fstream1 = popen(cmd1,"r");
+	if(fstream1== NULL)
+    {
+        wr_log("stderr",WR_LOG_ERROR,"execute command failed: %s",strerror(errno));
+		return NULL;
+    }
+	if(fgets(buff1, sizeof(buff1),fstream1) != NULL){
+		memset(bootdev, 0, sizeof(bootdev));
+		strncpy(bootdev, buff1, strlen(buff1)-1);
+	}
+//avoid boot partition------end----	
     while(fgets(buff, sizeof(buff),fstream) != NULL)
 	{
 	    memset(fullpath, 0, sizeof(fullpath));
 		strncpy(fullpath, buff, strlen(buff)-1);
 
-	    if(disk_space_check(fullpath) == 1)
+	    if(disk_space_check(fullpath) == 1 && strcmp(fullpath, bootdev) != 0)
 	    {
 		    memset(fullclass, 0, sizeof(fullclass));
 		    sprintf(fullclass,"%s.disk.space-insufficient", FM_EREPORT_CLASS);
@@ -81,6 +96,7 @@ disk_probe(evtsrc_module_t * emp)
 		    if(nvl == NULL)
             {
 		        wr_log("stderr",WR_LOG_ERROR, "DISK: out of memory\n");
+				pclose(fstream);
 			    return NULL;
 		    }
             nvl->evt_id = 1;
@@ -101,6 +117,7 @@ disk_probe(evtsrc_module_t * emp)
             nvlist_t *nvl = nvlist_alloc();
 			if(nvl == NULL) {
 				wr_log("stderr",WR_LOG_ERROR,"DISK: out of memory\n");
+				pclose(fstream);
 				return NULL;
 			}
             nvl->evt_id = 2;
@@ -115,6 +132,7 @@ disk_probe(evtsrc_module_t * emp)
 			nvlist_t *nvl = nvlist_alloc();
 			if(nvl == NULL){
 			    wr_log("stderr",WR_LOG_ERROR,"DISK: out of memory\n");
+				pclose(fstream);
 				return NULL;
 			}
             // 3 temp fault
@@ -122,7 +140,7 @@ disk_probe(evtsrc_module_t * emp)
 			disk_fm_event_post(head, nvl, fullclass, fullpath);
 		}
     }
-    
+    pclose(fstream1);
 	pclose(fstream);
 	return head;
 }

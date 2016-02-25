@@ -6,9 +6,5 @@
  *	guomeisi
  */
 
-ereport.disk.unhealthy
-ereport.disk.unhealthy
-ereport.disk.unhealthy
 
-ereport.disk.space-insufficient
 ereport.disk.over-temperature

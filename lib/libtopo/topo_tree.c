@@ -204,7 +204,7 @@ print_topo_dimm(memcontroller_t *mcp)
     /* traverse dimm */
     list_for_each(pos, &mcp->dimm_head) {
         dp = list_entry(pos, dimm_t, list);
-        printf("|       |       |   -- dimm%-4d:%10ld kb   |       |       |\n", dp->tnode->tn_value,dp->size);
+        printf("|       |       |   -- dimm%-4d:%10ld kB   |       |       |\n", dp->tnode->tn_value,dp->size);
     }
 }
 
@@ -357,7 +357,7 @@ print_topo_tree(fmd_topo_t *ptp,int id)
         }
     }
     if(!exist)
-        printf("node%d does not exist! node index range : 0 - %d \n",id,total-1);
+        printf("node%d does not exist! node index range : 0 - %d \n",id,total);
 }
 
 static int

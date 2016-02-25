@@ -19,10 +19,10 @@ SRCS = $(wildcard *.c)
 
 all:
 	$(CC) -o $(TARGET) $(CFLAGS) $(LDFLAGS) $(SRCS)
-	$ mkdir -p $(TARGET_PATH) && cp $(TARGET) $(TARGET_PATH)
+	$ mkdir -p $(TARGET_PATH) && scp $(TARGET) $(TARGET_PATH)
 
 install:
-	$ mkdir -p $(TARGET_PATH) && cp $(TARGET) $(TARGET_PATH)
+	$ mkdir -p $(TARGET_PATH) && scp $(TARGET) $(TARGET_PATH)
 
 clean:
 	rm -rf *.o *.so

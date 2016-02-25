@@ -89,5 +89,6 @@ extern int fmd_adm_case_iter(fmd_adm_t *,int);
 extern int fmd_adm_load_module(fmd_adm_t * ,char *);
 extern int fmd_adm_mod_iter(fmd_adm_t *);
 extern int fmd_adm_unload_module(fmd_adm_t *,char *);
+extern int fmd_adm_config_module(fmd_adm_t* ,char * ,char *);
 #endif	/* _FMD_ADM_H */
 

@@ -25,7 +25,7 @@ static pthread_mutex_t  m_mutex_exit;
 static pthread_cond_t   m_waitexit;
 
 // 1 : printf Screen 0: log to /var/log/fms.log  all debug level.
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 /* {mian}{minor}{small} : {00}{00}{00}: HEX */
 #define FMS_VERSION_CODE        0x020005    
